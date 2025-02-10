@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:msdl/features/screens/authentication/choose_role.dart';
 import 'package:msdl/features/screens/authentication/login_Screen.dart';
 import 'package:msdl/msdl_theme.dart';
 
@@ -6,7 +7,6 @@ void main() {
   runApp(const msdl());
 }
 
-//한승민 바보
 class msdl extends StatelessWidget {
   const msdl({super.key});
 
@@ -21,7 +21,7 @@ class msdl extends StatelessWidget {
       ),
       initialRoute: "/",
       routes: {
-        "/": (context) => login_Screen(),
+        "/": (context) => ChooseRole(),
       },
     );
   }
