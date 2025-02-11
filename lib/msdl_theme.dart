@@ -58,23 +58,21 @@ final ThemeData msdlTheme = ThemeData(
     // Font of Sign Up,Log In, Wellcome MSDL,Settings,Edit Your Profile,Edit Password,Save change
     headlineLarge: TextStyle(
       color: darkColorScheme.onSurface,
-      fontFamily: 'Andika-Bold',
+      fontFamily: 'Andika',
     ),
     //Font of No account?,
     labelMedium: TextStyle(
       color: darkColorScheme.onSurfaceVariant,
-      fontFamily: 'Andika-Bold',
+      fontFamily: 'Andika',
     ),
     //Font of LogOut
     labelLarge: const TextStyle(
       color: Color(0xffCF3B28),
-      fontFamily: 'Andika-Bold',
+      fontFamily: 'Andika',
     ),
     // Only Font of In : 09:00 | Out : 17:00 && 2025.02.09
     labelSmall: TextStyle(
-        color: darkColorScheme.onSurface,
-        fontFamily: 'Andika-Bold',
-        fontSize: 15),
+        color: darkColorScheme.onSurface, fontFamily: 'Andika', fontSize: 15),
   ),
   bottomNavigationBarTheme: BottomNavigationBarThemeData(
     backgroundColor: darkColorScheme.surfaceBright,
@@ -94,7 +92,7 @@ final ThemeData msdlTheme = ThemeData(
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
       textStyle: TextStyle(
-        fontFamily: 'Andika-Bold',
+        fontFamily: 'Andika',
         fontSize: 24,
         color: darkColorScheme.onSurface,
       ),

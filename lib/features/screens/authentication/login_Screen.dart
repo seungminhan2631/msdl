@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:msdl/commons/widgets/toptitle.dart';
 import 'package:msdl/msdl_theme.dart';
 
 class login_Screen extends StatelessWidget {
@@ -9,17 +10,16 @@ class login_Screen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 200.0),
-          child: Column(
-            children: [
-              Text(
-                "Log In",
-                style: headlineStyle!.copyWith(fontSize: 40),
-              )
-            ],
-          ),
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 55, vertical: 180.0),
+        child: Column(
+          children: [
+            TopTitle(
+              title: "Log In",
+              fontSize: 40,
+              fontWeight: FontWeight.w700,
+            ),
+          ],
         ),
       ),
     );

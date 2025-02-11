@@ -32,10 +32,10 @@ class ChooseRole extends StatelessWidget {
                   fontWeight: FontWeight.w600,
                 ),
               ),
-              CheckboxListTile(
-                value: false,
-                onChanged: _check,
-              ),
+              // CheckboxListTile(
+              //   value: false,
+              //   // onChanged: _check,
+              // ),
             ],
           ),
         ),
