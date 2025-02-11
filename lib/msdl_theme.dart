@@ -7,7 +7,7 @@ const ColorScheme darkColorScheme = ColorScheme(
   primary: Color(0xFF90CAF9),
   onPrimary: Color(0xFF000000),
   primaryContainer: Color(0xFF0D47A1),
-  onPrimaryContainer: Color(0xFFFFFFFF),
+  onPrimaryContainer: Color(0xffFFFFFF),
   primaryFixed: Color(0xFFC5DDF8),
   primaryFixedDim: Color(0xFF97BEE9),
   onPrimaryFixed: Color(0xFF08274A),
