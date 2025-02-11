@@ -60,7 +60,6 @@ class _CustomTextFieldState extends State<CustomTextField> {
                     color: Color(0xffCACACA),
                     fontSize: Sizes.size1 + Sizes.size16,
                     fontFamily: 'Andika',
-                    fontWeight: FontWeight.bold,
                   ),
                 ),
               ),

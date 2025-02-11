@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:msdl/commons/widgets/buttons/CustomButton.dart';
 import 'package:msdl/commons/widgets/buttons/CustomTextField.dart';
+import 'package:msdl/commons/widgets/self_intro.dart';
 import 'package:msdl/commons/widgets/toptitle.dart';
 import 'package:msdl/constants/gaps.dart';
 import 'package:msdl/constants/size_config.dart';
@@ -39,7 +41,7 @@ class _CreateAccountState extends State<CreateAccount> {
                   title: "Email Address",
                   fontSize: Sizes.size16 + Sizes.size1,
                   fontWeight: FontWeight.w700,
-                  opacity: 0.7,
+                  opacity: 0.8,
                 ),
               ],
             ),
@@ -56,7 +58,7 @@ class _CreateAccountState extends State<CreateAccount> {
                   title: "Create a Password",
                   fontSize: Sizes.size16 + Sizes.size1,
                   fontWeight: FontWeight.w700,
-                  opacity: 0.7,
+                  opacity: 0.8,
                 ),
               ],
             ),
@@ -73,7 +75,7 @@ class _CreateAccountState extends State<CreateAccount> {
                   title: "Confirm Your Password",
                   fontSize: Sizes.size16 + Sizes.size1,
                   fontWeight: FontWeight.w700,
-                  opacity: 0.7,
+                  opacity: 0.8,
                 ),
               ],
             ),
@@ -81,6 +83,42 @@ class _CreateAccountState extends State<CreateAccount> {
               hintText: "Confirm password",
               firstIcon: Icons.check_rounded,
               lastIcon: Icons.visibility_off_outlined,
+            ),
+            Gaps.v72,
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                CustomButton(),
+                Gaps.v10, // 버튼과 간격 조절
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    TopTitle(
+                      title: "Already have an account?",
+                      fontSize: Sizes.size16 + Sizes.size1,
+                      fontWeight: FontWeight.w700,
+                      opacity: 0.7,
+                    ),
+                    SizedBox(width: 20.w),
+                    GestureDetector(
+                      onTap: () {},
+                      child: Text(
+                        "Log In",
+                        style: TextStyle(
+                          color: Color(0xff26539C),
+                          fontSize: Sizes.size16 + Sizes.size1,
+                          fontFamily: 'Andika',
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: 100.h,
+                ),
+                SelfIntro(),
+              ],
             ),
           ],
         ),
