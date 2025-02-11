@@ -29,20 +29,20 @@ class _CustomTextFieldState extends State<CustomTextField> {
 
     return TextFieldTapRegion(
       child: Container(
-        width: 340.w,
-        height: 50.h,
-        padding: EdgeInsets.symmetric(horizontal: 16.w),
+        width: 300.w,
+        height: 40.h,
+        padding: EdgeInsets.symmetric(horizontal: 9.w),
         decoration: BoxDecoration(
           color: Color(0xff353535),
-          borderRadius: BorderRadius.circular(3),
-          border: Border.all(color: Color(0xffAAAAAA), width: 2),
+          borderRadius: BorderRadius.circular(2),
+          border: Border.all(color: Color(0xffAAAAAA), width: 1),
         ),
         child: Row(
           children: [
             Icon(
               widget.firstIcon,
               color: Color(0xffCACACA),
-              size: 30.w,
+              size: 28.w,
             ),
             Gaps.h16,
             Expanded(
@@ -54,14 +54,14 @@ class _CustomTextFieldState extends State<CustomTextField> {
                   fontSize: Sizes.size20,
                 ),
                 decoration: InputDecoration(
+                  contentPadding: EdgeInsets.all(10),
                   hintText: widget.hintText,
                   hintStyle: TextStyle(
                     color: Color(0xffCACACA),
-                    fontSize: Sizes.size20,
+                    fontSize: Sizes.size1 + Sizes.size16,
                     fontFamily: 'Andika',
                     fontWeight: FontWeight.bold,
                   ),
-                  border: InputBorder.none,
                 ),
               ),
             ),

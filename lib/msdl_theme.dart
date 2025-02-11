@@ -86,18 +86,7 @@ final ThemeData msdlTheme = ThemeData(
     //   ),
     // ),
   ),
-  textButtonTheme: TextButtonThemeData(
-    style: TextButton.styleFrom(
-      backgroundColor: const Color(0xff4F6F89),
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
-      textStyle: TextStyle(
-        fontFamily: 'Andika',
-        fontSize: 24,
-        color: darkColorScheme.onSurface,
-      ),
-    ),
-  ),
+
   iconTheme: const IconThemeData(
     color: Color(0xFFFFB400),
     size: 18,

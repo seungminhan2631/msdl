@@ -20,16 +20,16 @@ class login_Screen extends StatelessWidget {
     SizeConfig.init(context);
 
     return Scaffold(
-      resizeToAvoidBottomInset: true,
+      resizeToAvoidBottomInset: false,
       body: Padding(
         padding:
-            EdgeInsets.symmetric(horizontal: Sizes.size40, vertical: 180.h),
+            EdgeInsets.symmetric(horizontal: Sizes.size40, vertical: 166.h),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             TopTitle(
               title: "Log In",
-              fontSize: 40.w,
+              fontSize: 37.w,
               fontWeight: FontWeight.w700,
             ),
             Gaps.v12,
@@ -38,18 +38,18 @@ class login_Screen extends StatelessWidget {
               children: [
                 TopTitle(
                   title: "No account?",
-                  fontSize: Sizes.size20,
+                  fontSize: Sizes.size16 + Sizes.size1,
                   fontWeight: FontWeight.w700,
                   opacity: 0.7,
                 ),
-                Gaps.h44,
+                Gaps.h64,
                 GestureDetector(
                   onTap: () {},
                   child: Text(
                     "Create account",
                     style: TextStyle(
                       color: Color(0xff26539C),
-                      fontSize: Sizes.size18,
+                      fontSize: Sizes.size16 + Sizes.size1,
                       fontFamily: 'Andika',
                       fontWeight: FontWeight.bold,
                     ),
@@ -69,7 +69,33 @@ class login_Screen extends StatelessWidget {
               firstIcon: Icons.key,
               lastIcon: Icons.visibility,
             ),
-            Gaps.v24,
+            Gaps.v60,
+            Center(
+              child: TextButton(
+                style: TextButton.styleFrom(
+                  backgroundColor: const Color(0xff4F6F89),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
+                  minimumSize: const Size(300, 60),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    side: const BorderSide(color: Color(0xffAAAAAA), width: 2),
+                  ),
+                ),
+                onPressed: () {
+                  // 버튼 클릭 이벤트
+                },
+                child: const Text(
+                  "Next",
+                  style: TextStyle(
+                    fontFamily: 'Andika',
+                    fontSize: 22, // 텍스트 크기 조절
+                    color: Colors.white, // 텍스트 색상
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ),
           ],
         ),
       ),
