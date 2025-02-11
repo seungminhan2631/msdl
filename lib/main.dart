@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:msdl/features/screens/authentication/choose_role.dart';
+import 'package:msdl/features/screens/authentication/create_account.dart';
 import 'package:msdl/features/screens/authentication/login_Screen.dart';
 import 'package:msdl/msdl_theme.dart';
 
@@ -24,8 +25,8 @@ class msdl extends StatelessWidget {
           ),
           initialRoute: "/",
           routes: {
-            "/": (context) => ChooseRole(),
-            "/chooseRole_Screen": (context) => ChooseRole(),
+            "/": (context) => CreateAccount(),
+            "/chooseRole_Screen": (context) => CreateAccount(),
           },
         );
       },
