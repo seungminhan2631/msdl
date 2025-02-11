@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:msdl/commons/widgets/buttons/CustomTextField.dart';
 import 'package:msdl/commons/widgets/toptitle.dart';
 import 'package:msdl/constants/gaps.dart';
 import 'package:msdl/constants/size_config.dart';
@@ -9,20 +10,22 @@ class login_Screen extends StatelessWidget {
   login_Screen({super.key});
   static const routeName = 'logIn';
   static const routeUrl = '/';
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
   final TextStyle? headlineStyle = msdlTheme.textTheme.headlineLarge;
 
   @override
   Widget build(BuildContext context) {
-    //MediaQuery 반응형 스크린 초기화
+    // MediaQuery 반응형 스크린 초기화
     SizeConfig.init(context);
 
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       body: Padding(
         padding:
             EdgeInsets.symmetric(horizontal: Sizes.size40, vertical: 180.h),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start, // 텍스트 왼쪽 정렬
-
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             TopTitle(
               title: "Log In",
@@ -39,17 +42,34 @@ class login_Screen extends StatelessWidget {
                   fontWeight: FontWeight.w700,
                   opacity: 0.7,
                 ),
-                Gaps.h56,
-                Text(
-                  "Create account",
-                  style: TextStyle(
+                Gaps.h44,
+                GestureDetector(
+                  onTap: () {},
+                  child: Text(
+                    "Create account",
+                    style: TextStyle(
                       color: Color(0xff26539C),
                       fontSize: Sizes.size18,
                       fontFamily: 'Andika',
-                      fontWeight: FontWeight.bold),
-                )
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
               ],
             ),
+            Gaps.v20,
+            CustomTextField(
+              hintText: "Email",
+              firstIcon: Icons.email_outlined,
+              lastIcon: Icons.close,
+            ),
+            Gaps.v40,
+            CustomTextField(
+              hintText: "Password",
+              firstIcon: Icons.key,
+              lastIcon: Icons.visibility,
+            ),
+            Gaps.v24,
           ],
         ),
       ),

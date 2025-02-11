@@ -9,15 +9,16 @@ class SizeConfig {
   static void init(BuildContext context) {
     screenWidth = MediaQuery.of(context).size.width;
     screenHeight = MediaQuery.of(context).size.height;
-    //figma의 iphone 14를 기준으로 함!!
-    const double baseWidth = 390.0;
-    const double baseHeight = 844.0;
+
+    const double baseWidth = 390.0; // 기준 너비 (iPhone 14)
+    const double baseHeight = 844.0; // 기준 높이 (iPhone 14)
 
     scaleFactorWidth = screenWidth / baseWidth;
     scaleFactorHeight = screenHeight / baseHeight;
   }
 }
 
+// 📌 `.w`, `.h` 확장(extension) 추가 → 모든 `double` 값에서 사용 가능
 extension SizeExtension on num {
   double get w => this * SizeConfig.scaleFactorWidth;
   double get h => this * SizeConfig.scaleFactorHeight;
