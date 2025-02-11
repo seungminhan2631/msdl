@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:msdl/constants/size_config.dart';
 import 'package:msdl/msdl_theme.dart';
 
 class TopTitle extends StatelessWidget {
@@ -22,7 +23,7 @@ class TopTitle extends StatelessWidget {
       title,
       style: headlineLarge?.copyWith(
         //??로직은 짧게말하면, C= A??B 를 예를들면, C값=  초기값은 B, A로 설정한다면 C값은 A
-        fontSize: fontSize ?? 40,
+        fontSize: (fontSize ?? 40).w,
         fontWeight: fontWeight ?? FontWeight.bold,
         color: headlineLarge?.color?.withOpacity(opacity ?? 1.0),
       ),
