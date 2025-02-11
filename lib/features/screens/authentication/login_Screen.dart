@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:msdl/commons/widgets/toptitle.dart';
 import 'package:msdl/constants/gaps.dart';
 import 'package:msdl/constants/size_config.dart';
+import 'package:msdl/constants/sizes.dart';
 import 'package:msdl/msdl_theme.dart';
 
 class login_Screen extends StatelessWidget {
@@ -17,8 +18,11 @@ class login_Screen extends StatelessWidget {
 
     return Scaffold(
       body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 55.w, vertical: 180.h),
+        padding:
+            EdgeInsets.symmetric(horizontal: Sizes.size40, vertical: 180.h),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start, // 텍스트 왼쪽 정렬
+
           children: [
             TopTitle(
               title: "Log In",
@@ -26,11 +30,25 @@ class login_Screen extends StatelessWidget {
               fontWeight: FontWeight.w700,
             ),
             Gaps.v12,
-            TopTitle(
-              title: "No account?",
-              fontSize: 20.w,
-              fontWeight: FontWeight.w700,
-              opacity: 0.7,
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TopTitle(
+                  title: "No account?",
+                  fontSize: Sizes.size20,
+                  fontWeight: FontWeight.w700,
+                  opacity: 0.7,
+                ),
+                Gaps.h56,
+                Text(
+                  "Create account",
+                  style: TextStyle(
+                      color: Color(0xff26539C),
+                      fontSize: Sizes.size18,
+                      fontFamily: 'Andika',
+                      fontWeight: FontWeight.bold),
+                )
+              ],
             ),
           ],
         ),
