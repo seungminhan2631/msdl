@@ -45,7 +45,9 @@ class _ChooseRoleState extends State<ChooseRole> {
                   children: List.generate(isChecked.length, (index) {
                     return ListTile(
                       leading: Checkbox(
-                        checkColor: msdlTheme.colorScheme.onSurfaceVariant,
+                        fillColor:
+                        activecolor
+                            ,
                         value: isChecked[index],
                         onChanged: (bool? value) {
                           setState(() {
