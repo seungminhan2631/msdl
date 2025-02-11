@@ -8,8 +8,7 @@ import 'package:msdl/constants/size_config.dart';
 import 'package:msdl/constants/sizes.dart';
 
 class SignupScreen extends StatefulWidget {
-  static const routeName = 'SignupScreen';
-  static const routeUrl = '/';
+  static const routeName = '/SignupScreen';
 
   const SignupScreen({super.key});
 

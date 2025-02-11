@@ -124,7 +124,7 @@ class _ChooseRoleState extends State<ChooseRole> {
               Gaps.v56,
               CustomButton(
                 text: "Next",
-                routeName: "/",
+                routeName: "/SignupScreen",
               ),
               Gaps.v14,
               Row(
