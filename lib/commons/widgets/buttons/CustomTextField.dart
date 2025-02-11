@@ -27,9 +27,11 @@ class _CustomTextFieldState extends State<CustomTextField> {
   @override
   void initState() {
     super.initState();
-    _focusNode.addListener(() {
-      setState(() {}); // 포커스 변경 시 UI 업데이트
-    });
+    _focusNode.addListener(
+      () {
+        setState(() {}); // 포커스 변경 시 UI 업데이트
+      },
+    );
   }
 
   @override

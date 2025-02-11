@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:msdl/commons/widgets/bottomMsdl.dart';
 import 'package:msdl/commons/widgets/buttons/CustomButton.dart';
 import 'package:msdl/commons/widgets/buttons/CustomTextField.dart';
-import 'package:msdl/commons/widgets/self_intro.dart';
 import 'package:msdl/commons/widgets/toptitle.dart';
 import 'package:msdl/constants/gaps.dart';
 import 'package:msdl/constants/size_config.dart';
@@ -88,13 +88,15 @@ class _CreateAccountState extends State<CreateAccount> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                CustomButton(),
+                CustomButton(
+                  text: "Next",
+                ),
                 Gaps.v10, // 버튼과 간격 조절
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     TopTitle(
-                      title: "Already have an account?",
+                      text: "Already have an account?",
                       fontSize: Sizes.size16 + Sizes.size1,
                       fontWeight: FontWeight.w700,
                       opacity: 0.7,
