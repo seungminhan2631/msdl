@@ -6,7 +6,7 @@ import 'package:msdl/constants/sizes.dart';
 import 'package:msdl/msdl_theme.dart';
 
 class SettingsScreen extends StatefulWidget {
-  static const routeName = 'logIn';
+  static const routeName = '/SettingsScreen';
   static const routeUrl = '/';
 
   const SettingsScreen({super.key});

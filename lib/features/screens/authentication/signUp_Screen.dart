@@ -178,7 +178,7 @@ class _SignupScreenState extends State<SignupScreen>
               children: [
                 CustomButton(
                   text: "Next",
-                  routeName: "/",
+                  routeName: "/SettingsScreen",
                 ),
                 Gaps.v10, // 버튼과 간격 조절
                 Row(
