@@ -21,11 +21,28 @@ class CustomTextField extends StatefulWidget {
 
 class _CustomTextFieldState extends State<CustomTextField> {
   final TextEditingController _controller = TextEditingController();
+  final FocusNode _focusNode = FocusNode();
   bool _isPasswordVisible = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _focusNode.addListener(() {
+      setState(() {}); // 포커스 변경 시 UI 업데이트
+    });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    _focusNode.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     bool isPasswordField = widget.lastIcon == Icons.visibility;
+    bool hasFocus = _focusNode.hasFocus; // 현재 포커스 상태 감지
 
     return TextFieldTapRegion(
       child: Container(
@@ -35,7 +52,11 @@ class _CustomTextFieldState extends State<CustomTextField> {
         decoration: BoxDecoration(
           color: Color(0xff353535),
           borderRadius: BorderRadius.circular(2),
-          border: Border.all(color: Color(0xffAAAAAA), width: 1),
+          border: Border.all(
+            color:
+                hasFocus ? Color(0xffD62FD2) : Color(0xffAAAAAA), // 포커스 시 색상 변경
+            width: 1,
+          ),
         ),
         child: Row(
           children: [
@@ -48,12 +69,14 @@ class _CustomTextFieldState extends State<CustomTextField> {
             Expanded(
               child: TextField(
                 controller: _controller,
+                focusNode: _focusNode,
                 obscureText: isPasswordField ? !_isPasswordVisible : false,
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: Sizes.size20,
                 ),
                 decoration: InputDecoration(
+                  border: InputBorder.none,
                   contentPadding: EdgeInsets.all(10),
                   hintText: widget.hintText,
                   hintStyle: TextStyle(
@@ -68,13 +91,13 @@ class _CustomTextFieldState extends State<CustomTextField> {
             Gaps.h16,
             GestureDetector(
               onTap: () {
-                if (isPasswordField) {
-                  setState(() {
+                setState(() {
+                  if (isPasswordField) {
                     _isPasswordVisible = !_isPasswordVisible;
-                  });
-                } else {
-                  _controller.clear();
-                }
+                  } else {
+                    _controller.clear();
+                  }
+                });
               },
               child: Icon(
                 isPasswordField
