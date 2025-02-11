@@ -12,6 +12,7 @@ analyzer:
     camel_case_types: ignore
     deprecated_member_use: ignore
     file_names: ignore
+    unused_element: ignore
 include: package:flutter_lints/flutter.yaml
 
 linter:
