@@ -179,6 +179,7 @@ class _CreateAccountState extends State<CreateAccount>
               children: [
                 CustomButton(
                   text: "Next",
+                  routeName: "/",
                 ),
                 Gaps.v10, // 버튼과 간격 조절
                 Row(
@@ -206,7 +207,7 @@ class _CreateAccountState extends State<CreateAccount>
                   ],
                 ),
                 SizedBox(height: 100.h), // 하단 여백 추가
-                SelfIntro(),
+                bottomMsdlScreen(),
               ],
             ),
           ],

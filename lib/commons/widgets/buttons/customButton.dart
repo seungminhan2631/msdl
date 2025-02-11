@@ -4,9 +4,12 @@ import 'package:msdl/constants/sizes.dart';
 
 class CustomButton extends StatelessWidget {
   final String text;
+  final String routeName;
+
   const CustomButton({
     super.key,
     required this.text,
+    required this.routeName,
   });
 
   @override
@@ -22,7 +25,9 @@ class CustomButton extends StatelessWidget {
             side: BorderSide(color: Color(0xffAAAAAA), width: 1.w),
           ),
         ),
-        onPressed: () {},
+        onPressed: () {
+          Navigator.pushNamed(context, routeName);
+        },
         child: Text(
           text,
           style: TextStyle(

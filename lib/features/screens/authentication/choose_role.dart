@@ -66,6 +66,7 @@ class _ChooseRoleState extends State<ChooseRole> {
 
   @override
   Widget build(BuildContext context) {
+    GestureDetector gestureDetector = router(context);
     return Scaffold(
       body: Padding(
         padding: EdgeInsets.symmetric(vertical: Sizes.size96 + Sizes.size12),
@@ -121,7 +122,7 @@ class _ChooseRoleState extends State<ChooseRole> {
                 ),
               ),
               Gaps.v56,
-              CustomButton(text: "Next"),
+              CustomButton(text: "Next", routeName: "/"),
               Gaps.v14,
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -136,23 +137,33 @@ class _ChooseRoleState extends State<ChooseRole> {
                     ),
                   ),
                   Gaps.h10,
-                  Text(
-                    "Log In",
-                    style: TextStyle(
-                      fontSize: Sizes.size16 + Sizes.size1,
-                      color: Color(0xff26539C),
-                      fontFamily: "Andika",
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
+                  gestureDetector,
                 ],
               ),
               Gaps.v48,
-              SelfIntro()
+              bottomMsdlScreen()
             ],
           ),
         ),
       ),
     );
+  }
+
+  GestureDetector router(BuildContext context) {
+    var gestureDetector = GestureDetector(
+      onTap: () {
+        Navigator.pushNamed(context, "/");
+      },
+      child: Text(
+        "Log In",
+        style: TextStyle(
+          fontSize: Sizes.size16 + Sizes.size1,
+          color: Color(0xff26539C),
+          fontFamily: "Andika",
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+    );
+    return gestureDetector;
   }
 }

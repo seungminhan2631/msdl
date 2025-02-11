@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:msdl/commons/widgets/bottomMsdl.dart';
 import 'package:msdl/commons/widgets/buttons/CustomButton.dart';
 import 'package:msdl/commons/widgets/buttons/CustomTextField.dart';
 import 'package:msdl/commons/widgets/toptitle.dart';
@@ -73,8 +74,12 @@ class login_Screen extends StatelessWidget {
               lastIcon: Icons.visibility,
             ),
             Gaps.v80,
-            CustomButton(text: "Next"),
-            Gaps.v96,
+            CustomButton(
+              text: "Next",
+              routeName: "",
+            ),
+            Spacer(),
+            bottomMsdlScreen()
           ],
         ),
       ),

@@ -2,17 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:msdl/constants/size_config.dart';
 import 'package:msdl/msdl_theme.dart';
 
-class SelfIntro extends StatelessWidget {
+class bottomMsdlScreen extends StatelessWidget {
   final double? fontSize;
   final FontWeight? fontWeight;
-  final double? opacity; // 🔹 추가: 사용자가 투명도 설정 가능
+  final double? opacity;
   final TextStyle? labelMedium = msdlTheme.primaryTextTheme.labelMedium;
 
-  SelfIntro({
+  bottomMsdlScreen({
     super.key,
     this.fontSize,
     this.fontWeight,
-    this.opacity, // 🔹 사용자가 직접 설정할 수 있음
+    this.opacity,
   });
 
   @override
