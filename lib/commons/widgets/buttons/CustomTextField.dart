@@ -46,7 +46,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
 
     return TextFieldTapRegion(
       child: Container(
-        width: 300.w,
+        width: 400.w,
         height: 40.h,
         padding: EdgeInsets.symmetric(horizontal: 9.w),
         decoration: BoxDecoration(
@@ -65,7 +65,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
               color: Color(0xffCACACA),
               size: 28.w,
             ),
-            Gaps.h16,
+            Gaps.h2,
             Expanded(
               child: TextField(
                 controller: _controller,
