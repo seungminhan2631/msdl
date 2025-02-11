@@ -7,17 +7,17 @@ import 'package:msdl/constants/gaps.dart';
 import 'package:msdl/constants/size_config.dart';
 import 'package:msdl/constants/sizes.dart';
 
-class CreateAccount extends StatefulWidget {
-  static const routeName = 'CreateAccount';
+class SignupScreen extends StatefulWidget {
+  static const routeName = 'SignupScreen';
   static const routeUrl = '/';
 
-  const CreateAccount({super.key});
+  const SignupScreen({super.key});
 
   @override
-  State<CreateAccount> createState() => _CreateAccountState();
+  State<SignupScreen> createState() => _SignupScreenState();
 }
 
-class _CreateAccountState extends State<CreateAccount>
+class _SignupScreenState extends State<SignupScreen>
     with SingleTickerProviderStateMixin {
   List<String> messages = [
     "Welcome",
