@@ -8,8 +8,8 @@ import 'package:msdl/constants/size_config.dart';
 import 'package:msdl/constants/sizes.dart';
 import 'package:msdl/msdl_theme.dart';
 
-class login_Screen extends StatelessWidget {
-  login_Screen({super.key});
+class LoginScreen extends StatelessWidget {
+  LoginScreen({super.key});
   static const routeName = 'logIn';
   static const routeUrl = '/';
   final TextEditingController emailController = TextEditingController();
@@ -66,14 +66,18 @@ class login_Screen extends StatelessWidget {
               hintText: "Email",
               firstIcon: Icons.email_outlined,
               lastIcon: Icons.close,
+              helperText: "이메일 오류",
+              errorText: "다시 입력",
             ),
             Gaps.v40,
             CustomTextField(
               hintText: "Password",
               firstIcon: Icons.key,
               lastIcon: Icons.visibility,
+              errorText: "다시입력",
+              helperText: "비밀번호 규칙",
             ),
-            Gaps.v80,
+            Gaps.v52,
             CustomButton(
               text: "Next",
               routeName: "",

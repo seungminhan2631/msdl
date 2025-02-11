@@ -122,7 +122,10 @@ class _ChooseRoleState extends State<ChooseRole> {
                 ),
               ),
               Gaps.v56,
-              CustomButton(text: "Next", routeName: "/"),
+              CustomButton(
+                text: "Next",
+                routeName: "/",
+              ),
               Gaps.v14,
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
