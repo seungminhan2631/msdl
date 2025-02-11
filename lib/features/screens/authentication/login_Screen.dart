@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:msdl/commons/widgets/toptitle.dart';
+import 'package:msdl/constants/gaps.dart';
 import 'package:msdl/msdl_theme.dart';
 
 class login_Screen extends StatelessWidget {
@@ -17,6 +18,12 @@ class login_Screen extends StatelessWidget {
             TopTitle(
               title: "Log In",
               fontSize: 40,
+              fontWeight: FontWeight.w700,
+            ),
+            Gaps.v12,
+            TopTitle(
+              title: "No account?",
+              fontSize: 20,
               fontWeight: FontWeight.w700,
             ),
           ],
