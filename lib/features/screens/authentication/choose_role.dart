@@ -4,13 +4,21 @@ import 'package:msdl/constants/gaps.dart';
 import 'package:msdl/constants/sizes.dart';
 import 'package:msdl/msdl_theme.dart';
 
-class ChooseRole extends StatelessWidget {
+class ChooseRole extends StatefulWidget {
   static const routeName = 'ChooseRole';
   static const routeUrl = '/';
 
-  ChooseRole({super.key});
+  const ChooseRole({super.key});
+
+  @override
+  State<ChooseRole> createState() => _ChooseRoleState();
+}
+
+class _ChooseRoleState extends State<ChooseRole> {
+  List<bool> isChecked = [false, false, false, false];
 
   final TextStyle? headlineLarge = msdlTheme.primaryTextTheme.headlineLarge;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -22,7 +30,7 @@ class ChooseRole extends StatelessWidget {
           child: Column(
             children: [
               TopTitle(
-                title: "Msdl",
+                title: "Sign Up",
               ),
               Gaps.v44,
               Text(
@@ -32,10 +40,23 @@ class ChooseRole extends StatelessWidget {
                   fontWeight: FontWeight.w600,
                 ),
               ),
-              // CheckboxListTile(
-              //   value: false,
-              //   // onChanged: _check,
-              // ),
+              Expanded(
+                child: ListView(
+                  children: List.generate(isChecked.length, (index) {
+                    return ListTile(
+                      leading: Checkbox(
+                        checkColor: msdlTheme.colorScheme.onSurfaceVariant,
+                        value: isChecked[index],
+                        onChanged: (bool? value) {
+                          setState(() {
+                            isChecked[index] = value ?? false;
+                          });
+                        },
+                      ),
+                    );
+                  }),
+                ),
+              ),
             ],
           ),
         ),
