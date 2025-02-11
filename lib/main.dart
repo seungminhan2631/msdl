@@ -28,6 +28,7 @@ class msdl extends StatelessWidget {
             "/": (context) => LoginScreen(),
             "/chooseRole_Screen": (context) => ChooseRole(),
             "/createAccount_Screen": (context) => SignupScreen(),
+            "/SignupScreen": (context) => SignupScreen(),
           },
         );
       },
