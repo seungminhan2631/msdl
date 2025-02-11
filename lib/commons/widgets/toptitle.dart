@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:msdl/constants/sizes.dart';
+import 'package:msdl/msdl_theme.dart';
 
 class TopTitle extends StatelessWidget {
   final String title;
-  final TextStyle? headlineLarge;
+  final TextStyle? headlineLarge = msdlTheme.primaryTextTheme.headlineLarge;
 
-  const TopTitle({
+  TopTitle({
     super.key,
     required this.title,
-    this.headlineLarge,
   });
 
   @override
