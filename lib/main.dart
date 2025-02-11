@@ -9,7 +9,6 @@ void main() {
 
 class msdl extends StatelessWidget {
   const msdl({super.key});
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -17,7 +16,7 @@ class msdl extends StatelessWidget {
       theme: ThemeData(
         colorScheme: darkColorScheme,
         useMaterial3: true,
-        scaffoldBackgroundColor: const Color(0xFF151515).withOpacity(0.98),
+        scaffoldBackgroundColor: Color(0xFF151515).withOpacity(0.98),
       ),
       initialRoute: "/",
       routes: {

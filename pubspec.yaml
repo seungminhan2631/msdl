@@ -75,9 +75,9 @@ flutter:
   fonts:
     - family: Anidika
       fonts:
-        - asset: assets/font/Andika-Bold.ttf
-        - asset: assets/font/Andika-Regular.ttf
-        - asset: assets/font/Andika-Italic.ttf
-        - asset: assets/font/Andika-BoldItalic.ttf
+        - asset: assets\font\Andika-Bold.ttf
+        - asset: assets\font\Andika-Regular.ttf
+        - asset: assets\font\Andika-Italic.ttf
+        - asset: assets\font\Andika-BoldItalic.ttf
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package

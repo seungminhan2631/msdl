@@ -9,13 +9,18 @@ class login_Screen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        children: [
-          Text(
-            "Log In",
-            style: headlineStyle,
-          )
-        ],
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 200.0),
+          child: Column(
+            children: [
+              Text(
+                "Log In",
+                style: headlineStyle!.copyWith(fontSize: 40),
+              )
+            ],
+          ),
+        ),
       ),
     );
   }
