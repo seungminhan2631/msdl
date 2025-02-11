@@ -80,8 +80,9 @@ class _ChooseRoleState extends State<ChooseRole> {
                     (index) {
                       return ListTile(
                         leading: Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: Sizes.size32),
+                          padding: EdgeInsets.symmetric(
+                            horizontal: Sizes.size32,
+                          ),
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
