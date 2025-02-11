@@ -28,7 +28,7 @@ class _CreateAccountState extends State<CreateAccount> {
             SizedBox(
               height: 130.w,
             ),
-            TopTitle(title: "Welcome MSDL"),
+            TopTitle(text: "Welcome MSDL"),
             SizedBox(
               height: 70.w,
             ),
@@ -36,7 +36,7 @@ class _CreateAccountState extends State<CreateAccount> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 TopTitle(
-                  title: "Email Address",
+                  text: "Email Address",
                   fontSize: Sizes.size16 + Sizes.size1,
                   fontWeight: FontWeight.w700,
                   opacity: 0.7,
@@ -53,7 +53,7 @@ class _CreateAccountState extends State<CreateAccount> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 TopTitle(
-                  title: "Create a Password",
+                  text: "Create a Password",
                   fontSize: Sizes.size16 + Sizes.size1,
                   fontWeight: FontWeight.w700,
                   opacity: 0.7,
@@ -70,7 +70,7 @@ class _CreateAccountState extends State<CreateAccount> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 TopTitle(
-                  title: "Confirm Your Password",
+                  text: "Confirm Your Password",
                   fontSize: Sizes.size16 + Sizes.size1,
                   fontWeight: FontWeight.w700,
                   opacity: 0.7,

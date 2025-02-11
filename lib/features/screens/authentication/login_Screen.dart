@@ -24,12 +24,12 @@ class login_Screen extends StatelessWidget {
       resizeToAvoidBottomInset: false,
       body: Padding(
         padding:
-            EdgeInsets.symmetric(horizontal: Sizes.size40, vertical: 166.h),
+            EdgeInsets.symmetric(horizontal: Sizes.size40, vertical: 150.h),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             TopTitle(
-              title: "Log In",
+              text: "Log In",
               fontSize: 37.w,
               fontWeight: FontWeight.w700,
             ),
@@ -38,14 +38,16 @@ class login_Screen extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 TopTitle(
-                  title: "No account?",
+                  text: "No account?",
                   fontSize: Sizes.size16 + Sizes.size1,
                   fontWeight: FontWeight.w700,
                   opacity: 0.7,
                 ),
                 Gaps.h64,
                 GestureDetector(
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.pushNamed(context, "/chooseRole_Screen");
+                  },
                   child: Text(
                     "Create account",
                     style: TextStyle(
@@ -70,8 +72,9 @@ class login_Screen extends StatelessWidget {
               firstIcon: Icons.key,
               lastIcon: Icons.visibility,
             ),
-            Gaps.v60,
-            CustomButton(),
+            Gaps.v80,
+            CustomButton(text: "Next"),
+            Gaps.v96,
           ],
         ),
       ),

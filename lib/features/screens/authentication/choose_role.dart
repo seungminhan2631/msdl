@@ -7,7 +7,7 @@ import 'package:msdl/constants/sizes.dart';
 import 'package:msdl/msdl_theme.dart';
 
 class ChooseRole extends StatefulWidget {
-  static const routeName = 'ChooseRole';
+  static const routeName = '/ChooseRole';
   static const routeUrl = '/';
 
   const ChooseRole({super.key});
@@ -48,124 +48,59 @@ class _ChooseRoleState extends State<ChooseRole> {
     "BS Student",
   ];
 
+  List<bool> selectedRoles = [false, false, false, false]; // 체크 상태 관리
+  void _onClick(bool? value, int index) {
+    setState(() {
+      selectedRoles[index] = value ?? false;
+    });
+  }
+
   final TextStyle? headlineLarge = msdlTheme.primaryTextTheme.headlineLarge;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(
-            vertical: 102,
-          ),
+      body: Padding(
+        padding: EdgeInsets.symmetric(vertical: Sizes.size96 + Sizes.size12),
+        child: Center(
           child: Column(
             children: [
+              TopTitle(text: "Sign Up"),
+              Gaps.v40,
               TopTitle(
-                title: "Sign Up",
+                text: "Choose Your Academic Role",
+                fontSize: Sizes.size24,
+                fontWeight: FontWeight.w700,
+                opacity: 0.7,
               ),
-              Gaps.v44,
-              Text(
-                "Choose Your Academic Role",
-                style: headlineLarge?.copyWith(
-                  fontSize: Sizes.size24 + Sizes.size4,
-                  fontWeight: FontWeight.w600,
+              Gaps.v40,
+              Expanded(
+                child: ListView.builder(
+                  itemCount: roles.length,
+                  itemBuilder: (context, index) {
+                    return CheckboxListTile(
+                      title: Row(
+                        children: [
+                          Icon(
+                            icons[index],
+                            color: _iconColor(index),
+                          ),
+                          SizedBox(width: 10),
+                          Text(
+                            roles[index],
+                            style: TextStyle(color: Colors.white, fontSize: 18),
+                          ),
+                        ],
+                      ),
+                      value: selectedRoles[index], // ✅ 체크 상태 연결
+                      activeColor: Colors.white,
+                      checkColor: Colors.black,
+                      onChanged: (value) =>
+                          _onClick(value, index), // ✅ 함수 참조 오류 수정
+                    );
+                  },
                 ),
-              ),
-              Container(
-                width: Sizes.size32,
-                decoration: BoxDecoration(),
-                child: ListView(
-                  children: List.generate(
-                    isChecked.length,
-                    (index) {
-                      return ListTile(
-                        leading: Padding(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: Sizes.size32,
-                          ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Icon(
-                                icons[index],
-                                color: _iconColor(index),
-                              ),
-                              SizedBox(
-                                width: Sizes.size28.w,
-                              ),
-                              Text(
-                                roles[index],
-                                style: TextStyle(
-                                  color: Color(0xFFFFFFFF),
-                                  fontSize: Sizes.size24.w,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        trailing: Checkbox(
-                          value: isChecked[index],
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(0),
-                          ),
-                          side: BorderSide(
-                            color: darkColorScheme.onSurfaceVariant
-                                .withOpacity(0.8),
-                            width: 2,
-                          ),
-                          fillColor: WidgetStateProperty.resolveWith<Color>(
-                            (states) {
-                              if (states.contains(WidgetState.selected)) {
-                                return darkColorScheme.onSurfaceVariant
-                                    .withOpacity(0.8);
-                              }
-                              return Colors.transparent;
-                            },
-                          ),
-                          checkColor: msdlTheme
-                              .colorScheme.onSurfaceVariant, // 체크 시 박스 사라짐 수정요망
-                          onChanged: (bool? value) {
-                            setState(
-                              () {
-                                isChecked[index] = value ?? false;
-                              },
-                            );
-                          },
-                        ),
-                      );
-                    },
-                  ),
-                ),
-              ),
-              Container(
-                width: Sizes.size32,
-                height: Sizes.size40,
-                decoration: BoxDecoration(
-                  color: const Color(0xff4F6F89),
-                  border: Border.all(
-                    color: Color(
-                      0xFFAAAAAA,
-                    ),
-                    width: 1,
-                  ),
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-                child: CupertinoButton(
-                  onPressed: () {},
-                  padding: EdgeInsets.symmetric(
-                    vertical: Sizes.size20,
-                    horizontal: Sizes.size40,
-                  ),
-                  child: Text(
-                    "Next",
-                    style: TextStyle(
-                      color: Color(0xFFF1F1F1),
-                      fontSize: Sizes.size24.w,
-                    ),
-                  ),
-                ),
-              ),
+              )
             ],
           ),
         ),
