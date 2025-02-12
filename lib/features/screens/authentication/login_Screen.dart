@@ -10,8 +10,7 @@ import 'package:msdl/msdl_theme.dart';
 
 class LoginScreen extends StatelessWidget {
   LoginScreen({super.key});
-  static const routeName = 'logIn';
-  static const routeUrl = '/';
+
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final TextStyle? headlineStyle = msdlTheme.textTheme.headlineLarge;
@@ -69,7 +68,7 @@ class LoginScreen extends StatelessWidget {
               helperText: "이메일 오류",
               errorText: "다시 입력",
             ),
-            Gaps.v40,
+            Gaps.v36,
             CustomTextField(
               hintText: "Password",
               firstIcon: Icons.key,
@@ -80,7 +79,7 @@ class LoginScreen extends StatelessWidget {
             Gaps.v52,
             CustomButton(
               text: "Next",
-              routeName: "",
+              routeName: "/homeScreen",
             ),
             Spacer(),
             bottomMsdlScreen()
