@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:msdl/features/screens/Home/homeScreen.dart';
 import 'package:msdl/features/screens/authentication/choose_role_Screen.dart';
+import 'package:msdl/features/screens/authentication/group_Screen.dart';
 import 'package:msdl/features/screens/authentication/signUp_Screen.dart';
 import 'package:msdl/features/screens/authentication/login_Screen.dart';
 import 'package:msdl/features/screens/settings/setting_Screen.dart';
 import 'package:msdl/msdl_theme.dart';
+import 'package:intl/date_symbol_data_local.dart'; // ✅ 날짜 포맷 데이터 초기화 패키지
 
-void main() {
-  runApp(const msdl());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized(); // ✅ Flutter 엔진 초기화 (비동기 코드 사용 가능)
+  await initializeDateFormatting('ko_KR', null); // ✅ 대한민국 날짜 포맷 초기화
+  runApp(msdl());
 }
 
 class msdl extends StatelessWidget {
@@ -27,7 +31,7 @@ class msdl extends StatelessWidget {
           ),
           initialRoute: "/",
           routes: {
-            "/": (context) => SettingsScreen(),
+            "/": (context) => GroupScreen(),
             "/chooseRole_Screen": (context) => ChooseRoleScreen(),
             "/createAccount_Screen": (context) => SignupScreen(),
             "/SignupScreen": (context) => SignupScreen(),
