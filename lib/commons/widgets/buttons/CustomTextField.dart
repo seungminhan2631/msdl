@@ -5,18 +5,23 @@ import 'package:msdl/constants/sizes.dart';
 import 'package:msdl/msdl_theme.dart';
 
 class CustomTextField extends StatefulWidget {
+  final TextEditingController controller; // ✅ 외부에서 컨트롤러 전달받도록 변경
   final String hintText;
   final IconData firstIcon;
   final IconData lastIcon;
   final String? helperText;
   final String? errorText;
+  final bool isValid; // ✅ 유효성 검사 결과를 받는 변수 추가
+
   const CustomTextField({
     super.key,
+    required this.controller,
     required this.hintText,
     required this.firstIcon,
     required this.lastIcon,
     this.helperText,
     this.errorText,
+    required this.isValid,
   });
 
   @override
@@ -24,24 +29,19 @@ class CustomTextField extends StatefulWidget {
 }
 
 class _CustomTextFieldState extends State<CustomTextField> {
-  final TextEditingController _controller = TextEditingController();
   final FocusNode _focusNode = FocusNode();
   bool _isPasswordVisible = false;
-  bool _isValid = true; // 유효성 상태 변수
 
   @override
   void initState() {
     super.initState();
-    _focusNode.addListener(
-      () {
-        setState(() {});
-      },
-    );
+    _focusNode.addListener(() {
+      setState(() {});
+    });
   }
 
   @override
   void dispose() {
-    _controller.dispose();
     _focusNode.dispose();
     super.dispose();
   }
@@ -49,11 +49,10 @@ class _CustomTextFieldState extends State<CustomTextField> {
   @override
   Widget build(BuildContext context) {
     bool isPasswordField = widget.lastIcon == Icons.visibility;
-    bool hasFocus = _focusNode.hasFocus;
 
     return SizedBox(
       child: TextField(
-        controller: _controller,
+        controller: widget.controller, // ✅ 컨트롤러 사용
         focusNode: _focusNode,
         obscureText: isPasswordField ? !_isPasswordVisible : false,
         style: TextStyle(
@@ -73,22 +72,15 @@ class _CustomTextFieldState extends State<CustomTextField> {
             fontWeight: FontWeight.bold,
           ),
           helperText: widget.helperText,
-          helperStyle: TextStyle(
-            color: Color(0xffF1F1F1).withOpacity(0.7),
-            fontSize: Sizes.size12 + Sizes.size1,
-            fontFamily: 'Andika',
-            fontWeight: FontWeight.w900,
-          ),
-          errorText: _isValid ? null : widget.errorText,
-          errorStyle: TextStyle(
-            fontSize: Sizes.size12,
-            fontFamily: 'Andika',
-            fontWeight: FontWeight.w900,
-          ),
+          errorText: widget.errorText, // ✅ 에러 메시지 적용
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(Sizes.size2),
-            borderSide:
-                BorderSide(color: Color(0xffAAAAAA), width: Sizes.size2),
+            borderSide: BorderSide(
+              color: widget.isValid
+                  ? Color(0xffAAAAAA)
+                  : Color(0xFFB1384E), // ✅ 유효성 검사 실패 시 테두리 색상 빨간색
+              width: Sizes.size2,
+            ),
           ),
           prefixIcon: Icon(
             widget.firstIcon,
@@ -101,16 +93,12 @@ class _CustomTextFieldState extends State<CustomTextField> {
                 if (isPasswordField) {
                   _isPasswordVisible = !_isPasswordVisible;
                 } else {
-                  _controller.clear();
+                  widget.controller.clear();
                 }
               });
             },
             child: Icon(
-              isPasswordField
-                  ? (_isPasswordVisible
-                      ? Icons.visibility_off
-                      : Icons.visibility)
-                  : widget.lastIcon,
+              widget.lastIcon,
               color: Color(0xffCACACA),
               size: 20.w,
             ),

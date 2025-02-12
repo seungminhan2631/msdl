@@ -5,11 +5,13 @@ import 'package:msdl/constants/sizes.dart';
 class CustomButton extends StatelessWidget {
   final String text;
   final String routeName;
+  final VoidCallback? onPressed; // ✅ 버튼 클릭 시 실행할 함수 추가
 
   const CustomButton({
     super.key,
     required this.text,
     required this.routeName,
+    this.onPressed, // ✅ 선택적 매개변수 추가
   });
 
   @override
@@ -25,9 +27,13 @@ class CustomButton extends StatelessWidget {
             side: BorderSide(color: Color(0xffAAAAAA), width: 1.w),
           ),
         ),
-        onPressed: () {
-          Navigator.pushNamed(context, routeName);
-        },
+        onPressed: onPressed ??
+            () {
+              // ✅ `onPressed` 동작 추가
+              if (routeName.isNotEmpty) {
+                Navigator.pushNamed(context, routeName);
+              }
+            },
         child: Text(
           text,
           style: TextStyle(

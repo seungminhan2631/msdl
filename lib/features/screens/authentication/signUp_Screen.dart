@@ -31,51 +31,57 @@ class _SignupScreenState extends State<SignupScreen>
     "مرحبًا",
     "Bem-vindo / Bem-vinda",
     "Добро пожаловать",
-  ]; // 화면에 표시할 메시지 리스트
+  ];
 
-  int currentIndex = 0; // 현재 표시할 메시지 인덱스
+  int currentIndex = 0;
 
   late AnimationController _controller;
   late Animation<double> _animation;
+
+  final TextEditingController emailController =
+      TextEditingController(); // ✅ 이메일 입력 컨트롤러 추가
+  final TextEditingController passwordController =
+      TextEditingController(); // ✅ 비밀번호 입력 컨트롤러 추가
+  final TextEditingController confirmPasswordController =
+      TextEditingController(); // ✅ 비밀번호 확인 입력 컨트롤러 추가
+
+  bool isEmailValid = true; // ✅ 이메일 유효성 상태 추가
+  bool isPasswordValid = true; // ✅ 비밀번호 유효성 상태 추가
+  bool isConfirmPasswordValid = true; // ✅ 비밀번호 확인 유효성 상태 추가
 
   @override
   void initState() {
     super.initState();
 
-    // 애니메이션 컨트롤러 생성 (0.6초 동안 실행 → 속도 증가)
     _controller = AnimationController(
       duration: Duration(milliseconds: 600),
       vsync: this,
     );
 
-    // Y축(Z축 방향) 회전 애니메이션 설정 (0도 → 180도)
     _animation = Tween<double>(begin: 0.0, end: 3.14).animate(_controller);
 
     _controller.addStatusListener((status) {
-      // 애니메이션이 80% 진행되었을 때 텍스트 변경 (더 빨리 사라지는 효과)
       if (_animation.value > 3.14 * 0.8) {
         setState(() {
-          currentIndex = (currentIndex + 1) % messages.length; // 다음 메시지로 변경
+          currentIndex = (currentIndex + 1) % messages.length;
         });
       }
 
-      // 애니메이션 완료 시 초기화
       if (status == AnimationStatus.completed) {
         _controller.reset();
       }
     });
 
-    // 1.5초마다 애니메이션 실행하여 자동 변경 (더 빠르게 진행)
     _startTextRotation();
   }
 
   void _startTextRotation() {
     Future.delayed(
-      Duration(milliseconds: 1500), // 1.5초마다 회전 실행 (속도 증가)
+      Duration(milliseconds: 1500),
       () {
         if (mounted) {
-          _controller.forward(); // 애니메이션 실행 (Y축 회전 시작)
-          _startTextRotation(); // 반복 실행
+          _controller.forward();
+          _startTextRotation();
         }
       },
     );
@@ -83,45 +89,60 @@ class _SignupScreenState extends State<SignupScreen>
 
   @override
   void dispose() {
-    _controller.dispose(); // 애니메이션 컨트롤러 해제
+    _controller.dispose();
+    emailController.dispose();
+    passwordController.dispose();
+    confirmPasswordController.dispose();
     super.dispose();
+  }
+
+  // ✅ 유효성 검사 함수 추가
+  void _validateAndSubmit() {
+    setState(() {
+      isEmailValid = emailController.text.isNotEmpty;
+      isPasswordValid = passwordController.text.isNotEmpty;
+      isConfirmPasswordValid = confirmPasswordController.text.isNotEmpty &&
+          confirmPasswordController.text == passwordController.text;
+    });
+
+    if (isEmailValid && isPasswordValid && isConfirmPasswordValid) {
+      print("회원가입 성공!");
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: false, // 키보드가 올라와도 화면 크기 변경 안 함
+      resizeToAvoidBottomInset: false,
       body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: Sizes.size52), // 좌우 여백 추가
+        padding: EdgeInsets.symmetric(horizontal: Sizes.size52),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start, // 왼쪽 정렬
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(height: 130.w), // 상단 여백 추가
+            SizedBox(height: 130.w),
             Center(
               child: AnimatedSwitcher(
-                duration:
-                    Duration(milliseconds: 400), // 텍스트 전환 속도 증가 (더 빨리 사라짐)
+                duration: Duration(milliseconds: 400),
                 transitionBuilder: (Widget child, Animation<double> animation) {
                   return AnimatedBuilder(
-                    animation: _animation, // 애니메이션 값 감지
+                    animation: _animation,
                     builder: (context, child) {
                       return Transform(
-                        alignment: Alignment.center, // 중심을 기준으로 회전
-                        transform: Matrix4.rotationY(
-                            _animation.value), // Y축(Z축 방향) 회전 적용
-                        child: child, // 회전된 위젯
+                        alignment: Alignment.center,
+                        transform: Matrix4.rotationY(_animation.value),
+                        child: child,
                       );
                     },
-                    child: child, // AnimatedSwitcher의 새로운 위젯
+                    child: child,
                   );
                 },
                 child: TopTitle(
-                  key: ValueKey<String>(messages[currentIndex]), // 변경된 텍스트 감지
-                  text: messages[currentIndex], // 현재 인덱스의 메시지 출력
+                  key: ValueKey<String>(messages[currentIndex]),
+                  text: messages[currentIndex],
                 ),
               ),
             ),
-            SizedBox(height: 70.w), // 다음 UI 요소와 간격 추가
+            SizedBox(height: 70.w),
             Row(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -134,9 +155,12 @@ class _SignupScreenState extends State<SignupScreen>
               ],
             ),
             CustomTextField(
+              controller: emailController,
               hintText: "Enter your email",
               firstIcon: Icons.mail_outlined,
               lastIcon: Icons.cancel_outlined,
+              errorText: isEmailValid ? null : "이메일을 입력하세요.",
+              isValid: isEmailValid,
             ),
             Gaps.v44,
             Row(
@@ -151,9 +175,12 @@ class _SignupScreenState extends State<SignupScreen>
               ],
             ),
             CustomTextField(
+              controller: passwordController,
               hintText: "Enter a password",
               firstIcon: Icons.lock_outline_rounded,
               lastIcon: Icons.visibility_off_outlined,
+              errorText: isPasswordValid ? null : "비밀번호를 입력하세요.",
+              isValid: isPasswordValid,
             ),
             Gaps.v44,
             Row(
@@ -168,9 +195,12 @@ class _SignupScreenState extends State<SignupScreen>
               ],
             ),
             CustomTextField(
+              controller: confirmPasswordController,
               hintText: "Confirm password",
               firstIcon: Icons.check_rounded,
               lastIcon: Icons.visibility_off_outlined,
+              errorText: isConfirmPasswordValid ? null : "비밀번호가 일치하지 않습니다.",
+              isValid: isConfirmPasswordValid,
             ),
             Gaps.v72,
             Column(
@@ -179,8 +209,9 @@ class _SignupScreenState extends State<SignupScreen>
                 CustomButton(
                   text: "Next",
                   routeName: "/",
+                  onPressed: _validateAndSubmit, // ✅ 유효성 검사 실행
                 ),
-                Gaps.v10, // 버튼과 간격 조절
+                Gaps.v10,
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -205,7 +236,7 @@ class _SignupScreenState extends State<SignupScreen>
                     ),
                   ],
                 ),
-                SizedBox(height: 100.h), // 하단 여백 추가
+                SizedBox(height: 100.h),
                 bottomMsdlScreen(),
               ],
             ),

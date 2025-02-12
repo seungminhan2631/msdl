@@ -1,6 +1,6 @@
 import 'package:msdl/constants/size_config.dart';
 import 'package:flutter/material.dart';
-import 'package:msdl/constants/size_config.dart'; // 📌 `SizeConfig`를 import 해야 함
+// 📌 `SizeConfig`를 import 해야 함
 
 class Gaps {
   // Vertical Gaps (세로 간격)
