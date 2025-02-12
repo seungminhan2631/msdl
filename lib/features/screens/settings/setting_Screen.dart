@@ -9,9 +9,6 @@ import 'package:msdl/features/screens/Home/homeScreen.dart';
 import 'package:msdl/features/screens/authentication/group_Screen.dart';
 
 class SettingsScreen extends StatefulWidget {
-  static const routeName = '/SettingsScreen';
-  static const routeUrl = '/';
-
   const SettingsScreen({super.key});
 
   @override

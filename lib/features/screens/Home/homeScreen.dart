@@ -4,6 +4,7 @@ import 'package:msdl/constants/size_config.dart';
 import 'package:msdl/constants/sizes.dart';
 import 'package:intl/intl.dart';
 import 'package:msdl/features/screens/Home/widget/customCard.dart';
+import 'package:msdl/features/screens/Home/widget/profileAvatar.dart';
 import 'package:msdl/features/screens/Home/widget/sectionTitle.dart'; // ✅ 날짜 형식 변환을 위한 패키지
 
 class Homescreen extends StatelessWidget {
@@ -65,11 +66,7 @@ class Homescreen extends StatelessWidget {
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    CircleAvatar(
-                      foregroundColor: Colors.red,
-                      radius: Sizes.size32,
-                      // backgroundColor: Color(0xffE1F5FE),
-                    )
+                    ProfileAvatar(), // ✅ CircleAvatar 기능이 포함된 새 위젯 사용
                   ],
                 ),
               ),
