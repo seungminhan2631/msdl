@@ -24,6 +24,7 @@ class TopTitle extends StatelessWidget {
       style: headlineLarge?.copyWith(
         //??로직은 짧게말하면, C= A??B 를 예를들면, C값=  초기값은 B, A로 설정한다면 C값은 A
         fontSize: (fontSize ?? 40).w,
+        fontFamily: "Andika",
         fontWeight: fontWeight ?? FontWeight.bold,
         color: headlineLarge?.color?.withOpacity(opacity ?? 1.0),
       ),

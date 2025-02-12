@@ -144,23 +144,22 @@ class _SignupScreenState extends State<SignupScreen>
                   );
                 },
               ),
-//햐햐햐
+
               Gaps.v64,
               Column(
                 children: [
                   CustomTextField(
-                    controller: emailController,
                     hintText: "Email Address",
                     firstIcon: Icons.email_outlined,
                     lastIcon: Icons.close,
                     helperText: "Please enter your email",
                     errorText:
                         isEmailValid ? null : "이메일을 입력하세요.", // 유효성 검사 결과 반영
+                    controller: emailController,
                     isValid: isEmailValid,
                   ),
                   Gaps.v32,
                   CustomTextField(
-                    controller: passwordController,
                     hintText: "Password",
                     firstIcon: Icons.key,
                     lastIcon: Icons.visibility,
@@ -168,16 +167,17 @@ class _SignupScreenState extends State<SignupScreen>
                     errorText:
                         isPasswordValid ? null : "비밀번호를 입력하세요.", // 유효성 검사 결과 반영
                     isValid: isPasswordValid,
+                    controller: passwordController,
                   ),
                   Gaps.v32,
                   CustomTextField(
-                    controller: confirmPasswordController,
                     hintText: "Confirm Password",
                     firstIcon: Icons.key,
                     lastIcon: Icons.visibility,
                     helperText: "Confirm your Password",
                     errorText: isPasswordValid ? null : "비밀번호를 입력하세요.",
                     isValid: isPasswordValid,
+                    controller: passwordController,
                   ),
                 ],
               ),
