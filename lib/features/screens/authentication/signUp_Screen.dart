@@ -149,27 +149,33 @@ class _SignupScreenState extends State<SignupScreen>
               Column(
                 children: [
                   CustomTextField(
+                    controller: emailController,
                     hintText: "Email Address",
                     firstIcon: Icons.email_outlined,
                     lastIcon: Icons.close,
                     helperText: "Please enter your email",
                     errorText: "이메일을 다시 입력해주세요",
+                    isValid: isEmailValid,
                   ),
                   Gaps.v32,
                   CustomTextField(
+                    controller: passwordController,
                     hintText: "Password",
                     firstIcon: Icons.key,
                     lastIcon: Icons.visibility,
                     helperText: "Create a Password",
                     errorText: "패스워드를 다시 입력해주세요",
+                    isValid: isPasswordValid,
                   ),
                   Gaps.v32,
                   CustomTextField(
+                    controller: confirmPasswordController,
                     hintText: "Confirm Password",
                     firstIcon: Icons.key,
                     lastIcon: Icons.visibility,
                     helperText: "Confirm your Password",
                     errorText: "비밀번호가 일치하지 않습니다",
+                    isValid: isConfirmPasswordValid,
                   ),
                 ],
               ),

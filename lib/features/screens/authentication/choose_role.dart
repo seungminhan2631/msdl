@@ -16,6 +16,7 @@ class ChooseRole extends StatefulWidget {
 class _ChooseRoleState extends State<ChooseRole> {
   List<bool> isChecked = [false, false, false, false];
   int? selectedIndex;
+  bool hasError = false; // ✅ 에러 상태 추가
 
   final List<IconData> icons = [
     Icons.account_balance_outlined,
@@ -46,14 +47,10 @@ class _ChooseRoleState extends State<ChooseRole> {
     "BS Student",
   ];
 
-  List<bool> selectedRoles = [false, false, false, false]; // 체크 상태 관리
   void _onClick(int index) {
     setState(() {
-      if (selectedIndex == index) {
-        selectedIndex = null; // 같은 항목을 누르면 선택 해제
-      } else {
-        selectedIndex = index; // 새 항목 선택
-      }
+      selectedIndex = index;
+      hasError = false; // ✅ 선택 시 에러 해제
     });
   }
 
@@ -77,26 +74,27 @@ class _ChooseRoleState extends State<ChooseRole> {
                 fontWeight: FontWeight.w700,
                 opacity: 0.7,
               ),
-              Gaps.v7,
+              Gaps.v1,
+
+              // ✅ 에러 메시지 추가
+
               Flexible(
                 child: ListView.builder(
-                  //아래 두개 :1. 공간차지를 리스트 인덱스 개수까지, 2.스크롤 X
                   shrinkWrap: true,
                   physics: NeverScrollableScrollPhysics(),
                   itemCount: roles.length,
                   itemBuilder: (context, index) {
-                    return CheckboxListTile(
-                      title: Padding(
-                        padding: EdgeInsets.symmetric(horizontal: Sizes.size40),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Icon(
-                              icons[index],
-                              color: _iconColor(index),
-                            ),
-                            Gaps.h32,
-                            Text(
+                    return Padding(
+                      padding: EdgeInsets.symmetric(horizontal: Sizes.size40),
+                      child: Row(
+                        children: [
+                          Icon(
+                            icons[index],
+                            color: _iconColor(index),
+                          ),
+                          Gaps.h32,
+                          Expanded(
+                            child: Text(
                               roles[index],
                               style: TextStyle(
                                 fontFamily: "Andika",
@@ -105,21 +103,45 @@ class _ChooseRoleState extends State<ChooseRole> {
                                 fontSize: Sizes.size20,
                               ),
                             ),
-                          ],
-                        ),
+                          ),
+                          Checkbox(
+                            value: selectedIndex == index,
+                            activeColor: Color(0xffFFFFFF),
+                            checkColor: msdlTheme.shadowColor,
+                            onChanged: (value) => _onClick(index),
+                            side: BorderSide(
+                              color: hasError && selectedIndex == null
+                                  ? Color(0xFFB1384E) // ✅ 선택 안 했을 때 빨간 테두리
+                                  : Color(0xffAAAAAA), // ✅ 정상 상태에서는 흰색
+                              width: 2,
+                            ),
+                          ),
+                        ],
                       ),
-                      value: selectedIndex == index,
-                      activeColor: Color(0xffFFFFFF),
-                      checkColor: msdlTheme.shadowColor,
-                      onChanged: (value) => _onClick(index),
                     );
                   },
                 ),
               ),
-              Gaps.v56,
+              if (hasError)
+                Padding(
+                  padding: EdgeInsets.only(
+                    bottom: Sizes.size16,
+                    top: Sizes.size16,
+                  ),
+                  child: Text(
+                    "Please select a role.",
+                    style: TextStyle(
+                      fontFamily: "Andika",
+                      color: Colors.red,
+                      fontSize: Sizes.size16,
+                    ),
+                  ),
+                ),
+              Gaps.v28,
               CustomButton(
                 text: "Next",
                 routeName: "/SignupScreen",
+                onPressed: _validateAndProceed, // ✅ 유효성 검사 추가
               ),
               Gaps.v14,
               Row(
@@ -147,8 +169,19 @@ class _ChooseRoleState extends State<ChooseRole> {
     );
   }
 
+  // ✅ 유효성 검사 함수 추가
+  void _validateAndProceed() {
+    if (selectedIndex == null) {
+      setState(() {
+        hasError = true; // ✅ 선택 안 하면 에러 활성화
+      });
+    } else {
+      Navigator.pushNamed(context, "/SignupScreen"); // ✅ 정상적으로 다음 페이지 이동
+    }
+  }
+
   GestureDetector router(BuildContext context) {
-    var gestureDetector = GestureDetector(
+    return GestureDetector(
       onTap: () {
         Navigator.pushNamed(context, "/");
       },
@@ -162,6 +195,5 @@ class _ChooseRoleState extends State<ChooseRole> {
         ),
       ),
     );
-    return gestureDetector;
   }
 }
