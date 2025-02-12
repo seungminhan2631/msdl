@@ -8,17 +8,36 @@ import 'package:msdl/constants/size_config.dart';
 import 'package:msdl/constants/sizes.dart';
 import 'package:msdl/msdl_theme.dart';
 
-class LoginScreen extends StatelessWidget {
-  LoginScreen({super.key});
+class LoginScreen extends StatefulWidget {
+  const LoginScreen({super.key});
 
-  final TextEditingController emailController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
-  final TextStyle? headlineStyle = msdlTheme.textTheme.headlineLarge;
+  @override
+  _LoginScreenState createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  final TextEditingController emailController =
+      TextEditingController(); // ✅ 이메일 입력 컨트롤러 추가
+  final TextEditingController passwordController =
+      TextEditingController(); // ✅ 비밀번호 입력 컨트롤러 추가
+  bool isEmailValid = true; // ✅ 이메일 유효성 상태 추가
+  bool isPasswordValid = true; // ✅ 비밀번호 유효성 상태 추가
+
+  // ✅ 유효성 검사 함수
+  void _validateAndSubmit() {
+    setState(() {
+      isEmailValid = emailController.text.isNotEmpty; // 입력값이 없으면 false
+      isPasswordValid = passwordController.text.isNotEmpty;
+    });
+
+    if (isEmailValid && isPasswordValid) {
+      print("로그인 성공!"); // ✅ 모든 입력이 유효하면 로그인 성공 처리
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    // MediaQuery 반응형 스크린 초기화
-    SizeConfig.init(context);
+    SizeConfig.init(context); // 반응형 크기 설정
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -61,25 +80,33 @@ class LoginScreen extends StatelessWidget {
               ],
             ),
             Gaps.v20,
+            // ✅ 이메일 입력 필드 (유효성 검사 적용)
             CustomTextField(
+              controller: emailController,
               hintText: "Email",
               firstIcon: Icons.email_outlined,
               lastIcon: Icons.close,
-              helperText: "이메일 오류",
-              errorText: "다시 입력",
+              helperText: "이메일 입력",
+              errorText: isEmailValid ? null : "이메일을 입력하세요.", // 유효성 검사 결과 반영
+              isValid: isEmailValid,
             ),
             Gaps.v36,
             CustomTextField(
+              controller: passwordController,
               hintText: "Password",
               firstIcon: Icons.key,
               lastIcon: Icons.visibility,
-              errorText: "다시입력",
-              helperText: "비밀번호 규칙",
+              helperText: "비밀번호 입력",
+              errorText:
+                  isPasswordValid ? null : "비밀번호를 입력하세요.", // 유효성 검사 결과 반영
+              isValid: isPasswordValid,
             ),
             Gaps.v52,
+            // ✅ Next 버튼 클릭 시 유효성 검사 실행
             CustomButton(
               text: "Next",
-              routeName: "/homeScreen",
+              onPressed: _validateAndSubmit,
+              routeName: "/homeScreen", // 클릭 시 유효성 검사 실행
             ),
             Spacer(),
             bottomMsdlScreen()

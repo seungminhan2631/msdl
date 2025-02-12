@@ -38,6 +38,17 @@ class _SignupScreenState extends State<SignupScreen>
   late AnimationController _controller;
   late Animation<double> _flipAnimation;
 
+  final TextEditingController emailController =
+      TextEditingController(); // ✅ 이메일 입력 컨트롤러 추가
+  final TextEditingController passwordController =
+      TextEditingController(); // ✅ 비밀번호 입력 컨트롤러 추가
+  final TextEditingController confirmPasswordController =
+      TextEditingController(); // ✅ 비밀번호 확인 입력 컨트롤러 추가
+
+  bool isEmailValid = true; // ✅ 이메일 유효성 상태 추가
+  bool isPasswordValid = true; // ✅ 비밀번호 유효성 상태 추가
+  bool isConfirmPasswordValid = true; // ✅ 비밀번호 확인 유효성 상태 추가
+
   @override
   void initState() {
     super.initState();
@@ -58,6 +69,10 @@ class _SignupScreenState extends State<SignupScreen>
 
   @override
   void dispose() {
+    _controller.dispose();
+    emailController.dispose();
+    passwordController.dispose();
+    confirmPasswordController.dispose();
     super.dispose();
     _timer.cancel();
     _controller.dispose();
@@ -70,6 +85,20 @@ class _SignupScreenState extends State<SignupScreen>
       });
       _controller.reverse();
     });
+  }
+
+  // ✅ 유효성 검사 함수 추가
+  void _validateAndSubmit() {
+    setState(() {
+      isEmailValid = emailController.text.isNotEmpty;
+      isPasswordValid = passwordController.text.isNotEmpty;
+      isConfirmPasswordValid = confirmPasswordController.text.isNotEmpty &&
+          confirmPasswordController.text == passwordController.text;
+    });
+
+    if (isEmailValid && isPasswordValid && isConfirmPasswordValid) {
+      print("회원가입 성공!");
+    }
   }
 
   @override

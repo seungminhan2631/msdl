@@ -1,10 +1,8 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:msdl/commons/widgets/bottomMsdl.dart';
 import 'package:msdl/commons/widgets/buttons/customButton.dart';
 import 'package:msdl/commons/widgets/toptitle.dart';
 import 'package:msdl/constants/gaps.dart';
-import 'package:msdl/constants/size_config.dart';
 import 'package:msdl/constants/sizes.dart';
 import 'package:msdl/msdl_theme.dart';
 
@@ -48,14 +46,12 @@ class _ChooseRoleState extends State<ChooseRole> {
     "BS Student",
   ];
 
-  List<bool> selectedRoles = [false, false, false, false]; // 체크 상태 관리
+  bool hasError = false; // ✅ 에러 상태 추가
+
   void _onClick(int index) {
     setState(() {
-      if (selectedIndex == index) {
-        selectedIndex = null; // 같은 항목을 누르면 선택 해제
-      } else {
-        selectedIndex = index; // 새 항목 선택
-      }
+      selectedIndex = index;
+      hasError = false; // ✅ 선택 시 에러 해제
     });
   }
 
@@ -82,46 +78,66 @@ class _ChooseRoleState extends State<ChooseRole> {
               Gaps.v7,
               Flexible(
                 child: ListView.builder(
-                  //아래 두개 :1. 공간차지를 리스트 인덱스 개수까지, 2.스크롤 X
                   shrinkWrap: true,
                   physics: NeverScrollableScrollPhysics(),
                   itemCount: roles.length,
                   itemBuilder: (context, index) {
-                    return CheckboxListTile(
-                      title: Padding(
-                        padding: EdgeInsets.symmetric(horizontal: Sizes.size40),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Icon(
-                              icons[index],
-                              color: _iconColor(index),
-                            ),
-                            Gaps.h32,
-                            Text(
-                              roles[index],
-                              style: TextStyle(
-                                fontFamily: "Andika",
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
-                                fontSize: Sizes.size20,
-                              ),
-                            ),
-                          ],
+                    return Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: hasError && selectedIndex == null
+                              ? Colors.red // ✅ 선택 안 했을 때 빨간 테두리
+                              : Colors.transparent, // ✅ 정상 상태에서는 테두리 없음
+                          width: 2,
                         ),
+                        borderRadius: BorderRadius.circular(5),
                       ),
-                      value: selectedIndex == index,
-                      activeColor: Color(0xffFFFFFF),
-                      checkColor: msdlTheme.shadowColor,
-                      onChanged: (value) => _onClick(index),
+                      child: CheckboxListTile(
+                        title: Padding(
+                          padding:
+                              EdgeInsets.symmetric(horizontal: Sizes.size40),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Icon(
+                                icons[index],
+                                color: _iconColor(index),
+                              ),
+                              Gaps.h32,
+                              Text(
+                                roles[index],
+                                style: TextStyle(
+                                  fontFamily: "Andika",
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                  fontSize: Sizes.size20,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        value: selectedIndex == index,
+                        activeColor: Color(0xffFFFFFF),
+                        checkColor: msdlTheme.shadowColor,
+                        onChanged: (value) => _onClick(index),
+                      ),
                     );
                   },
                 ),
               ),
+              if (hasError) // ✅ 에러 메시지 추가
+                Padding(
+                  padding: EdgeInsets.only(top: 10),
+                  child: Text(
+                    "Please select a role.",
+                    style: TextStyle(color: Colors.red, fontSize: 14),
+                  ),
+                ),
               Gaps.v56,
               CustomButton(
                 text: "Next",
                 routeName: "/SignupScreen",
+                onPressed: _validateAndProceed, // ✅ 유효성 검사 실행
               ),
               Gaps.v14,
               Row(
@@ -149,8 +165,19 @@ class _ChooseRoleState extends State<ChooseRole> {
     );
   }
 
+  // ✅ 유효성 검사 함수 추가
+  void _validateAndProceed() {
+    if (selectedIndex == null) {
+      setState(() {
+        hasError = true; // ✅ 선택 안 하면 에러 활성화
+      });
+    } else {
+      Navigator.pushNamed(context, "/SignupScreen"); // ✅ 정상적으로 다음 페이지 이동
+    }
+  }
+
   GestureDetector router(BuildContext context) {
-    var gestureDetector = GestureDetector(
+    return GestureDetector(
       onTap: () {
         Navigator.pushNamed(context, "/");
       },
@@ -164,6 +191,5 @@ class _ChooseRoleState extends State<ChooseRole> {
         ),
       ),
     );
-    return gestureDetector;
   }
 }
