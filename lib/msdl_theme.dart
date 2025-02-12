@@ -55,7 +55,7 @@ const ColorScheme darkColorScheme = ColorScheme(
 final ThemeData msdlTheme = ThemeData(
   // TextTheme - AppBar, Home
   primaryTextTheme: TextTheme(
-    // Font of Sign Up,Log In, Wellcome MSDL,Settings,Edit Your Profile,Edit Password,Save change
+    // Font of Sign Up,Log In, Welcome MSDL,Settings,Edit Your Profile,Edit Password,Save change
     headlineLarge: TextStyle(
       color: darkColorScheme.onSurface,
       fontFamily: 'Andika',
