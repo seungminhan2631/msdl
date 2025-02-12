@@ -6,14 +6,14 @@ import 'package:msdl/constants/gaps.dart';
 import 'package:msdl/constants/sizes.dart';
 import 'package:msdl/msdl_theme.dart';
 
-class ChooseRole extends StatefulWidget {
-  const ChooseRole({super.key});
+class ChooseRoleScreen extends StatefulWidget {
+  const ChooseRoleScreen({super.key});
 
   @override
-  State<ChooseRole> createState() => _ChooseRoleState();
+  State<ChooseRoleScreen> createState() => _ChooseRoleState();
 }
 
-class _ChooseRoleState extends State<ChooseRole> {
+class _ChooseRoleState extends State<ChooseRoleScreen> {
   List<bool> isChecked = [false, false, false, false];
   int? selectedIndex;
   bool hasError = false; // ✅ 에러 상태 추가

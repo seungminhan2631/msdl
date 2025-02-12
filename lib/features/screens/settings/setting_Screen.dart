@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:msdl/commons/widgets/buttons/custom_bottom_navigationbar.dart';
 import 'package:msdl/commons/widgets/toptitle.dart';
 import 'package:msdl/constants/gaps.dart';
 import 'package:msdl/constants/size_config.dart';
 import 'package:msdl/constants/sizes.dart';
 import 'package:msdl/msdl_theme.dart';
+import 'package:msdl/features/screens/Home/homeScreen.dart';
+import 'package:msdl/features/screens/authentication/group_Screen.dart';
 
 class SettingsScreen extends StatefulWidget {
   static const routeName = '/SettingsScreen';
@@ -16,22 +19,49 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
+  int _selectedIndex = 2; // 초기 탭 인덱스 (Settings 탭)
+
+  // 화면 목록
+  final List<Widget> _screens = [
+    GroupScreen(),
+    Homescreen(),
+    SettingsScreenContent(), // ✅ SettingsScreen의 내용만 별도 분리
+  ];
+
+  // 탭 변경 함수
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: _screens[_selectedIndex], // 현재 선택된 화면 표시
+      bottomNavigationBar: CustomBottomNavigationBar(
+        // ✅ 커스텀 네비게이션 바 사용
+        selectedIndex: _selectedIndex,
+        onItemTapped: _onItemTapped,
+      ),
+    );
+  }
+}
+
+// ✅ SettingsScreen의 본문을 별도로 분리하여 유지
+class SettingsScreenContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: Padding(
-        padding: EdgeInsets.symmetric(
-          horizontal: 20.h,
-        ),
+        padding: EdgeInsets.symmetric(horizontal: 20.h),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             SizedBox(height: 110.h),
             Center(
-              child: TopTitle(
-                text: "Settings",
-              ),
+              child: TopTitle(text: "Settings"),
             ),
             Gaps.v80,
             Row(
@@ -45,26 +75,18 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    SettingsProfileText(
-                      text: "BS Student",
-                    ),
+                    SettingsProfileText(text: "BS Student"),
                     SizedBox(height: 20.h),
-                    SettingsProfileText(
-                      text: "한승민",
-                    ),
+                    SettingsProfileText(text: "한승민"),
                   ],
                 ),
               ],
             ),
             Gaps.v80,
             SettingsBodyText(
-              text: "About",
-              onTap: () => _showAboutDialog(context),
-            ),
+                text: "About", onTap: () => _showAboutDialog(context)),
             Gaps.v28,
-            SettingsBodyText(
-              text: "Edit Profile",
-            ),
+            SettingsBodyText(text: "Edit Profile"),
             Gaps.v28,
             SettingsBodyText(
               text: "Log Out",
@@ -81,7 +103,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          backgroundColor: Color(0xffF1F1F1),
+          backgroundColor: Color(0xff353535),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(5),
             side: BorderSide(
@@ -104,16 +126,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
             width: double.maxFinite,
             height: 130.h,
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center, // ✅ 텍스트 중앙 정렬 추가
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Expanded(
                   child: SingleChildScrollView(
                     child: Text(
-                      textAlign: TextAlign.center,
                       "This app is the intellectual property of MSDL. Unauthorized use is prohibited.",
+                      textAlign: TextAlign.center,
                       style: TextStyle(
                         fontFamily: "Andika",
-                        color: msdlTheme.primaryTextTheme.bodySmall?.color,
+                        color: Color(0xFFF1F1F1).withOpacity(0.75),
                         fontSize: Sizes.size16,
                         fontWeight: FontWeight.bold,
                       ),
@@ -121,7 +143,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ),
                 ),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.end, // ✅ 버튼을 오른쪽 하단으로 정렬
+                  mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     TextButton(
                       onPressed: () {
@@ -132,24 +154,19 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         );
                       },
                       style: ButtonStyle(
-                        overlayColor: MaterialStateProperty.all(
-                            Colors.transparent), // ✅ 물결 효과 제거
+                        overlayColor:
+                            MaterialStateProperty.all(Colors.transparent),
                       ),
-                      child: Text(
-                        "VIEW LICENSES",
-                        style: SettingAboutButtonStyle(),
-                      ),
+                      child: Text("VIEW LICENSES",
+                          style: SettingAboutButtonStyle()),
                     ),
                     TextButton(
                       onPressed: () => Navigator.pop(context),
                       style: ButtonStyle(
-                        overlayColor: MaterialStateProperty.all(
-                            Colors.transparent), // ✅ 물결 효과 제거
+                        overlayColor:
+                            MaterialStateProperty.all(Colors.transparent),
                       ),
-                      child: Text(
-                        "CANCEL",
-                        style: SettingAboutButtonStyle(),
-                      ),
+                      child: Text("CANCEL", style: SettingAboutButtonStyle()),
                     ),
                   ],
                 ),
@@ -173,62 +190,45 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
 class SettingsBodyText extends StatelessWidget {
   final String text;
-  final double? fontSize;
-  final FontWeight? fontWeight;
-  final double? opacity;
+  final VoidCallback? onTap;
   final Color? textColor;
-  final VoidCallback? onTap; // ✅ 클릭 이벤트 추가
   final TextStyle? headlineLarge = msdlTheme.primaryTextTheme.headlineLarge;
 
   SettingsBodyText({
     super.key,
     required this.text,
-    this.fontSize,
-    this.fontWeight,
-    this.opacity,
+    this.onTap,
     this.textColor,
-    this.onTap, // ✅ 클릭 이벤트 추가
   });
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      // ✅ 클릭 가능하도록 InkWell 추가
-      onTap: onTap, // ✅ 사용자가 설정한 클릭 이벤트 실행
+      onTap: onTap,
       child: Column(
         children: [
           Padding(
-            padding: EdgeInsets.symmetric(
-              horizontal: Sizes.size36,
-            ),
+            padding: EdgeInsets.symmetric(horizontal: Sizes.size36),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
                   text,
                   style: headlineLarge?.copyWith(
-                    fontSize: (fontSize ?? 32.w).w,
-                    fontWeight: fontWeight ?? FontWeight.w400,
-                    color: textColor ??
-                        headlineLarge?.color?.withOpacity(opacity ?? 1.0),
+                    fontSize: 32.w,
+                    fontWeight: FontWeight.w400,
+                    color: textColor ?? headlineLarge?.color,
                   ),
                 ),
-                Icon(
-                  Icons.arrow_forward_ios_rounded,
-                  color: Colors.white,
-                  size: Sizes.size20,
-                ),
+                Icon(Icons.arrow_forward_ios_rounded,
+                    color: Colors.white, size: Sizes.size20),
               ],
             ),
           ),
           SizedBox(height: Sizes.size10),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 30.h),
-            child: Container(
-              height: 0.7.h,
-              width: double.infinity,
-              color: Colors.grey,
-            ),
+            child: Divider(color: Colors.grey, thickness: 0.7.h),
           ),
         ],
       ),
@@ -239,10 +239,7 @@ class SettingsBodyText extends StatelessWidget {
 class SettingsProfileText extends StatelessWidget {
   final String text;
 
-  const SettingsProfileText({
-    super.key,
-    required this.text,
-  });
+  const SettingsProfileText({super.key, required this.text});
 
   @override
   Widget build(BuildContext context) {
