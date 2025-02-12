@@ -208,8 +208,7 @@ class _SignupScreenState extends State<SignupScreen>
               children: [
                 CustomButton(
                   text: "Next",
-                  routeName: "/",
-                  onPressed: _validateAndSubmit, // ✅ 유효성 검사 실행
+                  routeName: "/SettingsScreen",
                 ),
                 Gaps.v10,
                 Row(
