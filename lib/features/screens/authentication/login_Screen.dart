@@ -31,7 +31,7 @@ class _LoginScreenState extends State<LoginScreen> {
     });
 
     if (isEmailValid && isPasswordValid) {
-      print("로그인 성공!"); // ✅ 모든 입력이 유효하면 로그인 성공 처리
+      Navigator.pushNamed(context, "/homeScreen");
     }
   }
 

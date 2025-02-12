@@ -154,7 +154,8 @@ class _SignupScreenState extends State<SignupScreen>
                     firstIcon: Icons.email_outlined,
                     lastIcon: Icons.close,
                     helperText: "Please enter your email",
-                    errorText: "이메일을 다시 입력해주세요",
+                    errorText:
+                        isEmailValid ? null : "이메일을 입력하세요.", // 유효성 검사 결과 반영
                     isValid: isEmailValid,
                   ),
                   Gaps.v32,
@@ -164,7 +165,8 @@ class _SignupScreenState extends State<SignupScreen>
                     firstIcon: Icons.key,
                     lastIcon: Icons.visibility,
                     helperText: "Create a Password",
-                    errorText: "패스워드를 다시 입력해주세요",
+                    errorText:
+                        isPasswordValid ? null : "비밀번호를 입력하세요.", // 유효성 검사 결과 반영
                     isValid: isPasswordValid,
                   ),
                   Gaps.v32,
@@ -174,13 +176,13 @@ class _SignupScreenState extends State<SignupScreen>
                     firstIcon: Icons.key,
                     lastIcon: Icons.visibility,
                     helperText: "Confirm your Password",
-                    errorText: "비밀번호가 일치하지 않습니다",
-                    isValid: isConfirmPasswordValid,
+                    errorText: isPasswordValid ? null : "비밀번호를 입력하세요.",
+                    isValid: isPasswordValid,
                   ),
                 ],
               ),
               Gaps.v40,
-              CustomButton(text: "Next", routeName: "/"),
+              CustomButton(text: "Next", routeName: "/homeScreen"),
               Gaps.v12,
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
