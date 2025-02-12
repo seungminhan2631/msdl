@@ -182,7 +182,7 @@ class _SignupScreenState extends State<SignupScreen>
                 ],
               ),
               Gaps.v40,
-              CustomButton(text: "Next", routeName: "/homeScreen"),
+              CustomButton(text: "Next", routeName: "/"),
               Gaps.v12,
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
