@@ -1,24 +1,24 @@
+import 'dart:async';
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:msdl/commons/widgets/bottomMsdl.dart';
-import 'package:msdl/commons/widgets/buttons/CustomButton.dart';
 import 'package:msdl/commons/widgets/buttons/CustomTextField.dart';
+import 'package:msdl/commons/widgets/buttons/customButton.dart';
 import 'package:msdl/commons/widgets/toptitle.dart';
 import 'package:msdl/constants/gaps.dart';
 import 'package:msdl/constants/size_config.dart';
 import 'package:msdl/constants/sizes.dart';
 
 class SignupScreen extends StatefulWidget {
-  static const routeName = '/SignupScreen';
-
-  const SignupScreen({super.key});
+  SignupScreen({super.key});
 
   @override
-  State<SignupScreen> createState() => _SignupScreenState();
+  _SignupScreenState createState() => _SignupScreenState();
 }
 
 class _SignupScreenState extends State<SignupScreen>
     with SingleTickerProviderStateMixin {
-  List<String> messages = [
+  final List<String> messages = [
     "Welcome",
     "환영합니다",
     "Selamat datang",
@@ -33,10 +33,10 @@ class _SignupScreenState extends State<SignupScreen>
     "Добро пожаловать",
   ];
 
-  int currentIndex = 0;
-
+  int _currentIndex = 0;
+  late Timer _timer;
   late AnimationController _controller;
-  late Animation<double> _animation;
+  late Animation<double> _flipAnimation;
 
   final TextEditingController emailController =
       TextEditingController(); // ✅ 이메일 입력 컨트롤러 추가
@@ -54,37 +54,17 @@ class _SignupScreenState extends State<SignupScreen>
     super.initState();
 
     _controller = AnimationController(
-      duration: Duration(milliseconds: 600),
       vsync: this,
+      duration: Duration(seconds: 2),
     );
 
-    _animation = Tween<double>(begin: 0.0, end: 3.14).animate(_controller);
+    _flipAnimation = Tween<double>(begin: 0, end: 1).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
+    );
 
-    _controller.addStatusListener((status) {
-      if (_animation.value > 3.14 * 0.8) {
-        setState(() {
-          currentIndex = (currentIndex + 1) % messages.length;
-        });
-      }
-
-      if (status == AnimationStatus.completed) {
-        _controller.reset();
-      }
+    _timer = Timer.periodic(Duration(seconds: 4), (timer) {
+      _changeMessage();
     });
-
-    _startTextRotation();
-  }
-
-  void _startTextRotation() {
-    Future.delayed(
-      Duration(milliseconds: 1500),
-      () {
-        if (mounted) {
-          _controller.forward();
-          _startTextRotation();
-        }
-      },
-    );
   }
 
   @override
@@ -94,6 +74,17 @@ class _SignupScreenState extends State<SignupScreen>
     passwordController.dispose();
     confirmPasswordController.dispose();
     super.dispose();
+    _timer.cancel();
+    _controller.dispose();
+  }
+
+  void _changeMessage() {
+    _controller.forward().then((_) {
+      setState(() {
+        _currentIndex = (_currentIndex + 1) % messages.length;
+      });
+      _controller.reverse();
+    });
   }
 
   // ✅ 유효성 검사 함수 추가
@@ -112,134 +103,112 @@ class _SignupScreenState extends State<SignupScreen>
 
   @override
   Widget build(BuildContext context) {
+    SizeConfig.init(context);
+
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: Sizes.size52),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(height: 130.w),
-            Center(
-              child: AnimatedSwitcher(
-                duration: Duration(milliseconds: 400),
-                transitionBuilder: (Widget child, Animation<double> animation) {
-                  return AnimatedBuilder(
-                    animation: _animation,
-                    builder: (context, child) {
-                      return Transform(
-                        alignment: Alignment.center,
-                        transform: Matrix4.rotationY(_animation.value),
-                        child: child,
-                      );
-                    },
-                    child: child,
-                  );
-                },
-                child: TopTitle(
-                  key: ValueKey<String>(messages[currentIndex]),
-                  text: messages[currentIndex],
-                ),
-              ),
-            ),
-            SizedBox(height: 70.w),
-            Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TopTitle(
-                  text: "Email Address",
-                  fontSize: Sizes.size16 + Sizes.size1,
-                  fontWeight: FontWeight.w700,
-                  opacity: 0.8,
-                ),
-              ],
-            ),
-            CustomTextField(
-              controller: emailController,
-              hintText: "Enter your email",
-              firstIcon: Icons.mail_outlined,
-              lastIcon: Icons.cancel_outlined,
-              errorText: isEmailValid ? null : "이메일을 입력하세요.",
-              isValid: isEmailValid,
-            ),
-            Gaps.v44,
-            Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TopTitle(
-                  text: "Create a Password",
-                  fontSize: Sizes.size16 + Sizes.size1,
-                  fontWeight: FontWeight.w700,
-                  opacity: 0.8,
-                ),
-              ],
-            ),
-            CustomTextField(
-              controller: passwordController,
-              hintText: "Enter a password",
-              firstIcon: Icons.lock_outline_rounded,
-              lastIcon: Icons.visibility_off_outlined,
-              errorText: isPasswordValid ? null : "비밀번호를 입력하세요.",
-              isValid: isPasswordValid,
-            ),
-            Gaps.v44,
-            Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TopTitle(
-                  text: "Confirm Your Password",
-                  fontSize: Sizes.size16 + Sizes.size1,
-                  fontWeight: FontWeight.w700,
-                  opacity: 0.8,
-                ),
-              ],
-            ),
-            CustomTextField(
-              controller: confirmPasswordController,
-              hintText: "Confirm password",
-              firstIcon: Icons.check_rounded,
-              lastIcon: Icons.visibility_off_outlined,
-              errorText: isConfirmPasswordValid ? null : "비밀번호가 일치하지 않습니다.",
-              isValid: isConfirmPasswordValid,
-            ),
-            Gaps.v72,
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                CustomButton(
-                  text: "Next",
-                  routeName: "/SettingsScreen",
-                ),
-                Gaps.v10,
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    TopTitle(
-                      text: "Already have an account?",
-                      fontSize: Sizes.size16 + Sizes.size1,
-                      fontWeight: FontWeight.w700,
-                      opacity: 0.7,
-                    ),
-                    SizedBox(width: 20.w),
-                    GestureDetector(
-                      onTap: () {},
-                      child: Text(
-                        "Log In",
-                        style: TextStyle(
-                          color: Color(0xff26539C),
-                          fontSize: Sizes.size16 + Sizes.size1,
-                          fontFamily: 'Andika',
-                          fontWeight: FontWeight.bold,
-                        ),
+      body: Center(
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: Sizes.size40),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              // ✅ 카드 뒤집기 애니메이션 적용
+              AnimatedBuilder(
+                animation: _controller,
+                builder: (context, child) {
+                  double angle = _flipAnimation.value * pi; // ✅ 0 ~ π (180도)
+                  bool isFlipped =
+                      _flipAnimation.value > 0.5; // 중간 이후일 때 뒤집힌 상태
+
+                  return Transform(
+                    alignment: Alignment.center,
+                    transform: Matrix4.rotationY(angle),
+                    child: SizedBox(
+                      width: 250, // ✅ 텍스트 박스의 고정 너비 (조정 가능)
+                      height: 50, // ✅ 텍스트 박스의 고정 높이 (조정 가능)
+                      child: FittedBox(
+                        fit: BoxFit.scaleDown, // ✅ 긴 텍스트가 자동으로 크기 조절됨
+                        child: isFlipped
+                            ? Transform(
+                                alignment: Alignment.center,
+                                transform: Matrix4.rotationY(pi), // ✅ 거울 효과
+                                child: TopTitle(
+                                  text: messages[_currentIndex], // ✅ 변경된 인덱스 반영
+                                ),
+                              )
+                            : TopTitle(text: messages[_currentIndex]),
                       ),
                     ),
-                  ],
-                ),
-                SizedBox(height: 100.h),
-                bottomMsdlScreen(),
-              ],
-            ),
-          ],
+                  );
+                },
+              ),
+
+              Gaps.v64,
+              Column(
+                children: [
+                  CustomTextField(
+                    hintText: "Email Address",
+                    firstIcon: Icons.email_outlined,
+                    lastIcon: Icons.close,
+                    helperText: "Please enter your email",
+                    errorText: "이메일을 다시 입력해주세요",
+                  ),
+                  Gaps.v32,
+                  CustomTextField(
+                    hintText: "Password",
+                    firstIcon: Icons.key,
+                    lastIcon: Icons.visibility,
+                    helperText: "Create a Password",
+                    errorText: "패스워드를 다시 입력해주세요",
+                  ),
+                  Gaps.v32,
+                  CustomTextField(
+                    hintText: "Confirm Password",
+                    firstIcon: Icons.key,
+                    lastIcon: Icons.visibility,
+                    helperText: "Confirm your Password",
+                    errorText: "비밀번호가 일치하지 않습니다",
+                  ),
+                ],
+              ),
+              Gaps.v40,
+              CustomButton(text: "Next", routeName: "/"),
+              Gaps.v12,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    "Already have an account?",
+                    style: TextStyle(
+                      fontSize: Sizes.size16 + Sizes.size1,
+                      color: Color(0xffF1F1F1).withOpacity(0.7),
+                      fontFamily: "Andika",
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  Gaps.h10,
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.pushNamed(context, "/");
+                    },
+                    child: Text(
+                      "Log In",
+                      style: TextStyle(
+                        fontSize: Sizes.size16 + Sizes.size1,
+                        color: Color(0xff26539C),
+                        fontFamily: "Andika",
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              Gaps.v72,
+              bottomMsdlScreen(),
+            ],
+          ),
         ),
       ),
     );

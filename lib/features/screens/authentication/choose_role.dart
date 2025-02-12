@@ -7,9 +7,6 @@ import 'package:msdl/constants/sizes.dart';
 import 'package:msdl/msdl_theme.dart';
 
 class ChooseRole extends StatefulWidget {
-  static const routeName = '/ChooseRole';
-  static const routeUrl = '/';
-
   const ChooseRole({super.key});
 
   @override

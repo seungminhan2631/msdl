@@ -10,8 +10,6 @@ import 'package:msdl/msdl_theme.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
-  static const routeName = 'logIn';
-  static const routeUrl = '/';
 
   @override
   _LoginScreenState createState() => _LoginScreenState();
@@ -92,8 +90,7 @@ class _LoginScreenState extends State<LoginScreen> {
               errorText: isEmailValid ? null : "이메일을 입력하세요.", // 유효성 검사 결과 반영
               isValid: isEmailValid,
             ),
-            Gaps.v40,
-            // ✅ 비밀번호 입력 필드 (유효성 검사 적용)
+            Gaps.v36,
             CustomTextField(
               controller: passwordController,
               hintText: "Password",
@@ -108,8 +105,8 @@ class _LoginScreenState extends State<LoginScreen> {
             // ✅ Next 버튼 클릭 시 유효성 검사 실행
             CustomButton(
               text: "Next",
-              onPressed: _validateAndSubmit, 
-              routeName: "", // 클릭 시 유효성 검사 실행
+              onPressed: _validateAndSubmit,
+              routeName: "/homeScreen", // 클릭 시 유효성 검사 실행
             ),
             Spacer(),
             bottomMsdlScreen()
