@@ -145,7 +145,7 @@ class _ChooseRoleState extends State<ChooseRoleScreen> {
               Gaps.v28,
               CustomButton(
                 text: "Next",
-                routeName: "/name_Screen",
+                routeName: "/nameScreen",
                 onPressed: () => _validateAndProceed(context),
               ),
               Gaps.v14,
@@ -183,7 +183,7 @@ class _ChooseRoleState extends State<ChooseRoleScreen> {
       String selectedRole = roles[selectedIndex!];
       context.read<AuthViewModel>().setRole(selectedRole); // ✅ Provider 사용
       print("✅ Role이 설정됨: $selectedRole");
-      Navigator.pushNamed(context, "/SignupScreen"); // ✅ 이름 입력 화면으로 이동
+      Navigator.pushNamed(context, "/nameScreen"); // ✅ 이름 입력 화면으로 이동
     }
   }
 
