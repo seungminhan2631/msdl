@@ -49,7 +49,6 @@ class msdl extends StatelessWidget {
             colorScheme: darkColorScheme,
             useMaterial3: true,
             splashFactory: NoSplash.splashFactory, // ✅ 잔물결 효과 제거
-            highlightColor: Colors.transparent, // ✅ 클릭 시 강조 효과 제거
             scaffoldBackgroundColor: Color(0xFF151515).withOpacity(0.98),
           ),
           initialRoute: "/",
