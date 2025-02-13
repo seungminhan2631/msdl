@@ -6,6 +6,7 @@ import 'package:msdl/constants/gaps.dart';
 import 'package:msdl/constants/sizes.dart';
 import 'package:msdl/features/screens/authentication/viewModel/viewModel.dart';
 import 'package:msdl/msdl_theme.dart';
+import 'package:provider/provider.dart';
 
 class ChooseRoleScreen extends StatefulWidget {
   const ChooseRoleScreen({super.key});
@@ -145,7 +146,7 @@ class _ChooseRoleState extends State<ChooseRoleScreen> {
               CustomButton(
                 text: "Next",
                 routeName: "/SignupScreen",
-                onPressed: _validateAndProceed, // ✅ 유효성 검사 추가
+                onPressed: () => _validateAndProceed(context),
               ),
               Gaps.v14,
               Row(
@@ -173,17 +174,16 @@ class _ChooseRoleState extends State<ChooseRoleScreen> {
     );
   }
 
-  void _validateAndProceed() {
+  void _validateAndProceed(BuildContext context) {
     if (selectedIndex == null) {
       setState(() {
         hasError = true;
       });
-    } else if (selectedIndex != null) {
+    } else {
       String selectedRole = roles[selectedIndex!];
-
-      _authViewModel.setRole(selectedRole);
-      print("✅ Role이 설정됨: $selectedRole"); // ✅ 선택된 Role 로그 확인
-      Navigator.pushNamed(context, "/SignupScreen");
+      context.read<AuthViewModel>().setRole(selectedRole); // ✅ Provider 사용
+      print("✅ Role이 설정됨: $selectedRole");
+      Navigator.pushNamed(context, "/SignupScreen"); // ✅ 이름 입력 화면으로 이동
     }
   }
 

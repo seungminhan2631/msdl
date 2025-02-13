@@ -9,6 +9,7 @@ import 'package:msdl/constants/gaps.dart';
 import 'package:msdl/constants/size_config.dart';
 import 'package:msdl/constants/sizes.dart';
 import 'package:msdl/features/screens/authentication/viewModel/viewModel.dart';
+import 'package:provider/provider.dart';
 
 class SignupScreen extends StatefulWidget {
   SignupScreen({super.key});
@@ -19,8 +20,6 @@ class SignupScreen extends StatefulWidget {
 
 class _SignupScreenState extends State<SignupScreen>
     with SingleTickerProviderStateMixin {
-  final AuthViewModel _authViewModel = AuthViewModel();
-
   final List<String> messages = [
     "Welcome",
     "환영합니다",
@@ -89,6 +88,8 @@ class _SignupScreenState extends State<SignupScreen>
   }
 
   void _validateAndSubmit() async {
+    final authViewModel = context.read<AuthViewModel>();
+
     print("📌 _validateAndSubmit() 실행됨!");
     print("📌 입력된 이메일: '${emailController.text}'"); // ✅ 이메일 값 확인
     print("📌 입력된 비밀번호: '${passwordController.text}'"); // ✅ 비밀번호 값 확인
@@ -108,14 +109,14 @@ class _SignupScreenState extends State<SignupScreen>
 
     if (isEmailValid && isPasswordValid && isConfirmPasswordValid) {
       print("📌 회원가입 요청 시작...");
-      bool success = await _authViewModel.signUp(
+      bool success = await authViewModel.signUp(
           emailController.text.trim(), passwordController.text.trim());
 
       print("📌 회원가입 결과: $success");
 
       if (success) {
         print("✅ 회원가입 성공! 로그인 화면으로 이동");
-        Navigator.pushNamed(context, "/login");
+        Navigator.pushNamed(context, "/");
       } else {
         print("❌ 회원가입 실패! 다시 시도해주세요.");
       }

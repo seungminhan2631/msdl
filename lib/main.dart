@@ -6,8 +6,10 @@ import 'package:msdl/features/screens/Group/group_Screen.dart';
 import 'package:msdl/features/screens/authentication/name_Screen.dart';
 import 'package:msdl/features/screens/authentication/signUp_Screen.dart';
 import 'package:msdl/features/screens/authentication/login_Screen.dart';
+import 'package:msdl/features/screens/authentication/viewModel/viewModel.dart';
 import 'package:msdl/features/screens/settings/setting_Screen.dart';
 import 'package:msdl/msdl_theme.dart';
+import 'package:provider/provider.dart';
 // import 'package:intl/date_symbol_data_local.dart'; // ✅ 날짜 포맷 데이터 초기화 패키지
 
 void main() async {
@@ -19,7 +21,15 @@ void main() async {
   } catch (e) {
     print("데이터베이스 로드 중 오류 발생: $e");
   }
-  runApp(msdl());
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+            create: (context) => AuthViewModel()), // ✅ Provider 등록
+      ],
+      child: const msdl(),
+    ),
+  );
 }
 
 class msdl extends StatelessWidget {
@@ -41,7 +51,7 @@ class msdl extends StatelessWidget {
           ),
           initialRoute: "/",
           routes: {
-            "/": (context) => NameScreen(),
+            "/": (context) => LoginScreen(),
             "/chooseRole_Screen": (context) => ChooseRoleScreen(),
             "/createAccount_Screen": (context) => SignupScreen(),
             "/SignupScreen": (context) => SignupScreen(),
