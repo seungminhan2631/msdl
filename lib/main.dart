@@ -49,12 +49,11 @@ class msdl extends StatelessWidget {
           theme: ThemeData(
             colorScheme: darkColorScheme,
             useMaterial3: true,
-            splashFactory: NoSplash.splashFactory, // ✅ 잔물결 효과 제거
             scaffoldBackgroundColor: Color(0xFF151515).withOpacity(0.98),
           ),
           initialRoute: "/",
           routes: {
-            "/": (context) => NameScreen(),
+            "/": (context) => LoginScreen(),
             "/chooseRole_Screen": (context) => ChooseRoleScreen(),
             "/nameScreen": (context) => NameScreen(),
             "/createAccount_Screen": (context) => SignupScreen(),

@@ -21,23 +21,64 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController passwordController = TextEditingController();
   final AuthViewModel _authViewModel = AuthViewModel();
 
-  bool isEmailValid = true;
-  bool isPasswordValid = true;
+  bool? isEmailValid; // ✅ 초기에는 null 상태 (테두리 기본 유지)
+  bool? isPasswordValid;
   bool loginFailed = false;
+
+  @override
+  void initState() {
+    super.initState();
+    emailController.addListener(_validateEmail); // ✅ 입력 변경 감지
+    passwordController.addListener(_validatePassword);
+  }
+
+  @override
+  void dispose() {
+    emailController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
+
+  void _validateEmail() {
+    setState(() {
+      if (emailController.text.isEmpty) {
+        isEmailValid = null; // ✅ 입력이 없으면 기본 상태 유지
+      } else {
+        // ✅ 엄격한 이메일 유효성 검사 적용 (RFC 5322 기반)
+        final RegExp emailRegex = RegExp(
+            r'^(?=.{1,64}@.{1,255}$)(?=[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,63}$)(?!.*\.\.)[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,63}$');
+        isEmailValid =
+            emailRegex.hasMatch(emailController.text);
+      }
+    });
+  }
+
+  void _validatePassword() {
+    setState(() {
+      if (passwordController.text.isEmpty) {
+        isPasswordValid = null; // ✅ 입력이 없으면 기본 상태 유지
+      } else {
+        isPasswordValid = passwordController.text.length >= 4; // 최소 4자 이상
+      }
+    });
+  }
 
   void _validateAndSubmit() async {
     setState(() {
-      isEmailValid = emailController.text.isNotEmpty;
-      isPasswordValid = passwordController.text.isNotEmpty;
-      loginFailed = false; // 로그인 실패 상태 초기화
+      isEmailValid = emailController.text.isNotEmpty
+          ? emailController.text.contains("@")
+          : null;
+      isPasswordValid = passwordController.text.isNotEmpty
+          ? passwordController.text.length >= 4
+          : null;
+      loginFailed = false;
     });
 
-    if (isEmailValid && isPasswordValid) {
+    if (isEmailValid == true && isPasswordValid == true) {
       bool success = await _authViewModel.login(
           emailController.text, passwordController.text);
 
-      if (success)
-        Navigator.pushNamed(context, "/homeScreen"); //이름 입력하는 화면으로 넘겨야함
+      if (success) Navigator.pushNamed(context, "/NameScreen");
     } else {
       setState(() {
         loginFailed = true;
@@ -48,78 +89,85 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     SizeConfig.init(context); // 반응형 크기 설정
-
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      body: Padding(
-        padding:
-            EdgeInsets.symmetric(horizontal: Sizes.size40, vertical: 150.h),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            TopTitle(
-              text: "Log In",
-              fontSize: 37.w,
-              fontWeight: FontWeight.w700,
-            ),
-            Gaps.v12,
-            Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TopTitle(
-                  text: "No account?",
-                  fontSize: Sizes.size16 + Sizes.size1,
-                  fontWeight: FontWeight.w700,
-                  opacity: 0.7,
-                ),
-                Gaps.h64,
-                GestureDetector(
-                  onTap: () {
-                    Navigator.pushNamed(context, "/chooseRole_Screen");
-                  },
-                  child: Text(
-                    "Create account",
-                    style: TextStyle(
-                      color: Color(0xff26539C),
-                      fontSize: Sizes.size16 + Sizes.size1,
-                      fontFamily: 'Andika',
-                      fontWeight: FontWeight.bold,
+    return GestureDetector(
+      onTap: () {
+        FocusScope.of(context).unfocus(); // 바탕을 터치하면 키보드 내려감
+      },
+      child: Scaffold(
+        resizeToAvoidBottomInset: false,
+        body: Padding(
+          padding:
+              EdgeInsets.symmetric(horizontal: Sizes.size40, vertical: 150.h),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              TopTitle(
+                text: "Log In",
+                fontSize: 37.w,
+                fontWeight: FontWeight.w700,
+              ),
+              Gaps.v12,
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  TopTitle(
+                    text: "No account?",
+                    fontSize: Sizes.size16 + Sizes.size1,
+                    fontWeight: FontWeight.w700,
+                    opacity: 0.7,
+                  ),
+                  Gaps.h64,
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.pushNamed(context, "/chooseRole_Screen");
+                    },
+                    child: Text(
+                      "Create account",
+                      style: TextStyle(
+                        color: Color(0xff26539C),
+                        fontSize: Sizes.size16 + Sizes.size1,
+                        fontFamily: 'Andika',
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
-                ),
-              ],
-            ),
-            Gaps.v20,
-            // ✅ 이메일 입력 필드 (유효성 검사 적용)
-            CustomTextField(
-              controller: emailController,
-              hintText: "Email",
-              firstIcon: Icons.email_outlined,
-              lastIcon: Icons.close,
-              helperText: "이메일 입력",
-              errorText: isEmailValid ? null : "이메일을 입력하세요.", // 유효성 검사 결과 반영
-              isValid: isEmailValid,
-            ),
-            Gaps.v36,
-            CustomTextField(
-              controller: passwordController,
-              hintText: "Password",
-              firstIcon: Icons.key,
-              lastIcon: Icons.visibility,
-              helperText: "비밀번호 입력",
-              errorText:
-                  isPasswordValid ? null : "비밀번호를 입력하세요.", // 유효성 검사 결과 반영
-              isValid: isPasswordValid,
-            ),
-            Gaps.v52,
-            CustomButton(
-              text: "Next",
-              onPressed: _validateAndSubmit,
-              routeName: "/homeScreen", // 클릭 시 유효성 검사 실행
-            ),
-            Spacer(),
-            bottomMsdl()
-          ],
+                ],
+              ),
+              Gaps.v20,
+              // ✅ 이메일 입력 필드 (실시간 유효성 검사 적용)
+              CustomTextField(
+                controller: emailController,
+                hintText: "Email",
+                firstIcon: Icons.email_outlined,
+                lastIcon: Icons.close,
+                helperText: "Enter your email",
+                errorText: isEmailValid == false
+                    ? "Enter a valid email address"
+                    : null,
+                isValid: isEmailValid ?? true, // ✅ null이면 기본 테두리 유지
+              ),
+              Gaps.v36,
+              // ✅ 비밀번호 입력 필드 (실시간 유효성 검사 적용)
+              CustomTextField(
+                controller: passwordController,
+                hintText: "Password",
+                firstIcon: Icons.key,
+                lastIcon: Icons.visibility,
+                helperText: "Enter your password",
+                errorText:
+                    isPasswordValid == false ? "Enter your password" : null,
+                isValid: isPasswordValid ?? true, // ✅ null이면 기본 테두리 유지
+              ),
+              Gaps.v52,
+              CustomButton(
+                text: "Next",
+                onPressed: _validateAndSubmit,
+                routeName: "/homeScreen",
+              ),
+              Spacer(),
+              bottomMsdl()
+            ],
+          ),
         ),
       ),
     );

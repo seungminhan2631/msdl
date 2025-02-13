@@ -10,7 +10,6 @@ import 'package:msdl/features/screens/Group/group_Screen.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
-
   @override
   State<SettingsScreen> createState() => _SettingsScreenState();
 }

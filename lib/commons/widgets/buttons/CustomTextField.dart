@@ -1,17 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:msdl/constants/gaps.dart';
 import 'package:msdl/constants/size_config.dart';
 import 'package:msdl/constants/sizes.dart';
-import 'package:msdl/msdl_theme.dart';
 
 class CustomTextField extends StatefulWidget {
-  final TextEditingController controller; // ✅ 외부에서 컨트롤러 전달받도록 변경
+  final TextEditingController controller;
   final String hintText;
   final IconData firstIcon;
   final IconData lastIcon;
   final String? helperText;
   final String? errorText;
-  final bool isValid; // ✅ 유효성 검사 결과를 받는 변수 추가
+  final bool isValid;
 
   const CustomTextField({
     super.key,
@@ -52,7 +50,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
 
     return SizedBox(
       child: TextField(
-        controller: widget.controller, // ✅ 컨트롤러 사용
+        controller: widget.controller,
         focusNode: _focusNode,
         obscureText: isPasswordField ? !_isPasswordVisible : false,
         style: TextStyle(
@@ -72,13 +70,13 @@ class _CustomTextFieldState extends State<CustomTextField> {
             fontWeight: FontWeight.bold,
           ),
           helperText: widget.helperText,
-          errorText: widget.errorText, // ✅ 에러 메시지 적용
+          errorText: widget.errorText, // ✅ 에러 메시지 표시
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(Sizes.size2),
             borderSide: BorderSide(
               color: widget.isValid
-                  ? Color(0xffAAAAAA)
-                  : Color(0xFFB1384E), // ✅ 유효성 검사 실패 시 테두리 색상 빨간색
+                  ? Color(0xFF0D47A1)
+                  : Color(0xFFB1384E), // ✅ 유효성 검사 결과에 따라 실시간 테두리 변경
               width: Sizes.size2,
             ),
           ),
@@ -87,22 +85,28 @@ class _CustomTextFieldState extends State<CustomTextField> {
             color: Color(0xffCACACA),
             size: 28.w,
           ),
-          suffixIcon: GestureDetector(
-            onTap: () {
-              setState(() {
-                if (isPasswordField) {
-                  _isPasswordVisible = !_isPasswordVisible;
-                } else {
-                  widget.controller.clear();
-                }
-              });
-            },
-            child: Icon(
-              widget.lastIcon,
-              color: Color(0xffCACACA),
-              size: 20.w,
-            ),
-          ),
+          suffixIcon: widget.controller.text.isNotEmpty
+              ? GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      if (isPasswordField) {
+                        _isPasswordVisible = !_isPasswordVisible;
+                      } else {
+                        widget.controller.clear();
+                      }
+                    });
+                  },
+                  child: Icon(
+                    isPasswordField
+                        ? (_isPasswordVisible
+                            ? Icons.visibility
+                            : Icons.visibility_off)
+                        : Icons.close_rounded,
+                    color: Color(0xffCACACA),
+                    size: 20.w,
+                  ),
+                )
+              : null, // ✅ 입력이 없으면 아이콘 숨김
         ),
       ),
     );
