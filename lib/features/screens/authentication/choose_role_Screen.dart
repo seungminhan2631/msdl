@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:msdl/commons/widgets/bottomMsdl.dart';
 import 'package:msdl/commons/widgets/buttons/customButton.dart';
-import 'package:msdl/commons/widgets/toptitle.dart';
+import 'package:msdl/commons/widgets/topTitle.dart';
 import 'package:msdl/constants/gaps.dart';
 import 'package:msdl/constants/sizes.dart';
 import 'package:msdl/features/screens/authentication/viewModel/viewModel.dart';
@@ -68,7 +68,9 @@ class _ChooseRoleState extends State<ChooseRoleScreen> {
           child: Column(
             mainAxisSize: MainAxisSize.max,
             children: [
-              TopTitle(text: "Sign Up"),
+              TopTitle(
+                text: "Sign Up",
+              ),
               Gaps.v40,
               TopTitle(
                 text: "Choose Your Academic Role",
