@@ -3,6 +3,7 @@ import 'package:msdl/data/database_helper.dart';
 import 'package:msdl/features/screens/Home/home_Screen.dart';
 import 'package:msdl/features/screens/authentication/choose_role_Screen.dart';
 import 'package:msdl/features/screens/Group/group_Screen.dart';
+import 'package:msdl/features/screens/authentication/name_Screen.dart';
 import 'package:msdl/features/screens/authentication/signUp_Screen.dart';
 import 'package:msdl/features/screens/authentication/login_Screen.dart';
 import 'package:msdl/features/screens/settings/setting_Screen.dart';
@@ -40,7 +41,7 @@ class msdl extends StatelessWidget {
           ),
           initialRoute: "/",
           routes: {
-            "/": (context) => Homescreen(),
+            "/": (context) => NameScreen(),
             "/chooseRole_Screen": (context) => ChooseRoleScreen(),
             "/createAccount_Screen": (context) => SignupScreen(),
             "/SignupScreen": (context) => SignupScreen(),

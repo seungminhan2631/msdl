@@ -90,7 +90,6 @@ class _SignupScreenState extends State<SignupScreen>
 
   void _validateAndSubmit() async {
     print("📌 _validateAndSubmit() 실행됨!");
-
     print("📌 입력된 이메일: '${emailController.text}'"); // ✅ 이메일 값 확인
     print("📌 입력된 비밀번호: '${passwordController.text}'"); // ✅ 비밀번호 값 확인
     print(
