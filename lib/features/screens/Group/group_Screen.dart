@@ -20,29 +20,6 @@ class GroupScreen extends StatefulWidget {
   State<GroupScreen> createState() => _GroupScreenState();
 }
 
-List<Map<String, dynamic>> sectionData = [
-  {
-    "icon": Icons.school,
-    "text": "Professor ",
-    "color": Color(0xFFF59E0B),
-  },
-  {
-    "icon": Icons.library_books_outlined,
-    "text": "Ph.D Student",
-    "color": Color(0xFF31B454),
-  },
-  {
-    "icon": Icons.school_outlined,
-    "text": "MS Student",
-    "color": Color(0xFF935E38),
-  },
-  {
-    "icon": Icons.auto_stories_outlined,
-    "text": "BS Student",
-    "color": Color(0xFF3F51B5),
-  },
-];
-
 class _GroupScreenState extends State<GroupScreen> {
   int _selectedIndex = 0;
 
@@ -112,58 +89,22 @@ class _GroupScreenState extends State<GroupScreen> {
           child: SingleChildScrollView(
             controller: _scrollController,
             padding: EdgeInsets.symmetric(vertical: 20.h),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Padding(
-                  padding: EdgeInsets.symmetric(vertical: 20.h),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: Padding(
-                          padding: EdgeInsets.only(
-                            left: Sizes.size36,
-                            bottom: Sizes.size4,
-                          ),
-                          child: Sectiontitle(
-                            icon: sectionData[_selectedIndex]["icon"],
-                            text: sectionData[_selectedIndex]["text"],
-                            iconColor: sectionData[_selectedIndex]["color"],
-                          ),
-                        ),
-                      ),
-                      Center(
-                        child: CustomContainer(
-                          height: 170.h,
-                          width: 340.w,
-                          child: Scrollbar(
-                            thumbVisibility: false,
-                            thickness: 2.0.w,
-                            radius: Radius.circular(6),
-                            child: SingleChildScrollView(
-                              child: Padding(
-                                padding: EdgeInsets.all(Sizes.size8),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: (groupData[
-                                              sectionData[_selectedIndex]
-                                                  ["text"]] ??
-                                          [])
-                                      .map((user) => groupContainerText(user))
-                                      .toList(),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
+            child: Padding(
+              padding: EdgeInsets.symmetric(
+                  vertical: Sizes.size32, horizontal: Sizes.size40),
+              child: Column(
+                children: [
+                  Sectiontitle(
+                    icon: Icons.school,
+                    text: "Professor",
+                    iconColor: Color(0xFFF59E0B),
                   ),
-                ),
-              ],
+                  Gaps.v14,
+                  CustomContainer(
+                    child: Text("data"),
+                  )
+                ],
+              ),
             ),
           ),
         ),
