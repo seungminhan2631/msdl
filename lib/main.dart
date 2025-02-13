@@ -10,6 +10,7 @@ import 'package:msdl/features/screens/authentication/viewModel/viewModel.dart';
 import 'package:msdl/features/screens/settings/setting_Screen.dart';
 import 'package:msdl/msdl_theme.dart';
 import 'package:provider/provider.dart';
+
 // import 'package:intl/date_symbol_data_local.dart'; // ✅ 날짜 포맷 데이터 초기화 패키지
 
 void main() async {
@@ -17,6 +18,8 @@ void main() async {
   // await initializeDateFormatting('ko_KR', null); // ✅ 대한민국 날짜 포맷 초기화
   try {
     await DatabaseHelper.instance.database; // ✅ 앱 실행 시 데이터베이스 초기화
+    await DatabaseHelper.instance.copyDatabaseToDocuments(); // ✅ DB 복사 실행
+
     print("데이터베이스 정상적으로 로드됨!");
   } catch (e) {
     print("데이터베이스 로드 중 오류 발생: $e");

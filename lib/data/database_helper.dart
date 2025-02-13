@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
@@ -70,6 +73,28 @@ class DatabaseHelper {
       print("work_locations 테이블 생성 완료");
     } catch (e) {
       print("데이터베이스 생성 중 오류 발생: $e");
+    }
+  }
+
+  Future<void> copyDatabaseToDocuments() async {
+    try {
+      final dbPath = await getDatabasesPath();
+      final path = join(dbPath, 'msdl.db');
+
+      final directory = await getApplicationDocumentsDirectory(); // ✅ 외부 저장소
+      final newPath = join(directory.path, 'msdl_copy.db'); // 복사될 위치
+
+      final File sourceFile = File(path);
+      final File destinationFile = File(newPath);
+
+      if (await sourceFile.exists()) {
+        await sourceFile.copy(newPath);
+        print("✅ 데이터베이스가 외부 저장소에 복사됨: $newPath");
+      } else {
+        print("❌ 데이터베이스 파일이 존재하지 않음.");
+      }
+    } catch (e) {
+      print("❌ 데이터베이스 복사 실패: $e");
     }
   }
 }
