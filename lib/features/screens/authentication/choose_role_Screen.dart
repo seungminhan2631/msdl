@@ -4,6 +4,7 @@ import 'package:msdl/commons/widgets/buttons/customButton.dart';
 import 'package:msdl/commons/widgets/toptitle.dart';
 import 'package:msdl/constants/gaps.dart';
 import 'package:msdl/constants/sizes.dart';
+import 'package:msdl/features/screens/authentication/viewModel/viewModel.dart';
 import 'package:msdl/msdl_theme.dart';
 
 class ChooseRoleScreen extends StatefulWidget {
@@ -17,6 +18,7 @@ class _ChooseRoleState extends State<ChooseRoleScreen> {
   List<bool> isChecked = [false, false, false, false];
   int? selectedIndex;
   bool hasError = false; // ✅ 에러 상태 추가
+  final AuthViewModel _authViewModel = AuthViewModel();
 
   final List<IconData> icons = [
     Icons.account_balance_outlined,
@@ -50,7 +52,7 @@ class _ChooseRoleState extends State<ChooseRoleScreen> {
   void _onClick(int index) {
     setState(() {
       selectedIndex = index;
-      hasError = false; // ✅ 선택 시 에러 해제
+      hasError = false;
     });
   }
 
@@ -169,14 +171,14 @@ class _ChooseRoleState extends State<ChooseRoleScreen> {
     );
   }
 
-  // ✅ 유효성 검사 함수 추가
   void _validateAndProceed() {
     if (selectedIndex == null) {
       setState(() {
         hasError = true; // ✅ 선택 안 하면 에러 활성화
       });
-    } else {
-      Navigator.pushNamed(context, "/SignupScreen"); // ✅ 정상적으로 다음 페이지 이동
+    } else if (selectedIndex != null) {
+      _authViewModel.setRole(roles[selectedIndex!]); // ✅ role 저장
+      Navigator.pushNamed(context, "/SignupScreen"); // ✅ 이름 입력 화면으로 이동
     }
   }
 

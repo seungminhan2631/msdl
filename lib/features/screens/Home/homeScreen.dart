@@ -11,9 +11,7 @@ class Homescreen extends StatelessWidget {
   const Homescreen({super.key});
   @override
   Widget build(BuildContext context) {
-    String todayDate =
-        DateFormat('yyyy.MM.dd').format(DateTime.now()); // ✅ 현재 날짜 가져오기
-
+    String todayDate = DateFormat('yyyy.MM.dd').format(DateTime.now());
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
