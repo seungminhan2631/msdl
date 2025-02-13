@@ -20,6 +20,7 @@ void main() async {
   try {
     await DatabaseHelper.instance.database; // ✅ 앱 실행 시 데이터베이스 초기화
     await DatabaseHelper.instance.copyDatabaseToDocuments(); // ✅ DB 복사 실행
+    await DatabaseHelper.instance.printAllUsers();
 
     print("데이터베이스 정상적으로 로드됨!");
   } catch (e) {
@@ -50,11 +51,12 @@ class msdl extends StatelessWidget {
             colorScheme: darkColorScheme,
             useMaterial3: true,
             splashFactory: NoSplash.splashFactory, // ✅ 잔물결 효과 제거
+            highlightColor: Colors.transparent, // ✅ 클릭 시 강조 효과 제거
             scaffoldBackgroundColor: Color(0xFF151515).withOpacity(0.98),
           ),
           initialRoute: "/",
           routes: {
-            "/": (context) => NameScreen(),
+            "/": (context) => LoginScreen(),
             "/chooseRole_Screen": (context) => ChooseRoleScreen(),
             "/nameScreen": (context) => NameScreen(),
             "/createAccount_Screen": (context) => SignupScreen(),
