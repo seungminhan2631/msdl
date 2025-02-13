@@ -8,7 +8,10 @@ import 'package:msdl/features/screens/Home/home_Screen.dart';
 import 'package:msdl/features/screens/Home/widget/customContainer.dart';
 import 'package:msdl/features/screens/Home/widget/sectionTitle.dart';
 import 'package:msdl/features/screens/Group/group_Screen.dart';
+import 'package:msdl/features/screens/group/viewModel/viewModel.dart';
 import 'package:msdl/features/screens/settings/setting_Screen.dart';
+import 'package:provider/provider.dart';
+import 'package:msdl/features/screens/group/model/model.dart'; // GroupModel 추가
 
 class GroupScreen extends StatefulWidget {
   const GroupScreen({super.key});
@@ -18,37 +21,27 @@ class GroupScreen extends StatefulWidget {
 }
 
 class _GroupScreenState extends State<GroupScreen> {
-  final ScrollController _scrollController = ScrollController();
-  int selectedIndex = 0;
+  int _selectedIndex = 0;
 
-  void onItemTapped(int index) {
-    if (index == 0) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => GroupScreen(),
-        ),
-      );
-    } else if (index == 1) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => Homescreen(),
-        ),
-      );
-    } else if (index == 2) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => SettingsScreen(),
-        ),
-      );
+  void _onItemTapped(int index) {
+    if (index != _selectedIndex) {
+      String route = index == 0
+          ? "/groupScreen"
+          : index == 1
+              ? "/homeScreen"
+              : "/settingsScreen";
+
+      Navigator.pushReplacementNamed(context, route);
     }
   }
 
+  final ScrollController _scrollController = ScrollController();
+
   @override
   Widget build(BuildContext context) {
-    String todayDate = DateFormat('yyyy.MM.dd', 'ko_KR').format(DateTime.now());
+    String todayDate = DateFormat('yyyy.MM.dd').format(DateTime.now());
+    final Map<String, List<GroupModel>> groupData =
+        Provider.of<GroupViewModel>(context).groupedUsers;
 
     return SafeArea(
       child: Scaffold(
@@ -96,141 +89,92 @@ class _GroupScreenState extends State<GroupScreen> {
           child: SingleChildScrollView(
             controller: _scrollController,
             padding: EdgeInsets.symmetric(vertical: 20.h),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                // ✅ [수정] 첫 번째 컨테이너 (왼쪽 위에 Sectiontitle 배치 + 컨테이너 중앙 정렬)
-                Padding(
-                  padding: EdgeInsets.symmetric(vertical: 10.h),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: Padding(
-                          padding: EdgeInsets.only(
-                            left: Sizes.size36,
-                            bottom: Sizes.size4,
-                          ),
-                          child: Sectiontitle(
-                            icon: Icons.school,
-                            text: "Professor",
-                            iconColor: Color(0xFFF59E0B), // 주황색
-                          ),
-                        ),
-                      ),
-                      Center(
-                        child: CustomContainer(
-                          height: 170.h,
-                          width: 340.w,
-                          child: Scrollbar(
-                            thumbVisibility: false,
-                            trackVisibility: false,
-                            thickness: 2.0.w,
-                            radius: Radius.circular(6),
-                            child: SingleChildScrollView(
-                              child: Padding(
-                                padding: EdgeInsets.all(Sizes.size8),
-                                child: Column(
-                                  children: [
-                                    groupContainerText(),
-                                    groupContainerText(),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
+            child: Padding(
+              padding: EdgeInsets.symmetric(
+                  vertical: Sizes.size18, horizontal: Sizes.size28),
+              child: Column(
+                children: [
+                  Sectiontitle(
+                    icon: Icons.school,
+                    text: "Professor",
+                    iconColor: Color(0xFFF59E0B),
                   ),
-                ),
-
-                ...List.generate(
-                  3,
-                  (index) {
-                    List<Map<String, dynamic>> sectionData = [
-                      {
-                        "icon": Icons.library_books_outlined,
-                        "text": "Ph.D Student",
-                        "color": Color(0xFF31B454),
+                  Gaps.v7,
+                  CustomContainer(
+                    child: ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: groupData["Professor"]?.length ?? 0,
+                      itemBuilder: (context, index) {
+                        final user = groupData["Professor"]![index];
+                        return groupContainerText(user);
                       },
-                      {
-                        "icon": Icons.school_outlined,
-                        "text": "MS Student",
-                        "color": Color(0xFF935E38),
+                    ),
+                  ),
+                  Gaps.v28,
+                  Sectiontitle(
+                    icon: Icons.library_books_outlined,
+                    text: "Ph.D. Student",
+                    iconColor: Color(0xFF31B454),
+                  ),
+                  Gaps.v7,
+                  CustomContainer(
+                    child: ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: groupData["Ph.D. Student"]?.length ?? 0,
+                      itemBuilder: (context, index) {
+                        final user = groupData["Ph.D. Student"]![index];
+                        return groupContainerText(user);
                       },
-                      {
-                        "icon": Icons.auto_stories_outlined,
-                        "text": "BS Student",
-                        "color": Color(0xFF3F51B5),
+                    ),
+                  ),
+                  Gaps.v28,
+                  Sectiontitle(
+                    icon: Icons.school_outlined,
+                    text: "MS Student",
+                    iconColor: Color(0xFF935E38),
+                  ),
+                  Gaps.v7,
+                  CustomContainer(
+                    child: ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: groupData["MS Student"]?.length ?? 0,
+                      itemBuilder: (context, index) {
+                        final user = groupData["MS Student"]![index];
+                        return groupContainerText(user);
                       },
-                    ];
-
-                    return Padding(
-                      padding: EdgeInsets.symmetric(vertical: 20.h),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Align(
-                            alignment: Alignment.centerLeft,
-                            child: Padding(
-                              padding: EdgeInsets.only(
-                                left: Sizes.size36,
-                                bottom: Sizes.size4,
-                              ),
-                              child: Sectiontitle(
-                                icon: sectionData[index]["icon"],
-                                text: sectionData[index]["text"],
-                                iconColor: sectionData[index]["color"],
-                              ),
-                            ),
-                          ),
-                          Center(
-                            child: CustomContainer(
-                              height: 170.h,
-                              width: 340.w,
-                              child: Scrollbar(
-                                thumbVisibility: false,
-                                thickness: 2.0.w,
-                                radius: Radius.circular(6),
-                                child: SingleChildScrollView(
-                                  child: Padding(
-                                    padding: EdgeInsets.all(Sizes.size8),
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        groupContainerText(),
-                                        groupContainerText(),
-                                        groupContainerText(),
-                                        groupContainerText(),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    );
-                  },
-                ),
-              ],
+                    ),
+                  ),
+                  Gaps.v28,
+                  Sectiontitle(
+                    icon: Icons.auto_stories_outlined,
+                    text: "BS Student",
+                    iconColor: Color(0xFF3F51B5),
+                  ),
+                  Gaps.v7,
+                  CustomContainer(
+                    child: ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: groupData["BS Student"]?.length ?? 0,
+                      itemBuilder: (context, index) {
+                        final user = groupData["BS Student"]![index];
+                        return groupContainerText(user);
+                      },
+                    ),
+                  )
+                ],
+              ),
             ),
           ),
         ),
         bottomNavigationBar: CustomBottomNavigationBar(
-          selectedIndex: selectedIndex,
-          onItemTapped: onItemTapped,
+          selectedIndex: _selectedIndex,
+          onItemTapped: _onItemTapped,
         ),
       ),
     );
   }
 
-  Column groupContainerText() {
+  Column groupContainerText(GroupModel user) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -239,7 +183,7 @@ class _GroupScreenState extends State<GroupScreen> {
             Icon(Icons.account_circle, color: Colors.white, size: Sizes.size40),
             SizedBox(width: Sizes.size8),
             Text(
-              "민세동",
+              user.name,
               style: TextStyle(
                 color: Color(0xffF1F1F1),
                 fontFamily: "Andika",
@@ -249,7 +193,7 @@ class _GroupScreenState extends State<GroupScreen> {
             ),
             Spacer(),
             Text(
-              "In : 09:00 | Out : 17:00",
+              "In: ${user.checkInTime} | Out: ${user.checkOutTime}",
               style: TextStyle(
                 color: Color(0xffF1F1F1),
                 fontFamily: "Andika",

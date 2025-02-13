@@ -4,7 +4,7 @@ import '../repository/auth_repository.dart';
 class AuthViewModel extends ChangeNotifier {
   final AuthRepository _repository = AuthRepository();
   String? selectedRole;
-  String userName = "MSDL";
+  String? userName;
 
   void setRole(String role) {
     selectedRole = role;
@@ -31,7 +31,7 @@ class AuthViewModel extends ChangeNotifier {
         "📌 회원가입 요청 - 이메일: $email, 비밀번호: $password, Role: $selectedRole, Name: $userName");
 
     try {
-      await _repository.createUser(email, password, selectedRole!, userName);
+      await _repository.createUser(email, password, selectedRole!, userName!);
       print("✅ 회원가입 성공 - 이메일: $email");
 
       return true;

@@ -104,4 +104,19 @@ class DatabaseHelper {
     final dbPath = '${directory.path}/msdl_copy.db';
     print("📌 저장된 DB 파일 경로: $dbPath");
   }
+
+  Future<void> printAllUsers() async {
+    final db = await database;
+    final List<Map<String, dynamic>> users = await db.query('users');
+
+    if (users.isEmpty) {
+      print("📌 users 테이블이 비어 있습니다.");
+    } else {
+      print("📌 users 테이블 내용:");
+      for (var user in users) {
+        print(
+            "🔹 ID: ${user['id']}, Email: ${user['email']}, Role: ${user['role']}, Name: ${user['name']}");
+      }
+    }
+  }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:msdl/commons/widgets/bottomMsdl.dart';
 import 'package:msdl/commons/widgets/buttons/CustomTextField.dart';
 import 'package:msdl/commons/widgets/buttons/customButton.dart';
@@ -6,6 +7,7 @@ import 'package:msdl/commons/widgets/topTitle.dart';
 import 'package:msdl/constants/gaps.dart';
 import 'package:msdl/constants/size_config.dart';
 import 'package:msdl/constants/sizes.dart';
+import 'package:msdl/features/screens/authentication/viewModel/viewModel.dart'; // ✅ ViewModel import
 
 class NameScreen extends StatefulWidget {
   const NameScreen({super.key});
@@ -16,29 +18,24 @@ class NameScreen extends StatefulWidget {
 
 class _NameScreenState extends State<NameScreen> {
   final TextEditingController nameController = TextEditingController();
-  bool? isNameValid; // ✅ 초기에는 null 상태 (테두리 기본값 유지)
-
-  @override
-  void initState() {
-    super.initState();
-    nameController.addListener(_validateName); // ✅ 입력 변경 감지
-  }
-
-  @override
-  void dispose() {
-    nameController.dispose();
-    super.dispose();
-  }
+  bool isNameValid = true;
 
   void _validateName() {
     setState(() {
-      if (nameController.text.isEmpty) {
-        isNameValid = null; // ✅ 아무 입력도 없을 때 기본 상태 유지
-      } else {
-        isNameValid =
-            nameController.text.length >= 1 && nameController.text.length <= 6;
-      }
+      isNameValid =
+          nameController.text.length >= 1 && nameController.text.length <= 10;
     });
+
+    if (isNameValid) {
+      // ✅ Provider에서 ViewModel 가져와서 이름 저장
+      Provider.of<AuthViewModel>(context, listen: false)
+          .setName(nameController.text);
+
+      print("✅ 입력된 이름: ${nameController.text}"); // 디버깅용
+
+      // ✅ SignupScreen으로 이동
+      Navigator.pushNamed(context, "/SignupScreen");
+    }
   }
 
   @override

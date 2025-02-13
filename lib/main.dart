@@ -7,19 +7,21 @@ import 'package:msdl/features/screens/authentication/name_Screen.dart';
 import 'package:msdl/features/screens/authentication/signUp_Screen.dart';
 import 'package:msdl/features/screens/authentication/login_Screen.dart';
 import 'package:msdl/features/screens/authentication/viewModel/viewModel.dart';
+import 'package:msdl/features/screens/group/viewModel/viewModel.dart';
 import 'package:msdl/features/screens/settings/setting_Screen.dart';
 import 'package:msdl/msdl_theme.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 
-// import 'package:intl/date_symbol_data_local.dart'; // ✅ 날짜 포맷 데이터 초기화 패키지
+// import 'package:intl/date_symbol_data_local.dart';
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized(); // ✅ Flutter 엔진 초기화 (비동기 코드 사용 가능)
-  // await initializeDateFormatting('ko_KR', null); // ✅ 대한민국 날짜 포맷 초기화
+  WidgetsFlutterBinding.ensureInitialized();
+  // await initializeDateFormatting('ko_KR', null);
   try {
-    await DatabaseHelper.instance.database; // ✅ 앱 실행 시 데이터베이스 초기화
-    await DatabaseHelper.instance.copyDatabaseToDocuments(); // ✅ DB 복사 실행
+    await DatabaseHelper.instance.database;
+    await DatabaseHelper.instance.copyDatabaseToDocuments();
+    await DatabaseHelper.instance.printAllUsers();
 
     print("데이터베이스 정상적으로 로드됨!");
   } catch (e) {
@@ -28,8 +30,8 @@ void main() async {
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(
-            create: (context) => AuthViewModel()), // ✅ Provider 등록
+        ChangeNotifierProvider(create: (context) => AuthViewModel()),
+        ChangeNotifierProvider(create: (context) => GroupViewModel()),
       ],
       child: const msdl(),
     ),
@@ -49,6 +51,8 @@ class msdl extends StatelessWidget {
           theme: ThemeData(
             colorScheme: darkColorScheme,
             useMaterial3: true,
+            splashFactory: NoSplash.splashFactory,
+            highlightColor: Colors.transparent,
             scaffoldBackgroundColor: Color(0xFF151515).withOpacity(0.98),
           ),
           initialRoute: "/",
@@ -58,8 +62,9 @@ class msdl extends StatelessWidget {
             "/nameScreen": (context) => NameScreen(),
             "/createAccount_Screen": (context) => SignupScreen(),
             "/SignupScreen": (context) => SignupScreen(),
-            "/SettingsScreen": (context) => SettingsScreen(),
+            "/settingsScreen": (context) => SettingsScreen(),
             "/homeScreen": (context) => Homescreen(),
+            "/groupScreen": (context) => GroupScreen(),
           },
         );
       },
