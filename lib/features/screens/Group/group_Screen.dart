@@ -91,7 +91,7 @@ class _GroupScreenState extends State<GroupScreen> {
             padding: EdgeInsets.symmetric(vertical: 20.h),
             child: Padding(
               padding: EdgeInsets.symmetric(
-                  vertical: Sizes.size32, horizontal: Sizes.size40),
+                  vertical: Sizes.size18, horizontal: Sizes.size28),
               child: Column(
                 children: [
                   Sectiontitle(
@@ -99,9 +99,67 @@ class _GroupScreenState extends State<GroupScreen> {
                     text: "Professor",
                     iconColor: Color(0xFFF59E0B),
                   ),
-                  Gaps.v14,
+                  Gaps.v7,
                   CustomContainer(
-                    child: Text("data"),
+                    child: ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: groupData["Professor"]?.length ?? 0,
+                      itemBuilder: (context, index) {
+                        final user = groupData["Professor"]![index];
+                        return groupContainerText(user);
+                      },
+                    ),
+                  ),
+                  Gaps.v28,
+                  Sectiontitle(
+                    icon: Icons.library_books_outlined,
+                    text: "Ph.D. Student",
+                    iconColor: Color(0xFF31B454),
+                  ),
+                  Gaps.v7,
+                  CustomContainer(
+                    child: ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: groupData["Ph.D. Student"]?.length ?? 0,
+                      itemBuilder: (context, index) {
+                        final user = groupData["Ph.D. Student"]![index];
+                        return groupContainerText(user);
+                      },
+                    ),
+                  ),
+                  Gaps.v28,
+                  Sectiontitle(
+                    icon: Icons.school_outlined,
+                    text: "MS Student",
+                    iconColor: Color(0xFF935E38),
+                  ),
+                  Gaps.v7,
+                  CustomContainer(
+                    child: ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: groupData["MS Student"]?.length ?? 0,
+                      itemBuilder: (context, index) {
+                        final user = groupData["MS Student"]![index];
+                        return groupContainerText(user);
+                      },
+                    ),
+                  ),
+                  Gaps.v28,
+                  Sectiontitle(
+                    icon: Icons.auto_stories_outlined,
+                    text: "BS Student",
+                    iconColor: Color(0xFF3F51B5),
+                  ),
+                  Gaps.v7,
+                  CustomContainer(
+                    child: ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: groupData["BS Student"]?.length ?? 0,
+                      itemBuilder: (context, index) {
+                        final user = groupData["BS Student"]![index];
+                        return groupContainerText(user);
+                      },
+                    ),
                   )
                 ],
               ),
