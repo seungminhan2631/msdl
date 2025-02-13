@@ -12,7 +12,7 @@ class AuthRepository {
       'email': email,
       'password': password,
       'role': role,
-      'name': "MSDL",
+      'name': name,
     });
   }
 

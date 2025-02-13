@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:msdl/commons/widgets/bottomMsdl.dart';
 import 'package:msdl/commons/widgets/buttons/CustomTextField.dart';
 import 'package:msdl/commons/widgets/buttons/customButton.dart';
 import 'package:msdl/commons/widgets/topTitle.dart';
 import 'package:msdl/constants/gaps.dart';
 import 'package:msdl/constants/sizes.dart';
+import 'package:msdl/features/screens/authentication/viewModel/viewModel.dart'; // ✅ ViewModel import
 
 class NameScreen extends StatefulWidget {
   const NameScreen({super.key});
@@ -15,16 +17,22 @@ class NameScreen extends StatefulWidget {
 
 class _NameScreenState extends State<NameScreen> {
   final TextEditingController nameController = TextEditingController();
-  bool isNameValid = true; // ✅ 유효성 검사 상태 변수
+  bool isNameValid = true;
 
   void _validateName() {
     setState(() {
       isNameValid =
-          nameController.text.length >= 1 && nameController.text.length <= 5;
+          nameController.text.length >= 1 && nameController.text.length <= 10;
     });
 
     if (isNameValid) {
-      // ✅ 유효하면 SignupScreen으로 이동
+      // ✅ Provider에서 ViewModel 가져와서 이름 저장
+      Provider.of<AuthViewModel>(context, listen: false)
+          .setName(nameController.text);
+
+      print("✅ 입력된 이름: ${nameController.text}"); // 디버깅용
+
+      // ✅ SignupScreen으로 이동
       Navigator.pushNamed(context, "/SignupScreen");
     }
   }
@@ -57,7 +65,7 @@ class _NameScreenState extends State<NameScreen> {
             CustomButton(
               text: "Next",
               routeName: "/SignupScreen",
-              onPressed: _validateName, // ✅ Next 버튼도 유효성 검사 후 이동
+              onPressed: _validateName,
             ),
             Gaps.v20,
             bottomMsdl(),

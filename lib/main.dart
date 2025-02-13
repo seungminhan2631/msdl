@@ -12,14 +12,14 @@ import 'package:msdl/msdl_theme.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 
-// import 'package:intl/date_symbol_data_local.dart'; // ✅ 날짜 포맷 데이터 초기화 패키지
+// import 'package:intl/date_symbol_data_local.dart';
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized(); // ✅ Flutter 엔진 초기화 (비동기 코드 사용 가능)
-  // await initializeDateFormatting('ko_KR', null); // ✅ 대한민국 날짜 포맷 초기화
+  WidgetsFlutterBinding.ensureInitialized();
+  // await initializeDateFormatting('ko_KR', null);
   try {
-    await DatabaseHelper.instance.database; // ✅ 앱 실행 시 데이터베이스 초기화
-    await DatabaseHelper.instance.copyDatabaseToDocuments(); // ✅ DB 복사 실행
+    await DatabaseHelper.instance.database;
+    await DatabaseHelper.instance.copyDatabaseToDocuments();
     await DatabaseHelper.instance.printAllUsers();
 
     print("데이터베이스 정상적으로 로드됨!");
@@ -29,8 +29,7 @@ void main() async {
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(
-            create: (context) => AuthViewModel()), // ✅ Provider 등록
+        ChangeNotifierProvider(create: (context) => AuthViewModel()),
       ],
       child: const msdl(),
     ),
@@ -50,8 +49,8 @@ class msdl extends StatelessWidget {
           theme: ThemeData(
             colorScheme: darkColorScheme,
             useMaterial3: true,
-            splashFactory: NoSplash.splashFactory, // ✅ 잔물결 효과 제거
-            highlightColor: Colors.transparent, // ✅ 클릭 시 강조 효과 제거
+            splashFactory: NoSplash.splashFactory,
+            highlightColor: Colors.transparent,
             scaffoldBackgroundColor: Color(0xFF151515).withOpacity(0.98),
           ),
           initialRoute: "/",
