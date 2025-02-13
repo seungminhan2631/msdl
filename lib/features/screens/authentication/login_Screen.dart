@@ -35,7 +35,9 @@ class _LoginScreenState extends State<LoginScreen> {
     if (isEmailValid && isPasswordValid) {
       bool success = await _authViewModel.login(
           emailController.text, passwordController.text);
-      success = true;
+
+      if (success)
+        Navigator.pushNamed(context, "/homeScreen"); //이름 입력하는 화면으로 넘겨야함
     } else {
       setState(() {
         loginFailed = true;

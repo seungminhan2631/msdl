@@ -17,7 +17,7 @@ class ChooseRoleScreen extends StatefulWidget {
 class _ChooseRoleState extends State<ChooseRoleScreen> {
   List<bool> isChecked = [false, false, false, false];
   int? selectedIndex;
-  bool hasError = false; // ✅ 에러 상태 추가
+  bool hasError = false;
   final AuthViewModel _authViewModel = AuthViewModel();
 
   final List<IconData> icons = [
@@ -30,15 +30,15 @@ class _ChooseRoleState extends State<ChooseRoleScreen> {
   Color _iconColor(int index) {
     switch (index) {
       case 0:
-        return Color(0xFFF59E0B); // Professor 아이콘 색상
+        return Color(0xFFF59E0B);
       case 1:
-        return Color(0xFF31B454); // Ph.D Student 아이콘 색상
+        return Color(0xFF31B454);
       case 2:
-        return Color(0xFF935E38); // MS Student 아이콘 색상
+        return Color(0xFF935E38);
       case 3:
-        return Color(0xFF3F51B5); // BS Student 아이콘 색상
+        return Color(0xFF3F51B5);
       default:
-        return Colors.black; // 기본 색상
+        return Colors.black;
     }
   }
 
@@ -174,11 +174,14 @@ class _ChooseRoleState extends State<ChooseRoleScreen> {
   void _validateAndProceed() {
     if (selectedIndex == null) {
       setState(() {
-        hasError = true; // ✅ 선택 안 하면 에러 활성화
+        hasError = true;
       });
     } else if (selectedIndex != null) {
-      _authViewModel.setRole(roles[selectedIndex!]); // ✅ role 저장
-      Navigator.pushNamed(context, "/SignupScreen"); // ✅ 이름 입력 화면으로 이동
+      String selectedRole = roles[selectedIndex!];
+
+      _authViewModel.setRole(selectedRole);
+      print("✅ Role이 설정됨: $selectedRole"); // ✅ 선택된 Role 로그 확인
+      Navigator.pushNamed(context, "/SignupScreen");
     }
   }
 

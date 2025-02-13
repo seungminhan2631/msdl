@@ -6,11 +6,13 @@ class AuthRepository {
   Future<int> createUser(
       String email, String password, String role, String name) async {
     final _db = await db.database;
+    print("📌 사용자 추가 중... 이메일: $email, Role: $role");
+
     return await _db.insert('users', {
       'email': email,
       'password': password,
       'role': role,
-      'name': name,
+      'name': "MSDL",
     });
   }
 
@@ -22,6 +24,6 @@ class AuthRepository {
       whereArgs: [email, password],
     );
 
-    return result.isNotEmpty; // ✅ 결과가 있으면 로그인 성공 (true)
+    return result.isNotEmpty;
   }
 }

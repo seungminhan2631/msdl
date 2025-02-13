@@ -5,7 +5,7 @@ import 'package:msdl/constants/sizes.dart';
 import 'package:intl/intl.dart';
 import 'package:msdl/features/screens/Home/widget/customCard.dart';
 import 'package:msdl/features/screens/Home/widget/profileAvatar.dart';
-import 'package:msdl/features/screens/Home/widget/sectionTitle.dart'; // ✅ 날짜 형식 변환을 위한 패키지
+import 'package:msdl/features/screens/Home/widget/sectionTitle.dart';
 
 class Homescreen extends StatelessWidget {
   const Homescreen({super.key});

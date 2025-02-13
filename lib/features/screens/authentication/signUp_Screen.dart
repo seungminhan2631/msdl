@@ -89,6 +89,13 @@ class _SignupScreenState extends State<SignupScreen>
   }
 
   void _validateAndSubmit() async {
+    print("📌 _validateAndSubmit() 실행됨!");
+
+    print("📌 입력된 이메일: '${emailController.text}'"); // ✅ 이메일 값 확인
+    print("📌 입력된 비밀번호: '${passwordController.text}'"); // ✅ 비밀번호 값 확인
+    print(
+        "📌 입력된 비밀번호 확인: '${confirmPasswordController.text}'"); // ✅ 확인 비밀번호 값 확인
+
     setState(() {
       isEmailValid = emailController.text.isNotEmpty;
       isPasswordValid = passwordController.text.isNotEmpty;
@@ -96,11 +103,25 @@ class _SignupScreenState extends State<SignupScreen>
           confirmPasswordController.text == passwordController.text;
     });
 
-    if (isEmailValid && isPasswordValid && isConfirmPasswordValid) {
-      bool success = await _authViewModel.signUp(
-          emailController.text, passwordController.text);
+    print("📌 isEmailValid: $isEmailValid");
+    print("📌 isPasswordValid: $isPasswordValid");
+    print("📌 isConfirmPasswordValid: $isConfirmPasswordValid");
 
-      Navigator.pushNamed(context, "/login"); //이름 입력하는 화면으로 넘겨야함
+    if (isEmailValid && isPasswordValid && isConfirmPasswordValid) {
+      print("📌 회원가입 요청 시작...");
+      bool success = await _authViewModel.signUp(
+          emailController.text.trim(), passwordController.text.trim());
+
+      print("📌 회원가입 결과: $success");
+
+      if (success) {
+        print("✅ 회원가입 성공! 로그인 화면으로 이동");
+        Navigator.pushNamed(context, "/login");
+      } else {
+        print("❌ 회원가입 실패! 다시 시도해주세요.");
+      }
+    } else {
+      print("❌ 이메일 또는 비밀번호 입력이 올바르지 않음.");
     }
   }
 
@@ -175,12 +196,16 @@ class _SignupScreenState extends State<SignupScreen>
                     helperText: "Confirm your Password",
                     errorText: isPasswordValid ? null : "비밀번호를 입력하세요.",
                     isValid: isPasswordValid,
-                    controller: passwordController,
+                    controller: confirmPasswordController,
                   ),
                 ],
               ),
               Gaps.v40,
-              CustomButton(text: "Next", routeName: "/"),
+              CustomButton(
+                text: "Next",
+                routeName: "/",
+                onPressed: _validateAndSubmit,
+              ),
               Gaps.v12,
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
