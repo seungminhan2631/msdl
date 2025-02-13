@@ -90,11 +90,18 @@ class DatabaseHelper {
       if (await sourceFile.exists()) {
         await sourceFile.copy(newPath);
         print("✅ 데이터베이스가 외부 저장소에 복사됨: $newPath");
+        printDatabasePath();
       } else {
         print("❌ 데이터베이스 파일이 존재하지 않음.");
       }
     } catch (e) {
       print("❌ 데이터베이스 복사 실패: $e");
     }
+  }
+
+  Future<void> printDatabasePath() async {
+    final directory = await getApplicationDocumentsDirectory();
+    final dbPath = '${directory.path}/msdl_copy.db';
+    print("📌 저장된 DB 파일 경로: $dbPath");
   }
 }
