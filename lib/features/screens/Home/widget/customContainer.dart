@@ -3,7 +3,7 @@ import 'package:msdl/constants/size_config.dart';
 import 'package:msdl/constants/sizes.dart';
 
 class CustomContainer extends StatelessWidget {
-  final Widget? child; // 내부 레이아웃을 유연하게 적용할 수 있도록 child 추가
+  final Widget? child;
   final double width;
   final double height;
 
@@ -27,7 +27,7 @@ class CustomContainer extends StatelessWidget {
           color: Color(0xffAAAAAA),
         ),
       ),
-      child: child, // 내부 콘텐츠를 자유롭게 배치할 수 있도록 child 적용
+      child: child,
     );
   }
 }

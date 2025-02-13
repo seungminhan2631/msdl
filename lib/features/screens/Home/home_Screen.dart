@@ -49,7 +49,6 @@ class _HomescreenState extends State<Homescreen> {
   @override
   Widget build(BuildContext context) {
     String todayDate = DateFormat('yyyy.MM.dd').format(DateTime.now());
-
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,

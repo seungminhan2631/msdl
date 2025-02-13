@@ -6,6 +6,7 @@ import 'package:msdl/commons/widgets/topTitle.dart';
 import 'package:msdl/constants/gaps.dart';
 import 'package:msdl/constants/size_config.dart';
 import 'package:msdl/constants/sizes.dart';
+import 'package:msdl/features/screens/authentication/viewModel/viewModel.dart';
 import 'package:msdl/msdl_theme.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -16,22 +17,29 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final TextEditingController emailController =
-      TextEditingController(); // ✅ 이메일 입력 컨트롤러 추가
-  final TextEditingController passwordController =
-      TextEditingController(); // ✅ 비밀번호 입력 컨트롤러 추가
-  bool isEmailValid = true; // ✅ 이메일 유효성 상태 추가
-  bool isPasswordValid = true; // ✅ 비밀번호 유효성 상태 추가
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  final AuthViewModel _authViewModel = AuthViewModel();
 
-  // ✅ 유효성 검사 함수
-  void _validateAndSubmit() {
+  bool isEmailValid = true;
+  bool isPasswordValid = true;
+  bool loginFailed = false;
+
+  void _validateAndSubmit() async {
     setState(() {
-      isEmailValid = emailController.text.isNotEmpty; // 입력값이 없으면 false
+      isEmailValid = emailController.text.isNotEmpty;
       isPasswordValid = passwordController.text.isNotEmpty;
+      loginFailed = false; // 로그인 실패 상태 초기화
     });
 
     if (isEmailValid && isPasswordValid) {
-      Navigator.pushNamed(context, "/homeScreen");
+      bool success = await _authViewModel.login(
+          emailController.text, passwordController.text);
+      success = true;
+    } else {
+      setState(() {
+        loginFailed = true;
+      });
     }
   }
 
@@ -102,7 +110,6 @@ class _LoginScreenState extends State<LoginScreen> {
               isValid: isPasswordValid,
             ),
             Gaps.v52,
-            // ✅ Next 버튼 클릭 시 유효성 검사 실행
             CustomButton(
               text: "Next",
               onPressed: _validateAndSubmit,

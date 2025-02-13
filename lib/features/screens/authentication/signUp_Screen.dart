@@ -8,6 +8,7 @@ import 'package:msdl/commons/widgets/topTitle.dart';
 import 'package:msdl/constants/gaps.dart';
 import 'package:msdl/constants/size_config.dart';
 import 'package:msdl/constants/sizes.dart';
+import 'package:msdl/features/screens/authentication/viewModel/viewModel.dart';
 
 class SignupScreen extends StatefulWidget {
   SignupScreen({super.key});
@@ -18,6 +19,8 @@ class SignupScreen extends StatefulWidget {
 
 class _SignupScreenState extends State<SignupScreen>
     with SingleTickerProviderStateMixin {
+  final AuthViewModel _authViewModel = AuthViewModel();
+
   final List<String> messages = [
     "Welcome",
     "환영합니다",
@@ -38,16 +41,14 @@ class _SignupScreenState extends State<SignupScreen>
   late AnimationController _controller;
   late Animation<double> _flipAnimation;
 
-  final TextEditingController emailController =
-      TextEditingController(); // ✅ 이메일 입력 컨트롤러 추가
-  final TextEditingController passwordController =
-      TextEditingController(); // ✅ 비밀번호 입력 컨트롤러 추가
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
   final TextEditingController confirmPasswordController =
-      TextEditingController(); // ✅ 비밀번호 확인 입력 컨트롤러 추가
+      TextEditingController();
 
-  bool isEmailValid = true; // ✅ 이메일 유효성 상태 추가
-  bool isPasswordValid = true; // ✅ 비밀번호 유효성 상태 추가
-  bool isConfirmPasswordValid = true; // ✅ 비밀번호 확인 유효성 상태 추가
+  bool isEmailValid = true;
+  bool isPasswordValid = true;
+  bool isConfirmPasswordValid = true;
 
   @override
   void initState() {
@@ -87,8 +88,7 @@ class _SignupScreenState extends State<SignupScreen>
     });
   }
 
-  // ✅ 유효성 검사 함수 추가
-  void _validateAndSubmit() {
+  void _validateAndSubmit() async {
     setState(() {
       isEmailValid = emailController.text.isNotEmpty;
       isPasswordValid = passwordController.text.isNotEmpty;
@@ -97,7 +97,10 @@ class _SignupScreenState extends State<SignupScreen>
     });
 
     if (isEmailValid && isPasswordValid && isConfirmPasswordValid) {
-      print("회원가입 성공!");
+      bool success = await _authViewModel.signUp(
+          emailController.text, passwordController.text);
+
+      Navigator.pushNamed(context, "/login"); //이름 입력하는 화면으로 넘겨야함
     }
   }
 
@@ -114,28 +117,26 @@ class _SignupScreenState extends State<SignupScreen>
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // ✅ 카드 뒤집기 애니메이션 적용
               AnimatedBuilder(
                 animation: _controller,
                 builder: (context, child) {
-                  double angle = _flipAnimation.value * pi; // ✅ 0 ~ π (180도)
-                  bool isFlipped =
-                      _flipAnimation.value > 0.5; // 중간 이후일 때 뒤집힌 상태
+                  double angle = _flipAnimation.value * pi;
+                  bool isFlipped = _flipAnimation.value > 0.5;
 
                   return Transform(
                     alignment: Alignment.center,
                     transform: Matrix4.rotationY(angle),
                     child: SizedBox(
-                      width: 250, // ✅ 텍스트 박스의 고정 너비 (조정 가능)
-                      height: 50, // ✅ 텍스트 박스의 고정 높이 (조정 가능)
+                      width: 250,
+                      height: 50,
                       child: FittedBox(
-                        fit: BoxFit.scaleDown, // ✅ 긴 텍스트가 자동으로 크기 조절됨
+                        fit: BoxFit.scaleDown,
                         child: isFlipped
                             ? Transform(
                                 alignment: Alignment.center,
-                                transform: Matrix4.rotationY(pi), // ✅ 거울 효과
+                                transform: Matrix4.rotationY(pi),
                                 child: TopTitle(
-                                  text: messages[_currentIndex], // ✅ 변경된 인덱스 반영
+                                  text: messages[_currentIndex],
                                 ),
                               )
                             : TopTitle(text: messages[_currentIndex]),
@@ -144,7 +145,6 @@ class _SignupScreenState extends State<SignupScreen>
                   );
                 },
               ),
-
               Gaps.v64,
               Column(
                 children: [
@@ -153,8 +153,7 @@ class _SignupScreenState extends State<SignupScreen>
                     firstIcon: Icons.email_outlined,
                     lastIcon: Icons.close,
                     helperText: "Please enter your email",
-                    errorText:
-                        isEmailValid ? null : "이메일을 입력하세요.", // 유효성 검사 결과 반영
+                    errorText: isEmailValid ? null : "이메일을 입력하세요.",
                     controller: emailController,
                     isValid: isEmailValid,
                   ),
@@ -164,8 +163,7 @@ class _SignupScreenState extends State<SignupScreen>
                     firstIcon: Icons.key,
                     lastIcon: Icons.visibility,
                     helperText: "Create a Password",
-                    errorText:
-                        isPasswordValid ? null : "비밀번호를 입력하세요.", // 유효성 검사 결과 반영
+                    errorText: isPasswordValid ? null : "비밀번호를 입력하세요.",
                     isValid: isPasswordValid,
                     controller: passwordController,
                   ),
