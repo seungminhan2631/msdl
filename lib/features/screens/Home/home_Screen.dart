@@ -3,16 +3,52 @@ import 'package:msdl/constants/gaps.dart';
 import 'package:msdl/constants/size_config.dart';
 import 'package:msdl/constants/sizes.dart';
 import 'package:intl/intl.dart';
-import 'package:msdl/features/screens/Home/widget/customCard.dart';
+import 'package:msdl/features/screens/Home/widget/customContainer.dart';
 import 'package:msdl/features/screens/Home/widget/profileAvatar.dart';
-import 'package:msdl/features/screens/Home/widget/sectionTitle.dart'; // ✅ 날짜 형식 변환을 위한 패키지
+import 'package:msdl/features/screens/Home/widget/sectionTitle.dart';
+import 'package:msdl/commons/widgets/buttons/customBottomNavigationbar.dart';
+import 'package:msdl/features/screens/Group/group_Screen.dart';
+import 'package:msdl/features/screens/settings/setting_Screen.dart';
 
-class Homescreen extends StatelessWidget {
+class Homescreen extends StatefulWidget {
   const Homescreen({super.key});
+
+  @override
+  State<Homescreen> createState() => _HomescreenState();
+}
+
+class _HomescreenState extends State<Homescreen> {
+  int _selectedIndex = 1; // ✅ [추가] 기본 선택된 화면 (HomeScreen)
+
+  // ✅ 바텀 네비게이션을 눌렀을 때 화면 변경 (네비게이션 중복 방지)
+  void _onItemTapped(int index) {
+    if (_selectedIndex == index) return; // ✅ 현재 선택된 화면과 동일하면 동작하지 않음
+    setState(() {
+      _selectedIndex = index;
+    });
+
+    // ✅ 선택된 화면으로 이동
+    if (index == 0) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => GroupScreen()),
+      );
+    } else if (index == 1) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => Homescreen()),
+      );
+    } else if (index == 2) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => SettingsScreen()),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    String todayDate =
-        DateFormat('yyyy.MM.dd').format(DateTime.now()); // ✅ 현재 날짜 가져오기
+    String todayDate = DateFormat('yyyy.MM.dd').format(DateTime.now());
 
     return Scaffold(
       appBar: AppBar(
@@ -102,6 +138,10 @@ class Homescreen extends StatelessWidget {
             ),
           ],
         ),
+      ),
+      bottomNavigationBar: CustomBottomNavigationBar(
+        selectedIndex: _selectedIndex,
+        onItemTapped: _onItemTapped,
       ),
     );
   }

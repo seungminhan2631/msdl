@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:msdl/features/screens/Home/homeScreen.dart';
+import 'package:msdl/features/screens/Home/home_Screen.dart';
 import 'package:msdl/features/screens/authentication/choose_role_Screen.dart';
-import 'package:msdl/features/screens/authentication/group_Screen.dart';
+import 'package:msdl/features/screens/Group/group_Screen.dart';
 import 'package:msdl/features/screens/authentication/signUp_Screen.dart';
 import 'package:msdl/features/screens/authentication/login_Screen.dart';
 import 'package:msdl/features/screens/settings/setting_Screen.dart';
@@ -27,11 +27,13 @@ class msdl extends StatelessWidget {
           theme: ThemeData(
             colorScheme: darkColorScheme,
             useMaterial3: true,
+            splashFactory: NoSplash.splashFactory, // ✅ 잔물결 효과 제거
+            highlightColor: Colors.transparent, // ✅ 클릭 시 강조 효과 제거
             scaffoldBackgroundColor: Color(0xFF151515).withOpacity(0.98),
           ),
           initialRoute: "/",
           routes: {
-            "/": (context) => LoginScreen(),
+            "/": (context) => Homescreen(),
             "/chooseRole_Screen": (context) => ChooseRoleScreen(),
             "/createAccount_Screen": (context) => SignupScreen(),
             "/SignupScreen": (context) => SignupScreen(),

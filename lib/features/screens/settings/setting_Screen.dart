@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:msdl/commons/widgets/buttons/custom_bottom_navigationbar.dart';
-import 'package:msdl/commons/widgets/toptitle.dart';
+import 'package:msdl/commons/widgets/buttons/customBottomNavigationbar.dart';
+import 'package:msdl/commons/widgets/topTitle.dart';
 import 'package:msdl/constants/gaps.dart';
 import 'package:msdl/constants/size_config.dart';
 import 'package:msdl/constants/sizes.dart';
 import 'package:msdl/msdl_theme.dart';
-import 'package:msdl/features/screens/Home/homeScreen.dart';
-import 'package:msdl/features/screens/authentication/group_Screen.dart';
+import 'package:msdl/features/screens/Home/home_Screen.dart';
+import 'package:msdl/features/screens/Group/group_Screen.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -16,7 +16,7 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
-  int _selectedIndex = 2; // 초기 탭 인덱스 (Settings 탭)
+  int _selectedIndex = 2; // ✅ [추가] 초기 탭 인덱스 (Settings 탭)
 
   // 화면 목록
   final List<Widget> _screens = [
@@ -25,19 +25,44 @@ class _SettingsScreenState extends State<SettingsScreen> {
     SettingsScreenContent(), // ✅ SettingsScreen의 내용만 별도 분리
   ];
 
-  // 탭 변경 함수
+  // ✅ [추가] 탭 변경 함수 (화면 이동)
   void _onItemTapped(int index) {
+    if (_selectedIndex == index) return; // ✅ 현재 선택된 화면과 동일하면 동작하지 않음
     setState(() {
       _selectedIndex = index;
     });
+
+    // ✅ 선택된 화면으로 이동
+    if (index == 0) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => GroupScreen(),
+        ),
+      );
+    } else if (index == 1) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => Homescreen(),
+        ),
+      );
+    } else if (index == 2) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => SettingsScreen(),
+        ),
+      );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _screens[_selectedIndex], // 현재 선택된 화면 표시
+      body: _screens[_selectedIndex], // ✅ 현재 선택된 화면 표시
       bottomNavigationBar: CustomBottomNavigationBar(
-        // ✅ 커스텀 네비게이션 바 사용
+        // ✅ [추가] 바텀 네비게이션 추가
         selectedIndex: _selectedIndex,
         onItemTapped: _onItemTapped,
       ),
@@ -49,47 +74,48 @@ class _SettingsScreenState extends State<SettingsScreen> {
 class SettingsScreenContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 20.h),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            SizedBox(height: 110.h),
-            Center(
-              child: TopTitle(text: "Settings"),
-            ),
-            Gaps.v80,
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                CircleAvatar(
-                  radius: 80,
-                  backgroundImage: AssetImage("assets/image/msdl.jpg"),
-                ),
-                SizedBox(width: 30.w),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    SettingsProfileText(text: "BS Student"),
-                    SizedBox(height: 20.h),
-                    SettingsProfileText(text: "한승민"),
-                  ],
-                ),
-              ],
-            ),
-            Gaps.v80,
-            SettingsBodyText(
-                text: "About", onTap: () => _showAboutDialog(context)),
-            Gaps.v28,
-            SettingsBodyText(text: "Edit Profile"),
-            Gaps.v28,
-            SettingsBodyText(
-              text: "Log Out",
-              textColor: Color(0xffCF3B28),
-            ),
-          ],
+    return SafeArea(
+      child: Scaffold(
+        resizeToAvoidBottomInset: false,
+        body: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 20.h),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Center(
+                child: TopTitle(text: "Settings"),
+              ),
+              Gaps.v80,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  CircleAvatar(
+                    radius: 80,
+                    backgroundImage: AssetImage("assets/images/박보영.jpg"),
+                  ),
+                  SizedBox(width: 30.w),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      SettingsProfileText(text: "BS Student"),
+                      SizedBox(height: 20.h),
+                      SettingsProfileText(text: "한승민"),
+                    ],
+                  ),
+                ],
+              ),
+              Gaps.v80,
+              SettingsBodyText(
+                  text: "About", onTap: () => _showAboutDialog(context)),
+              Gaps.v28,
+              SettingsBodyText(text: "Edit Profile"),
+              Gaps.v28,
+              SettingsBodyText(
+                text: "Log Out",
+                textColor: Color(0xffCF3B28),
+              ),
+            ],
+          ),
         ),
       ),
     );

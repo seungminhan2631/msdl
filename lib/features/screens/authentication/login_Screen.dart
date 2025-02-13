@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:msdl/commons/widgets/bottomMsdl.dart';
 import 'package:msdl/commons/widgets/buttons/CustomButton.dart';
 import 'package:msdl/commons/widgets/buttons/CustomTextField.dart';
-import 'package:msdl/commons/widgets/toptitle.dart';
+import 'package:msdl/commons/widgets/topTitle.dart';
 import 'package:msdl/constants/gaps.dart';
 import 'package:msdl/constants/size_config.dart';
 import 'package:msdl/constants/sizes.dart';
