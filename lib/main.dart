@@ -56,6 +56,7 @@ class msdl extends StatelessWidget {
           routes: {
             "/": (context) => LoginScreen(),
             "/chooseRole_Screen": (context) => ChooseRoleScreen(),
+            "/name_Screen": (context) => NameScreen(),
             "/createAccount_Screen": (context) => SignupScreen(),
             "/SignupScreen": (context) => SignupScreen(),
             "/SettingsScreen": (context) => SettingsScreen(),

@@ -145,7 +145,7 @@ class _ChooseRoleState extends State<ChooseRoleScreen> {
               Gaps.v28,
               CustomButton(
                 text: "Next",
-                routeName: "/SignupScreen",
+                routeName: "/name_Screen",
                 onPressed: () => _validateAndProceed(context),
               ),
               Gaps.v14,
