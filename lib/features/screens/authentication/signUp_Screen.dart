@@ -237,7 +237,7 @@ class _SignupScreenState extends State<SignupScreen>
                 ],
               ),
               Gaps.v72,
-              bottomMsdlScreen(),
+              bottomMsdl(),
             ],
           ),
         ),

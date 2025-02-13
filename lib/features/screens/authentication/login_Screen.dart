@@ -118,7 +118,7 @@ class _LoginScreenState extends State<LoginScreen> {
               routeName: "/homeScreen", // 클릭 시 유효성 검사 실행
             ),
             Spacer(),
-            bottomMsdlScreen()
+            bottomMsdl()
           ],
         ),
       ),

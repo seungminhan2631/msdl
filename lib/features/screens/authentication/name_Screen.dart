@@ -31,35 +31,37 @@ class _NameScreenState extends State<NameScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              TopTitle(text: "What is your name?"),
-              Gaps.v32,
-              CustomTextField(
-                controller: nameController,
-                hintText: "Enter your name",
-                firstIcon: Icons.person,
-                lastIcon: Icons.close,
-                helperText: "Name",
-                errorText: isNameValid
-                    ? null
-                    : "Please enter a name between 1 and 5 characters.",
-                isValid: isNameValid,
-              ),
-              Gaps.v20,
-              CustomButton(
-                text: "Next",
-                routeName: "/SignupScreen",
-                onPressed: _validateName, // ✅ Next 버튼도 유효성 검사 후 이동
-              ),
-              Gaps.v20,
-              bottomMsdlScreen(),
-            ],
-          ),
+    return Scaffold(
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            TopTitle(
+              text: "What is your name?",
+              fontSize: Sizes.size32,
+            ),
+            Gaps.v32,
+            CustomTextField(
+              controller: nameController,
+              hintText: "Enter your name",
+              firstIcon: Icons.person,
+              lastIcon: Icons.close,
+              helperText: "",
+              errorText: isNameValid
+                  ? null
+                  : "Please enter a name between 1 and 5 characters.",
+              isValid: isNameValid,
+            ),
+            Gaps.v20,
+            CustomButton(
+              text: "Next",
+              routeName: "/SignupScreen",
+              onPressed: _validateName, // ✅ Next 버튼도 유효성 검사 후 이동
+            ),
+            Gaps.v20,
+            bottomMsdl(),
+          ],
         ),
       ),
     );

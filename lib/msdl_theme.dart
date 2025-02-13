@@ -62,7 +62,7 @@ final ThemeData msdlTheme = ThemeData(
     ),
     //Font of No account?,
     labelMedium: TextStyle(
-      color: darkColorScheme.onSurfaceVariant,
+      color: darkColorScheme.onPrimaryContainer,
       fontFamily: 'Andika',
     ),
     //Font of LogOut
@@ -97,7 +97,7 @@ final ThemeData msdlTheme = ThemeData(
       borderRadius: BorderRadius.circular(0),
     ),
     side: BorderSide(
-      color: darkColorScheme.onSurfaceVariant.withOpacity(0.8),
+      color: darkColorScheme.onPrimaryContainer.withOpacity(0.8),
       width: 2,
     ),
     fillColor: WidgetStateProperty.resolveWith<Color>(
