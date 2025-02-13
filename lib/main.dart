@@ -7,6 +7,7 @@ import 'package:msdl/features/screens/authentication/name_Screen.dart';
 import 'package:msdl/features/screens/authentication/signUp_Screen.dart';
 import 'package:msdl/features/screens/authentication/login_Screen.dart';
 import 'package:msdl/features/screens/authentication/viewModel/viewModel.dart';
+import 'package:msdl/features/screens/group/viewModel/viewModel.dart';
 import 'package:msdl/features/screens/settings/setting_Screen.dart';
 import 'package:msdl/msdl_theme.dart';
 import 'package:path_provider/path_provider.dart';
@@ -30,6 +31,7 @@ void main() async {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => AuthViewModel()),
+        ChangeNotifierProvider(create: (context) => GroupViewModel()),
       ],
       child: const msdl(),
     ),
@@ -60,8 +62,9 @@ class msdl extends StatelessWidget {
             "/nameScreen": (context) => NameScreen(),
             "/createAccount_Screen": (context) => SignupScreen(),
             "/SignupScreen": (context) => SignupScreen(),
-            "/SettingsScreen": (context) => SettingsScreen(),
+            "/settingsScreen": (context) => SettingsScreen(),
             "/homeScreen": (context) => Homescreen(),
+            "/groupScreen": (context) => GroupScreen(),
           },
         );
       },

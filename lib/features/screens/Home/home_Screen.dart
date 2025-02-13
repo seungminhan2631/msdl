@@ -18,31 +18,20 @@ class Homescreen extends StatefulWidget {
 }
 
 class _HomescreenState extends State<Homescreen> {
-  int _selectedIndex = 1; // ✅ [추가] 기본 선택된 화면 (HomeScreen)
-
-  // ✅ 바텀 네비게이션을 눌렀을 때 화면 변경 (네비게이션 중복 방지)
+  int _selectedIndex = 1; // 홈 화면에서 시작
   void _onItemTapped(int index) {
-    if (_selectedIndex == index) return; // ✅ 현재 선택된 화면과 동일하면 동작하지 않음
-    setState(() {
-      _selectedIndex = index;
-    });
+    if (index != _selectedIndex) {
+      setState(() {
+        _selectedIndex = index;
+      });
 
-    // ✅ 선택된 화면으로 이동
-    if (index == 0) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => GroupScreen()),
-      );
-    } else if (index == 1) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => Homescreen()),
-      );
-    } else if (index == 2) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => SettingsScreen()),
-      );
+      if (index == 0) {
+        Navigator.pushReplacementNamed(context, "/groupScreen");
+      } else if (index == 1) {
+        Navigator.pushReplacementNamed(context, "/homeScreen");
+      } else if (index == 2) {
+        Navigator.pushReplacementNamed(context, "/settingsScreen");
+      }
     }
   }
 
@@ -140,7 +129,7 @@ class _HomescreenState extends State<Homescreen> {
       ),
       bottomNavigationBar: CustomBottomNavigationBar(
         selectedIndex: _selectedIndex,
-        onItemTapped: _onItemTapped,
+        onItemTapped: _onItemTapped, // ✅ 변경된 함수 전달
       ),
     );
   }
