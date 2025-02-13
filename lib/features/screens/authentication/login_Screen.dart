@@ -47,8 +47,7 @@ class _LoginScreenState extends State<LoginScreen> {
         // ✅ 엄격한 이메일 유효성 검사 적용 (RFC 5322 기반)
         final RegExp emailRegex = RegExp(
             r'^(?=.{1,64}@.{1,255}$)(?=[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,63}$)(?!.*\.\.)[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,63}$');
-        isEmailValid =
-            emailRegex.hasMatch(emailController.text);
+        isEmailValid = emailRegex.hasMatch(emailController.text);
       }
     });
   }
@@ -73,12 +72,13 @@ class _LoginScreenState extends State<LoginScreen> {
           : null;
       loginFailed = false;
     });
-
     if (isEmailValid == true && isPasswordValid == true) {
       bool success = await _authViewModel.login(
           emailController.text, passwordController.text);
 
-      if (success) Navigator.pushNamed(context, "/NameScreen");
+      if (success) {
+        Navigator.pushNamed(context, "/homeScreen");
+      }
     } else {
       setState(() {
         loginFailed = true;

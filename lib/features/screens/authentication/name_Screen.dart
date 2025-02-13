@@ -70,11 +70,7 @@ class _NameScreenState extends State<NameScreen> {
               CustomButton(
                 text: "Next",
                 routeName: "/SignupScreen",
-                onPressed: () {
-                  if (isNameValid == true) {
-                    Navigator.pushNamed(context, "/SignupScreen");
-                  }
-                },
+                onPressed: _validateName,
               ),
               Gaps.v12,
               Row(
