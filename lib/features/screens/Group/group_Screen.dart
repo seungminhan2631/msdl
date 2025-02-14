@@ -11,7 +11,7 @@ import 'package:msdl/features/screens/Group/group_Screen.dart';
 import 'package:msdl/features/screens/group/viewModel/viewModel.dart';
 import 'package:msdl/features/screens/settings/setting_Screen.dart';
 import 'package:provider/provider.dart';
-import 'package:msdl/features/screens/group/model/model.dart'; // GroupModel 추가
+import 'package:msdl/features/screens/group/model/model.dart';
 
 class GroupScreen extends StatefulWidget {
   const GroupScreen({super.key});
@@ -40,8 +40,10 @@ class _GroupScreenState extends State<GroupScreen> {
   @override
   Widget build(BuildContext context) {
     String todayDate = DateFormat('yyyy.MM.dd').format(DateTime.now());
-    final Map<String, List<GroupModel>> groupData =
+    final Map<Role, List<GroupModel>> groupData =
         Provider.of<GroupViewModel>(context).groupedUsers;
+
+    print("📌 UI에서 groupData 상태: $groupData");
 
     return SafeArea(
       child: Scaffold(
@@ -93,75 +95,61 @@ class _GroupScreenState extends State<GroupScreen> {
               padding: EdgeInsets.symmetric(
                   vertical: Sizes.size18, horizontal: Sizes.size28),
               child: Column(
-                children: [
-                  Sectiontitle(
-                    icon: Icons.school,
-                    text: "Professor",
-                    iconColor: Color(0xFFF59E0B),
-                  ),
-                  Gaps.v7,
-                  CustomContainer(
-                    child: ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: groupData["Professor"]?.length ?? 0,
-                      itemBuilder: (context, index) {
-                        final user = groupData["Professor"]![index];
-                        return groupContainerText(user);
-                      },
-                    ),
-                  ),
-                  Gaps.v28,
-                  Sectiontitle(
-                    icon: Icons.library_books_outlined,
-                    text: "Ph.D. Student",
-                    iconColor: Color(0xFF31B454),
-                  ),
-                  Gaps.v7,
-                  CustomContainer(
-                    child: ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: groupData["Ph.D. Student"]?.length ?? 0,
-                      itemBuilder: (context, index) {
-                        final user = groupData["Ph.D. Student"]![index];
-                        return groupContainerText(user);
-                      },
-                    ),
-                  ),
-                  Gaps.v28,
-                  Sectiontitle(
-                    icon: Icons.school_outlined,
-                    text: "MS Student",
-                    iconColor: Color(0xFF935E38),
-                  ),
-                  Gaps.v7,
-                  CustomContainer(
-                    child: ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: groupData["MS Student"]?.length ?? 0,
-                      itemBuilder: (context, index) {
-                        final user = groupData["MS Student"]![index];
-                        return groupContainerText(user);
-                      },
-                    ),
-                  ),
-                  Gaps.v28,
-                  Sectiontitle(
-                    icon: Icons.auto_stories_outlined,
-                    text: "BS Student",
-                    iconColor: Color(0xFF3F51B5),
-                  ),
-                  Gaps.v7,
-                  CustomContainer(
-                    child: ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: groupData["BS Student"]?.length ?? 0,
-                      itemBuilder: (context, index) {
-                        final user = groupData["BS Student"]![index];
-                        return groupContainerText(user);
-                      },
-                    ),
-                  )
-                ],
+                children: Role.values.map((role) {
+                  return Column(
+                    children: [
+                      Sectiontitle(
+                        icon: role.icon, // 🔥 역할에 맞는 아이콘 적용
+                        text: role.displayName, // 🔥 역할에 맞는 텍스트 적용
+                        iconColor: role.color,
+                      ),
+                      CustomContainer(
+                        child: ListView.builder(
+                          shrinkWrap: true,
+                          itemCount: groupData[role]?.length ?? 0,
+                          itemBuilder: (context, index) {
+                            final user = groupData[role]![index];
+                            return ListTile(
+                              contentPadding: EdgeInsets.symmetric(
+                                  vertical: 0,
+                                  horizontal: Sizes.size20), // 🔥 패딩 제거
+
+                              visualDensity: VisualDensity(vertical: -4),
+                              leading: Icon(
+                                role.icon,
+                                color: role.color,
+                                size: Sizes.size28,
+                              ), // 🔥 역할에 맞는 아이콘과 색상 적용
+                              title: Text(
+                                user.name,
+                                style: TextStyle(
+                                    fontFamily: "Andika",
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: Sizes.size18),
+                              ),
+                              subtitle: Text(
+                                "My Workplace",
+                                style: TextStyle(
+                                    fontFamily: "Andika",
+                                    color: Colors.grey,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: Sizes.size12),
+                              ),
+                              trailing: Text(
+                                "In: ${user.checkInTime} | Out: ${user.checkOutTime}",
+                                style: TextStyle(
+                                    fontFamily: "Andika",
+                                    color: Color(0xffF1F1F1),
+                                    fontSize: Sizes.size14),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    ],
+                  );
+                }).toList(),
               ),
             ),
           ),

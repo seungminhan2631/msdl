@@ -13,6 +13,7 @@ class GroupRepository {
       LEFT JOIN attendance ON users.id = attendance.user_id
     ''');
 
-    return result.map((map) => GroupModel.fromMap(map)).toList(); // ✅ 타입 일치
+    print("🔎 SQL Query Result: $result");
+    return result.map((map) => GroupModel.fromMap(map)).toList();
   }
 }
