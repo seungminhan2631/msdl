@@ -11,7 +11,7 @@ class CustomContainer extends StatelessWidget {
     Key? key,
     this.child,
     this.width = 372,
-    this.height = 125,
+    this.height = 140,
   }) : super(key: key);
 
   @override

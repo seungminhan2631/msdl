@@ -74,14 +74,15 @@ class _LoginScreenState extends State<LoginScreen> {
           : null;
       loginFailed = false;
     });
-
     if (isEmailValid == true && isPasswordValid == true) {
       bool success = await _authViewModel.login(
         emailController.text,
         passwordController.text,
       );
 
-      if (success) Navigator.pushNamed(context, "/NameScreen");
+      if (success) {
+        Navigator.pushNamed(context, "/homeScreen");
+      }
     } else {
       setState(() {
         loginFailed = true;
