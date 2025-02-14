@@ -39,6 +39,7 @@ class _HomescreenState extends State<Homescreen> {
   Widget build(BuildContext context) {
     String todayDate = DateFormat('yyyy.MM.dd').format(DateTime.now());
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         automaticallyImplyLeading: false,
         backgroundColor: Color(0xff151515).withOpacity(0.98),
@@ -74,7 +75,7 @@ class _HomescreenState extends State<Homescreen> {
       ),
       body: Padding(
         padding: EdgeInsets.symmetric(
-            horizontal: Sizes.size28, vertical: Sizes.size80),
+            horizontal: Sizes.size28, vertical: Sizes.size48 + Sizes.size2),
         child: Column(
           children: [
             Sectiontitle(

@@ -90,7 +90,7 @@ class _GroupScreenState extends State<GroupScreen> {
           trackVisibility: false,
           child: SingleChildScrollView(
             controller: _scrollController,
-            padding: EdgeInsets.symmetric(vertical: 20.h),
+            padding: EdgeInsets.symmetric(vertical: Sizes.size1),
             child: Padding(
               padding: EdgeInsets.symmetric(
                   vertical: Sizes.size18, horizontal: Sizes.size28),
@@ -103,6 +103,7 @@ class _GroupScreenState extends State<GroupScreen> {
                         text: role.displayName, // 🔥 역할에 맞는 텍스트 적용
                         iconColor: role.color,
                       ),
+                      Gaps.v5,
                       CustomContainer(
                         child: ListView.builder(
                           shrinkWrap: true,
@@ -111,15 +112,13 @@ class _GroupScreenState extends State<GroupScreen> {
                             final user = groupData[role]![index];
                             return ListTile(
                               contentPadding: EdgeInsets.symmetric(
-                                  vertical: 0,
-                                  horizontal: Sizes.size20), // 🔥 패딩 제거
-
+                                  vertical: 0, horizontal: Sizes.size20),
                               visualDensity: VisualDensity(vertical: -4),
                               leading: Icon(
                                 role.icon,
                                 color: role.color,
                                 size: Sizes.size28,
-                              ), // 🔥 역할에 맞는 아이콘과 색상 적용
+                              ),
                               title: Text(
                                 user.name,
                                 style: TextStyle(
@@ -147,6 +146,7 @@ class _GroupScreenState extends State<GroupScreen> {
                           },
                         ),
                       ),
+                      Gaps.v12,
                     ],
                   );
                 }).toList(),
@@ -169,7 +169,7 @@ class _GroupScreenState extends State<GroupScreen> {
         Row(
           children: [
             Icon(Icons.account_circle, color: Colors.white, size: Sizes.size40),
-            SizedBox(width: Sizes.size8),
+            Gaps.h8,
             Text(
               user.name,
               style: TextStyle(
@@ -191,7 +191,6 @@ class _GroupScreenState extends State<GroupScreen> {
             ),
           ],
         ),
-        SizedBox(height: Sizes.size8),
       ],
     );
   }
