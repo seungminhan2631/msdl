@@ -46,27 +46,40 @@ class DatabaseHelper {
       print("users 테이블 생성 완료");
 
       await db.execute('''
-        CREATE TABLE attendance (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            user_id INTEGER NOT NULL,
-            date TEXT NOT NULL,
-            check_in_time TEXT,
-            check_out_time TEXT,
-            work_category TEXT CHECK(work_category IN ('Lab', 'Home', 'Out Of Office', 'Other')),
-            work_location TEXT,
-            FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE
+       CREATE TABLE attendance (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,
+    date TEXT NOT NULL,
+    check_in_time TEXT,
+    check_out_time TEXT,
+    is_checked_in INTEGER DEFAULT 0, -- 🔥 출근 상태 추가 (0: 미출근, 1: 출근)
+    work_category TEXT CHECK(work_category IN ('Lab', 'Home', 'Out Of Office', 'Other')),
+    work_location TEXT,
+    FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE
         );
+
       ''');
       print("attendance 테이블 생성 완료");
+
+      await db.execute('''
+       CREATE TABLE week (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,
+    date TEXT NOT NULL,
+    status TEXT CHECK(status IN ('Checked In', 'Checked Out', 'Absent')) NOT NULL, -- 🔥 출근 상태 기록
+    FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+      ''');
+      print("week 테이블 생성 완료");
 
       await db.execute('''
         CREATE TABLE work_locations (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             user_id INTEGER NOT NULL,
-            location_name TEXT NOT NULL,
             latitude REAL NOT NULL,
-            longitude REAL NOT NULL,
-            work_category TEXT CHECK(work_category IN ('Lab', 'Home', 'Out Of Office', 'Other')),
+            longitude REAL NOT  NULL,
+            category TEXT CHECK(category IN ('Lab', 'Home', 'Out Of Office', 'Other')),
             FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE
         );
       ''');

@@ -1,35 +1,32 @@
 class HomeModel {
-  final int? id;
-  final String email;
-  final String password;
-  final String role;
+  final int userId;
   final String name;
+  final String role;
+  final bool isCheckedIn;
+  final String workCategory;
+  final String workLocation;
+  final List<Map<String, dynamic>> weeklyTimeline;
 
   HomeModel({
-    this.id,
-    required this.email,
-    required this.password,
-    required this.role,
+    required this.userId,
     required this.name,
+    required this.role,
+    required this.isCheckedIn,
+    required this.workCategory,
+    required this.workLocation,
+    required this.weeklyTimeline,
   });
 
-  factory HomeModel.fromJson(Map<String, dynamic> json) {
+  factory HomeModel.fromMap(
+      Map<String, dynamic> map, List<Map<String, dynamic>> weeklyData) {
     return HomeModel(
-      id: json['id'],
-      email: json['email'],
-      password: json['password'],
-      role: json['role'],
-      name: json['name'],
+      userId: map['id'],
+      name: map['name'],
+      role: map['role'],
+      isCheckedIn: (map['is_checked_in'] ?? 0) == 1,
+      workCategory: map['work_category'] ?? "Unknown",
+      workLocation: map['work_location'] ?? "Unknown",
+      weeklyTimeline: weeklyData,
     );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'email': email,
-      'password': password,
-      'role': role,
-      'name': name,
-    };
   }
 }
