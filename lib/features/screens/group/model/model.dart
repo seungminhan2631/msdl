@@ -73,6 +73,7 @@ class GroupModel {
   final Role role;
   final String checkInTime;
   final String checkOutTime;
+  final String category;
 
   GroupModel({
     required this.id,
@@ -80,6 +81,7 @@ class GroupModel {
     required this.role,
     required this.checkInTime,
     required this.checkOutTime,
+    required this.category,
   });
 
   factory GroupModel.fromMap(Map<String, dynamic> map) {
@@ -89,6 +91,8 @@ class GroupModel {
       role: RoleExtension.fromString(map['role'] ?? 'Unknown'),
       checkInTime: map['check_in_time'] ?? '--:--',
       checkOutTime: map['check_out_time'] ?? '--:--',
+      category:
+          map['category'] != null ? map['category'].toString() : "My WorkPlace",
     );
   }
 }

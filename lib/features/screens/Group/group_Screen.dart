@@ -129,7 +129,7 @@ class _GroupScreenState extends State<GroupScreen> {
                                     fontSize: Sizes.size18),
                               ),
                               subtitle: Text(
-                                "My Workplace",
+                                user.category,
                                 style: TextStyle(
                                     fontFamily: "Andika",
                                     color: Colors.grey,
