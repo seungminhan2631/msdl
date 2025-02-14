@@ -1,10 +1,25 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- 인터넷 및 위치 권한 요청청-->
+    <uses-permission android:name="android.permission.INTERNET"/> <!-- 인터넷 사용 권한 -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/> <!-- 정밀한 위치 접근 (GPS) -->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/> <!-- 대략적인 위치 접근 (Wifi, 기지국) -->
+
+     <!-- GPS 및 네트워크 기반 위치 사용 선언 -->
+    <uses-feature android:name="android.hardware.location.gps" /> <!-- GPS 기능 사용 -->
+    <uses-feature android:name="android.hardware.location.network" />  <!-- 네트워크 기반 위치 사용 -->
+
     <application
         android:label="msdl"
         android:requestLegacyExternalStorage="true"
-
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
+
+        <!-- Google Maps API 키 등록 -->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyDqkZIaLDnIydApRd_OMUsnHDeiOMm8pr4"/> <!-- API 키 (유출조심) -->
+
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -22,16 +37,19 @@
               android:name="io.flutter.embedding.android.NormalTheme"
               android:resource="@style/NormalTheme"
               />
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
+
         </activity>
         <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->
         <meta-data
             android:name="flutterEmbedding"
-            android:value="2" />
+            android:value="2"
+            />
     </application>
     <!-- Required to query activities that can process text, see:
          https://developer.android.com/training/package-visibility and
