@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:flutter/services.dart' show rootBundle;
 
 class WorkplaceScreen extends StatefulWidget {
   const WorkplaceScreen({super.key});
@@ -10,13 +11,28 @@ class WorkplaceScreen extends StatefulWidget {
 }
 
 class _WorkplaceScreenState extends State<WorkplaceScreen> {
-  late GoogleMapController mapController; // Google Maps 컨트롤러
+  late GoogleMapController mapController;
   LatLng _currentPosition = const LatLng(37.5665, 126.9780); // 기본 위치 (서울)
+
+  // 마커 이미지 변수 추가
+  late BitmapDescriptor _markerStatic;
+  late BitmapDescriptor _markerMoving;
+  bool _isMoving = false; // 카메라 이동 상태 변수
 
   @override
   void initState() {
     super.initState();
-    _getUserLocation(); // 현재 위치 가져오기
+    _getUserLocation();
+    _loadCustomMarkers(); // 마커 이미지 로드
+  }
+
+  // 마커 이미지 불러오기
+  Future<void> _loadCustomMarkers() async {
+    _markerStatic = await BitmapDescriptor.fromAssetImage(
+        const ImageConfiguration(size: Size(48, 48)), 'assets/images/박보영.jpg');
+    _markerMoving = await BitmapDescriptor.fromAssetImage(
+        const ImageConfiguration(size: Size(48, 48)), 'assets/images/한승민.png');
+    setState(() {}); // UI 업데이트
   }
 
   // 위치 권한 확인 및 현재 위치 가져오기
@@ -24,14 +40,12 @@ class _WorkplaceScreenState extends State<WorkplaceScreen> {
     bool serviceEnabled;
     LocationPermission permission;
 
-    // 1️⃣ 위치 서비스 사용 가능 여부 확인
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
       print("위치 서비스가 비활성화됨");
       return;
     }
 
-    // 2️⃣ 위치 권한 확인
     permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
@@ -46,7 +60,6 @@ class _WorkplaceScreenState extends State<WorkplaceScreen> {
       return;
     }
 
-    // 3️⃣ 현재 위치 가져오기
     Position position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high);
 
@@ -54,37 +67,54 @@ class _WorkplaceScreenState extends State<WorkplaceScreen> {
       _currentPosition = LatLng(position.latitude, position.longitude);
     });
 
-    // 4️⃣ 현재 위치로 카메라 이동
     mapController.animateCamera(CameraUpdate.newLatLng(_currentPosition));
+  }
+
+  // 카메라 이동 이벤트 추가
+  void _onCameraMove(CameraPosition position) {
+    setState(() {
+      _isMoving = true; // 카메라 이동 중
+    });
+  }
+
+  // 카메라 이동 종료 이벤트 추가
+  void _onCameraIdle() {
+    setState(() {
+      _isMoving = false; // 카메라 이동 멈춤
+    });
   }
 
   // 지도 초기화
   void _onMapCreated(GoogleMapController controller) {
     mapController = controller;
-    _getUserLocation(); // 지도 초기화 시 현재 위치 업데이트
+    _getUserLocation();
   }
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        FocusScope.of(context).unfocus(); // 바탕을 터치하면 키보드 내려감
+        FocusScope.of(context).unfocus();
       },
       child: Scaffold(
-        appBar: AppBar(title: Text("Google Maps Workplace")),
+        appBar: AppBar(title: const Text("Google Maps Workplace")),
         body: GoogleMap(
           onMapCreated: _onMapCreated,
           initialCameraPosition: CameraPosition(
             target: _currentPosition,
-            zoom: 15.0, // 기본 줌 레벨
+            zoom: 15.0,
           ),
-          myLocationEnabled: true, // 현재 위치 아이콘 표시
-          myLocationButtonEnabled: true, // 현재 위치 버튼 표시
+          myLocationEnabled: false, // 기본 현재 위치 아이콘 숨김 (커스텀 마커 사용)
+          myLocationButtonEnabled: true,
+          onCameraMove: _onCameraMove, // 카메라 이동 이벤트 추가
+          onCameraIdle: _onCameraIdle, // 카메라 멈춤 이벤트 추가
           markers: {
             Marker(
-              markerId: MarkerId("current_location"),
+              markerId: const MarkerId("current_location"),
               position: _currentPosition,
-              infoWindow: InfoWindow(
+              icon:
+                  _isMoving ? _markerMoving : _markerStatic, // 움직일 때 & 멈출 때 변경
+              infoWindow: const InfoWindow(
                 title: "현재 위치",
               ),
             ),

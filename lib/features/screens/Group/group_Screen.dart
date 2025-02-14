@@ -1,17 +1,15 @@
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:msdl/commons/widgets/buttons/customBottomNavigationbar.dart';
 import 'package:msdl/constants/gaps.dart';
 import 'package:msdl/constants/size_config.dart';
 import 'package:msdl/constants/sizes.dart';
-import 'package:msdl/features/screens/Home/home_Screen.dart';
+import 'package:msdl/features/screens/Group/model/model.dart';
 import 'package:msdl/features/screens/Home/widget/customContainer.dart';
 import 'package:msdl/features/screens/Home/widget/sectionTitle.dart';
-import 'package:msdl/features/screens/Group/group_Screen.dart';
 import 'package:msdl/features/screens/group/viewModel/viewModel.dart';
-import 'package:msdl/features/screens/settings/setting_Screen.dart';
 import 'package:provider/provider.dart';
-import 'package:msdl/features/screens/group/model/model.dart';
 
 class GroupScreen extends StatefulWidget {
   const GroupScreen({super.key});
