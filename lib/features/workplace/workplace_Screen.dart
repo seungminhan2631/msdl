@@ -14,9 +14,9 @@ class _WorkplaceScreenState extends State<WorkplaceScreen> {
   late GoogleMapController mapController;
   LatLng _currentPosition = const LatLng(37.5665, 126.9780); // 기본 위치 (서울)
 
-  // 마커 이미지 변수 추가
-  late BitmapDescriptor _markerStatic;
-  late BitmapDescriptor _markerMoving;
+  // 마커 이미지 변수 (nullable 처리)
+  BitmapDescriptor? _markerStatic;
+  BitmapDescriptor? _markerMoving;
   bool _isMoving = false; // 카메라 이동 상태 변수
 
   @override
@@ -26,27 +26,37 @@ class _WorkplaceScreenState extends State<WorkplaceScreen> {
     _loadCustomMarkers(); // 마커 이미지 로드
   }
 
-  // 마커 이미지 불러오기
+  // 마커 이미지 불러오기 (예외 방지)
   Future<void> _loadCustomMarkers() async {
-    _markerStatic = await BitmapDescriptor.fromAssetImage(
-        const ImageConfiguration(size: Size(48, 48)), 'assets/images/박보영.jpg');
-    _markerMoving = await BitmapDescriptor.fromAssetImage(
-        const ImageConfiguration(size: Size(48, 48)), 'assets/images/한승민.png');
-    setState(() {}); // UI 업데이트
+    try {
+      final staticMarker = await BitmapDescriptor.fromAssetImage(
+          const ImageConfiguration(size: Size(48, 48)),
+          'assets/images/박보영.jpg');
+
+      final movingMarker = await BitmapDescriptor.fromAssetImage(
+          const ImageConfiguration(size: Size(48, 48)),
+          'assets/images/한승민.png');
+
+      if (mounted) {
+        setState(() {
+          _markerStatic = staticMarker;
+          _markerMoving = movingMarker;
+        });
+      }
+    } catch (e) {
+      print("마커 로드 오류: $e");
+    }
   }
 
   // 위치 권한 확인 및 현재 위치 가져오기
   Future<void> _getUserLocation() async {
-    bool serviceEnabled;
-    LocationPermission permission;
-
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
       print("위치 서비스가 비활성화됨");
       return;
     }
 
-    permission = await Geolocator.checkPermission();
+    LocationPermission permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
@@ -63,25 +73,31 @@ class _WorkplaceScreenState extends State<WorkplaceScreen> {
     Position position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high);
 
-    setState(() {
-      _currentPosition = LatLng(position.latitude, position.longitude);
-    });
+    if (mounted) {
+      setState(() {
+        _currentPosition = LatLng(position.latitude, position.longitude);
+      });
+    }
 
     mapController.animateCamera(CameraUpdate.newLatLng(_currentPosition));
   }
 
   // 카메라 이동 이벤트 추가
   void _onCameraMove(CameraPosition position) {
-    setState(() {
-      _isMoving = true; // 카메라 이동 중
-    });
+    if (mounted) {
+      setState(() {
+        _isMoving = true;
+      });
+    }
   }
 
   // 카메라 이동 종료 이벤트 추가
   void _onCameraIdle() {
-    setState(() {
-      _isMoving = false; // 카메라 이동 멈춤
-    });
+    if (mounted) {
+      setState(() {
+        _isMoving = false;
+      });
+    }
   }
 
   // 지도 초기화
@@ -112,11 +128,9 @@ class _WorkplaceScreenState extends State<WorkplaceScreen> {
             Marker(
               markerId: const MarkerId("current_location"),
               position: _currentPosition,
-              icon:
-                  _isMoving ? _markerMoving : _markerStatic, // 움직일 때 & 멈출 때 변경
-              infoWindow: const InfoWindow(
-                title: "현재 위치",
-              ),
+              icon: (_isMoving ? _markerMoving : _markerStatic) ??
+                  BitmapDescriptor.defaultMarker,
+              infoWindow: const InfoWindow(title: "현재 위치"),
             ),
           },
         ),

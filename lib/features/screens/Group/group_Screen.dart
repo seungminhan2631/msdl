@@ -1,11 +1,10 @@
-
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:msdl/commons/widgets/buttons/customBottomNavigationbar.dart';
 import 'package:msdl/constants/gaps.dart';
 import 'package:msdl/constants/size_config.dart';
 import 'package:msdl/constants/sizes.dart';
-import 'package:msdl/features/screens/Group/model/model.dart';
+import 'package:msdl/features/screens/group/model/model.dart';
 import 'package:msdl/features/screens/Home/widget/customContainer.dart';
 import 'package:msdl/features/screens/Home/widget/sectionTitle.dart';
 import 'package:msdl/features/screens/group/viewModel/viewModel.dart';
