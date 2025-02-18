@@ -16,14 +16,21 @@ class AuthRepository {
     });
   }
 
-  Future<bool> loginUser(String email, String password) async {
+  Future<int?> loginUser(String email, String password) async {
     final _db = await db.database;
     final result = await _db.query(
       'users',
+      columns: ['id'], // ✅ ID만 가져오도록 수정
       where: 'email = ? AND password = ?',
       whereArgs: [email, password],
     );
 
-    return result.isNotEmpty;
+    if (result.isNotEmpty) {
+      print("✅ 로그인 성공! 사용자 ID: ${result.first['id']}");
+      return result.first['id'] as int; // ✅ 사용자 ID 반환
+    } else {
+      print("❌ 로그인 실패");
+      return null; // 로그인 실패 시 null 반환
+    }
   }
 }

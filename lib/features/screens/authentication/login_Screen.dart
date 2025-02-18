@@ -6,8 +6,10 @@ import 'package:msdl/commons/widgets/topTitle.dart';
 import 'package:msdl/constants/gaps.dart';
 import 'package:msdl/constants/size_config.dart';
 import 'package:msdl/constants/sizes.dart';
+import 'package:msdl/features/screens/Home/viewModel/home_viewModel.dart';
 import 'package:msdl/features/screens/authentication/viewModel/viewModel.dart';
 import 'package:msdl/msdl_theme.dart';
+import 'package:provider/provider.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -74,19 +76,26 @@ class _LoginScreenState extends State<LoginScreen> {
           : null;
       loginFailed = false;
     });
+
     if (isEmailValid == true && isPasswordValid == true) {
-      bool success = await _authViewModel.login(
+      int? userId = await _authViewModel.login(
         emailController.text,
         passwordController.text,
       );
 
-      if (success) {
+      if (userId != null) {
+        print("✅ 로그인 성공! 사용자 ID: $userId");
+
+        // ✅ HomeViewModel에도 ID 전달하여 데이터 불러오기
+        Provider.of<HomeViewModel>(context, listen: false)
+            .fetchHomeData(userId);
+
         Navigator.pushNamed(context, "/homeScreen");
+      } else {
+        setState(() {
+          loginFailed = true;
+        });
       }
-    } else {
-      setState(() {
-        loginFailed = true;
-      });
     }
   }
 

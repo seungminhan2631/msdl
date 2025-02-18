@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:msdl/constants/size_config.dart';
 
 class CustomBottomNavigationBar extends StatelessWidget {
   final int selectedIndex;
@@ -18,7 +19,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
         border: Border(
           top: BorderSide(
             color: Color(0xFFCACACA),
-            width: 2.0,
+            width: 2.0.w,
           ),
         ),
         borderRadius: BorderRadius.only(

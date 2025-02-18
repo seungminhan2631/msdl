@@ -9,6 +9,7 @@ import 'package:msdl/features/screens/Home/widget/profileAvatar.dart';
 import 'package:msdl/features/screens/Home/widget/sectionTitle.dart';
 import 'package:msdl/commons/widgets/buttons/customBottomNavigationbar.dart';
 import 'package:msdl/features/screens/Group/group_Screen.dart';
+import 'package:msdl/features/screens/authentication/viewModel/viewModel.dart';
 import 'package:msdl/features/screens/settings/setting_Screen.dart';
 import 'package:provider/provider.dart';
 
@@ -20,12 +21,20 @@ class Homescreen extends StatefulWidget {
 }
 
 class _HomescreenState extends State<Homescreen> {
-  int _selectedIndex = 1; // 홈 화면에서 시작
+  int _selectedIndex = 1;
   @override
   void initState() {
     super.initState();
-    Provider.of<HomeViewModel>(context, listen: false)
-        .fetchHomeData(1); // 🔥 userId=1 기준
+    _loadUserData(); // ✅ 로그인한 사용자 ID 불러오기
+  }
+
+  void _loadUserData() {
+    final userId = Provider.of<AuthViewModel>(context, listen: false).userId;
+    if (userId != null) {
+      Provider.of<HomeViewModel>(context, listen: false).fetchHomeData(userId);
+    } else {
+      print("❌ 로그인된 사용자 ID 없음!");
+    }
   }
 
   void _onItemTapped(int index) {
@@ -48,6 +57,7 @@ class _HomescreenState extends State<Homescreen> {
   Widget build(BuildContext context) {
     String todayDate = DateFormat('yyyy.MM.dd').format(DateTime.now());
     final homeData = Provider.of<HomeViewModel>(context).homeData;
+    final userId = Provider.of<AuthViewModel>(context).userId;
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -97,19 +107,17 @@ class _HomescreenState extends State<Homescreen> {
             Gaps.v8,
             CustomContainer(
               child: Stack(
-                clipBehavior: Clip.none, // 🔥 Stack 바깥으로 위젯이 나올 수 있도록 허용
                 children: [
                   Positioned(
                     left: Sizes.size20,
                     top: Sizes.size36,
-                    child: ProfileAvatar(), // 🔥 CircleAvatar 포함된 위젯
+                    child: ProfileAvatar(),
                   ),
                   Positioned(
-                    left: Sizes.size96, // 🔥 프로필 아이콘 오른쪽에 배치
-
+                    left: Sizes.size96,
                     top: Sizes.size32,
                     child: Text(
-                      homeData?.role ?? "Loading...",
+                      homeData?.role ?? "role...",
                       style: TextStyle(
                         fontFamily: 'Andika',
                         fontSize: Sizes.size16 + Sizes.size1,
@@ -122,7 +130,7 @@ class _HomescreenState extends State<Homescreen> {
                     left: Sizes.size96 + Sizes.size10, // 🔥 프로필 아이콘 오른쪽에 배치
                     top: Sizes.size60,
                     child: Text(
-                      homeData?.name ?? "Loading...",
+                      homeData?.name ?? "name...",
                       style: TextStyle(
                         fontFamily: 'Andika',
                         fontSize: Sizes.size20,
@@ -136,7 +144,8 @@ class _HomescreenState extends State<Homescreen> {
                     top: Sizes.size36 + Sizes.size1,
                     child: ElevatedButton(
                       onPressed: () {
-                        print("Clock In 버튼 클릭됨");
+                        Provider.of<HomeViewModel>(context, listen: false)
+                            .toggleAttendance(homeData!.id); // ✅ userId 사용
                       },
                       style: ElevatedButton.styleFrom(
                         minimumSize: Size(117, 60),

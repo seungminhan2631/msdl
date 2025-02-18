@@ -5,6 +5,9 @@ class AuthViewModel extends ChangeNotifier {
   final AuthRepository _repository = AuthRepository();
   String? selectedRole;
   String? userName;
+  int? _userId; // ✅ 로그인한 사용자 ID 저장
+
+  int? get userId => _userId; // ✅ Getter 추가
 
   void setRole(String role) {
     selectedRole = role;
@@ -16,6 +19,19 @@ class AuthViewModel extends ChangeNotifier {
     userName = name;
     print("✅ Name이 설정됨: $userName");
     notifyListeners();
+  }
+
+  Future<int?> login(String email, String password) async {
+    int? userId = await _repository.loginUser(email, password); // ✅ 로그인 시 ID 반환
+
+    if (userId != null) {
+      _userId = userId; // ✅ 로그인한 ID 저장
+      print("✅ 로그인한 사용자 ID: $_userId"); // ✅ 로그 추가
+      notifyListeners();
+      return userId;
+    }
+
+    return null; // 로그인 실패 시 null 반환
   }
 
   Future<bool> signUp(String email, String password) async {
@@ -39,9 +55,5 @@ class AuthViewModel extends ChangeNotifier {
       print("❌ 회원가입 실패: $e");
       return false;
     }
-  }
-
-  Future<bool> login(String email, String password) async {
-    return await _repository.loginUser(email, password);
   }
 }
