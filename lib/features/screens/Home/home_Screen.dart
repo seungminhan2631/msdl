@@ -25,7 +25,7 @@ class _HomescreenState extends State<Homescreen> {
   @override
   void initState() {
     super.initState();
-    _loadUserData(); // ✅ 로그인한 사용자 ID 불러오기
+    _loadUserData();
   }
 
   void _loadUserData() {

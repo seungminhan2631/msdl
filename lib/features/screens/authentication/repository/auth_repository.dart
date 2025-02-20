@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:msdl/features/screens/authentication/model/user_model.dart';
 
 class AuthRepository {
-  String baseUrl = "http://10.0.2.2:5000";
+  String baseUrl = "http://192.168.1.21:5000";
 
   // ✅ 회원가입 (예외 처리 추가)
   Future<String> createUser(

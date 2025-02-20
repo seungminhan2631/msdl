@@ -4,11 +4,10 @@ import '../repository/auth_repository.dart';
 
 class AuthViewModel extends ChangeNotifier {
   final AuthRepository _repository = AuthRepository();
-  UserModel? _currentUser; // ✅ 로그인한 사용자 정보 저장
+  UserModel? _currentUser;
 
-  UserModel? get currentUser => _currentUser; // ✅ Getter 추가
+  UserModel? get currentUser => _currentUser;
 
-  // ✅ userId Getter 추가
   int? get userId => _currentUser?.id;
 
   String? selectedRole;

@@ -3,9 +3,8 @@ import 'package:http/http.dart' as http;
 import '../model/home_model.dart';
 
 class HomeRepository {
-  static const String baseUrl = "http://10.0.2.2:5000"; // Flask 서버 주소
+  static const String baseUrl = "http://192.168.1.21:5000";
 
-  // ✅ 사용자 홈 데이터 가져오기
   Future<HomeModel?> getHomeData(int userId) async {
     try {
       final response = await http.get(
@@ -26,7 +25,6 @@ class HomeRepository {
     }
   }
 
-  // ✅ 출근 또는 퇴근 업데이트
   Future<void> updateAttendance(int userId, bool isClockIn) async {
     try {
       final response = await http.post(

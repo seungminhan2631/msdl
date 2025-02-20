@@ -4,9 +4,12 @@ import 'package:msdl/commons/widgets/topTitle.dart';
 import 'package:msdl/constants/gaps.dart';
 import 'package:msdl/constants/size_config.dart';
 import 'package:msdl/constants/sizes.dart';
+import 'package:msdl/features/screens/Home/viewModel/home_viewModel.dart';
 import 'package:msdl/msdl_theme.dart';
 import 'package:msdl/features/screens/Home/home_Screen.dart';
 import 'package:msdl/features/screens/Group/group_Screen.dart';
+import 'package:msdl/features/screens/authentication/viewModel/viewModel.dart';
+import 'package:provider/provider.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -15,7 +18,23 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
-  int _selectedIndex = 2; // ✅ [추가] 초기 탭 인덱스 (Settings 탭)
+  int _selectedIndex = 2;
+  @override
+  void initState() {
+    super.initState();
+    _loadUserData();
+  }
+
+//로그인한 userId를
+  void _loadUserData() {
+    final userId = Provider.of<AuthViewModel>(context, listen: false).userId;
+    if (userId != null) {
+      Provider.of<HomeViewModel>(context, listen: false).fetchHomeData(userId);
+    } else {
+      print("❌ 로그인된 사용자 ID 없음!");
+    }
+  }
+
   void _onItemTapped(int index) {
     if (index != _selectedIndex) {
       setState(() {
@@ -34,6 +53,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final homeData = Provider.of<HomeViewModel>(context).homeData;
+
     return SafeArea(
       child: Scaffold(
         resizeToAvoidBottomInset: false,
@@ -42,9 +63,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Center(
-                child: TopTitle(text: "Settings"),
-              ),
+              TopTitle(text: "Settings"),
               Gaps.v80,
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -57,9 +76,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      SettingsProfileText(text: "BS Student"),
+                      SettingsProfileText(
+                        text: homeData?.role ?? "이쁜이",
+                      ),
                       SizedBox(height: 20.h),
-                      SettingsProfileText(text: "한승민"),
+                      SettingsProfileText(
+                        text: homeData?.name ?? "박보영",
+                      ),
                     ],
                   ),
                 ],
