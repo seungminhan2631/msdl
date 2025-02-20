@@ -66,7 +66,6 @@ extension RoleExtension on Role {
   }
 }
 
-// GroupModel
 class GroupModel {
   final String id;
   final String name;
@@ -84,15 +83,15 @@ class GroupModel {
     required this.category,
   });
 
-  factory GroupModel.fromMap(Map<String, dynamic> map) {
+  // ✅ fromJson 추가
+  factory GroupModel.fromJson(Map<String, dynamic> json) {
     return GroupModel(
-      id: map['id'].toString(),
-      name: map['name'] ?? 'Unknown',
-      role: RoleExtension.fromString(map['role'] ?? 'Unknown'),
-      checkInTime: map['check_in_time'] ?? '--:--',
-      checkOutTime: map['check_out_time'] ?? '--:--',
-      category:
-          map['category'] != null ? map['category'].toString() : "My WorkPlace",
+      id: json['id'].toString(),
+      name: json['name'] ?? 'Unknown',
+      role: RoleExtension.fromString(json['role'] ?? 'Unknown'),
+      checkInTime: json['check_in_time'] ?? '--:--',
+      checkOutTime: json['check_out_time'] ?? '--:--',
+      category: json['category'] ?? "My WorkPlace",
     );
   }
 }

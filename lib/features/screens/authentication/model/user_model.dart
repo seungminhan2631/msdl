@@ -1,14 +1,12 @@
 class UserModel {
-  final int? id;
+  final int id;
   final String email;
-  final String password;
   final String role;
   final String name;
 
   UserModel({
-    this.id,
+    required this.id,
     required this.email,
-    required this.password,
     required this.role,
     required this.name,
   });
@@ -17,7 +15,6 @@ class UserModel {
     return UserModel(
       id: json['id'],
       email: json['email'],
-      password: json['password'],
       role: json['role'],
       name: json['name'],
     );
@@ -27,7 +24,6 @@ class UserModel {
     return {
       'id': id,
       'email': email,
-      'password': password,
       'role': role,
       'name': name,
     };

@@ -68,29 +68,35 @@ class _LoginScreenState extends State<LoginScreen> {
 
   void _validateAndSubmit() async {
     setState(() {
-      isEmailValid = emailController.text.isNotEmpty
-          ? emailController.text.contains("@")
-          : null;
-      isPasswordValid = passwordController.text.isNotEmpty
-          ? passwordController.text.length >= 4
-          : null;
+      isEmailValid =
+          emailController.text.isNotEmpty && emailController.text.contains("@");
+      isPasswordValid = passwordController.text.isNotEmpty &&
+          passwordController.text.length >= 4;
       loginFailed = false;
     });
 
-    if (isEmailValid == true && isPasswordValid == true) {
-      int? userId = await _authViewModel.login(
-        emailController.text,
-        passwordController.text,
+    if ((isEmailValid ?? false) && (isPasswordValid ?? false)) {
+      bool success = await _authViewModel.login(
+        emailController.text.trim(),
+        passwordController.text.trim(),
       );
 
-      if (userId != null) {
-        print("✅ 로그인 성공! 사용자 ID: $userId");
+      if (success) {
+        // ✅ 로그인 성공 여부 확인
+        print("✅ 로그인 성공!");
 
-        // ✅ HomeViewModel에도 ID 전달하여 데이터 불러오기
-        Provider.of<HomeViewModel>(context, listen: false)
-            .fetchHomeData(userId);
+        // ✅ 로그인한 사용자 정보 가져오기
+        final user = _authViewModel.currentUser;
+        if (user != null) {
+          print(
+              "👤 사용자 정보: ID: ${user.id}, Name: ${user.name}, Role: ${user.role}");
+          Provider.of<HomeViewModel>(context, listen: false)
+              .fetchHomeData(user.id);
+        }
 
-        Navigator.pushNamed(context, "/homeScreen");
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          Navigator.pushNamed(context, "/homeScreen");
+        });
       } else {
         setState(() {
           loginFailed = true;

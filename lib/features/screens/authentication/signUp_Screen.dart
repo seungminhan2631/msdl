@@ -132,49 +132,29 @@ class _SignupScreenState extends State<SignupScreen>
     final authViewModel = context.read<AuthViewModel>();
 
     setState(() {
-      // ✅ 입력이 없을 경우 null, 입력이 있으면 유효성 검사 수행
-      isEmailValid = emailController.text.isNotEmpty
-          ? emailController.text.contains("@")
-          : null;
-      isPasswordValid = passwordController.text.isNotEmpty
-          ? passwordController.text.length >= 4
-          : null;
-      isConfirmPasswordValid = confirmPasswordController.text.isNotEmpty
-          ? confirmPasswordController.text == passwordController.text
-          : null;
-    });
-
-    print("📌 _validateAndSubmit() 실행됨!");
-    print("📌 입력된 이메일: '${emailController.text}'"); // ✅ 이메일 값 확인
-    print("📌 입력된 비밀번호: '${passwordController.text}'"); // ✅ 비밀번호 값 확인
-    print(
-        "📌 입력된 비밀번호 확인: '${confirmPasswordController.text}'"); // ✅ 확인 비밀번호 값 확인
-
-    setState(() {
-      isEmailValid = emailController.text.isNotEmpty;
-      isPasswordValid = passwordController.text.isNotEmpty;
+      isEmailValid =
+          emailController.text.isNotEmpty && emailController.text.contains("@");
+      isPasswordValid = passwordController.text.isNotEmpty &&
+          passwordController.text.length >= 4;
       isConfirmPasswordValid = confirmPasswordController.text.isNotEmpty &&
           confirmPasswordController.text == passwordController.text;
     });
 
-    print("📌 isEmailValid: $isEmailValid");
-    print("📌 isPasswordValid: $isPasswordValid");
-    print("📌 isConfirmPasswordValid: $isConfirmPasswordValid");
-
-    if (isEmailValid == true &&
-        isPasswordValid == true &&
-        isConfirmPasswordValid == true) {
+    if (isEmailValid! && isPasswordValid! && isConfirmPasswordValid!) {
       print("📌 회원가입 요청 시작...");
-      bool success = await authViewModel.signUp(
-          emailController.text.trim(), passwordController.text.trim());
+      String result = await authViewModel.signUp(
+        emailController.text.trim(),
+        passwordController.text.trim(),
+      );
 
-      print("📌 회원가입 결과: $success");
-
-      if (success) {
+      if (result == "✅ 회원가입 성공") {
         print("✅ 회원가입 성공! 로그인 화면으로 이동");
-        Navigator.pushNamed(context, "/");
+
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          Navigator.pushNamed(context, "/");
+        });
       } else {
-        print("❌ 회원가입 실패! 다시 시도해주세요.");
+        print("❌ 회원가입 실패! 이유: $result");
       }
     } else {
       print("❌ 이메일 또는 비밀번호 입력이 올바르지 않음.");

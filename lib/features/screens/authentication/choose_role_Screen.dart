@@ -181,9 +181,13 @@ class _ChooseRoleState extends State<ChooseRoleScreen> {
       });
     } else {
       String selectedRole = roles[selectedIndex!];
+
       context.read<AuthViewModel>().setRole(selectedRole); // ✅ Provider 사용
       print("✅ Role이 설정됨: $selectedRole");
-      Navigator.pushNamed(context, "/nameScreen"); // ✅ 이름 입력 화면으로 이동
+
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Navigator.pushNamed(context, "/nameScreen"); // ✅ Navigator 관련 에러 방지
+      });
     }
   }
 

@@ -27,14 +27,12 @@ class _NameScreenState extends State<NameScreen> {
     });
 
     if (isNameValid) {
-      // ✅ Provider에서 ViewModel 가져와서 이름 저장
-      Provider.of<AuthViewModel>(context, listen: false)
-          .setName(nameController.text);
+      context.read<AuthViewModel>().setName(nameController.text);
+      print("✅ 입력된 이름: ${nameController.text}");
 
-      print("✅ 입력된 이름: ${nameController.text}"); // 디버깅용
-
-      // ✅ SignupScreen으로 이동
-      Navigator.pushNamed(context, "/SignupScreen");
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Navigator.pushNamed(context, "/SignupScreen");
+      });
     }
   }
 

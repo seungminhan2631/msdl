@@ -21,18 +21,18 @@ class HomeModel {
     required this.checkOutTime,
   });
 
-  factory HomeModel.fromMap(
-      Map<String, dynamic> map, List<Map<String, dynamic>> weeklyData) {
+  factory HomeModel.fromJson(Map<String, dynamic> map) {
     return HomeModel(
-      id: map['id'], // ✅ 추가됨
-      name: map['name'],
-      role: map['role'],
+      id: map['id'] ?? 0, // 기본값 추가
+      name: map['name'] ?? 'Unknown',
+      role: map['role'] ?? 'Unknown',
       isCheckedIn: (map['is_checked_in'] ?? 0) == 1,
       workCategory: map['work_category'] ?? "Unknown",
       workLocation: map['work_location'] ?? "Unknown",
       checkInTime: map['check_in_time'] ?? '--:--',
       checkOutTime: map['check_out_time'] ?? '--:--',
-      weeklyTimeline: weeklyData,
+      weeklyTimeline:
+          List<Map<String, dynamic>>.from(map['weeklyTimeline'] ?? []),
     );
   }
 }

@@ -13,12 +13,16 @@ class HomeViewModel extends ChangeNotifier {
       print("🔍 fetchHomeData 실행 - userId: $userId");
       _homeData = await _repository.getHomeData(userId);
 
-      print("✅ HomeModel 데이터 가져오기 성공!");
-      print("👤 사용자 이름: ${_homeData?.name}");
-      print("📌 역할: ${_homeData?.role}");
-      print("🟢 출근 상태: ${_homeData?.isCheckedIn}");
-      print("📍 근무 위치: ${_homeData?.workLocation}");
-      print("📊 주간 출근 기록: ${_homeData?.weeklyTimeline}");
+      if (_homeData != null) {
+        print("✅ HomeModel 데이터 가져오기 성공!");
+        print("👤 사용자 이름: ${_homeData?.name}");
+        print("📌 역할: ${_homeData?.role}");
+        print("🟢 출근 상태: ${_homeData?.isCheckedIn}");
+        print("📍 근무 위치: ${_homeData?.workLocation}");
+        print("📊 주간 출근 기록: ${_homeData?.weeklyTimeline}");
+      } else {
+        print("❌ 홈 데이터가 없습니다.");
+      }
 
       notifyListeners();
     } catch (e) {

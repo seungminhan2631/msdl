@@ -1,20 +1,23 @@
-import 'package:msdl/data/database_helper.dart';
-import 'package:msdl/features/screens/group/model/model.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import '../model/model.dart';
 
 class GroupRepository {
-  final db = DatabaseHelper.instance;
+  static const String baseUrl = "http://10.0.2.2:5000";
 
+  // ✅ 그룹 사용자 목록 가져오기 (Flask 서버 연동)
   Future<List<GroupModel>> getGroupUsers() async {
-    final _db = await db.database;
-    final result = await _db.rawQuery('''
-      SELECT users.id, users.name, users.role, 
-             attendance.check_in_time, attendance.check_out_time
-      FROM users
-      LEFT JOIN attendance ON users.id = attendance.user_id
-      LEFT JOIN work_locations ON users.id = work_locations.user_id;
-    ''');
+    final response = await http.get(
+      Uri.parse("$baseUrl/group/users"),
+      headers: {"Content-Type": "application/json"},
+    );
 
-    print("🔎 SQL Query Result: $result");
-    return result.map((map) => GroupModel.fromMap(map)).toList();
+    if (response.statusCode == 200) {
+      final List<dynamic> data = jsonDecode(response.body);
+      return data.map((user) => GroupModel.fromJson(user)).toList();
+    } else {
+      print("❌ 그룹 데이터 가져오기 실패: ${response.body}");
+      return [];
+    }
   }
 }

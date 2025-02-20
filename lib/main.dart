@@ -22,11 +22,11 @@ import 'package:provider/provider.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   // resetDatabase(); //db리셋시 주석 해제
-  printAllTables(); // 테이블의 전체 내용을 보고싶을떄
+  // printAllTables(); // 테이블의 전체 내용을 보고싶을떄
   // await initializeDateFormatting('ko_KR', null);
   try {
-    await DatabaseHelper.instance.database;
-    await DatabaseHelper.instance.printAllUsers();
+    // await DatabaseHelper.instance.database;
+    // await DatabaseHelper.instance.printAllUsers();
     print("데이터베이스 정상적으로 로드됨!");
   } catch (e) {
     print("데이터베이스 로드 중 오류 발생: $e");

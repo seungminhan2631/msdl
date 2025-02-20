@@ -7,6 +7,7 @@ class GroupViewModel extends ChangeNotifier {
   Map<Role, List<GroupModel>> _groupedUsers = {};
 
   Map<Role, List<GroupModel>> get groupedUsers => _groupedUsers;
+
   Future<void> fetchGroupData() async {
     try {
       List<GroupModel> users = await _repository.getGroupUsers();
