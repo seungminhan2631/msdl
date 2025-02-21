@@ -20,7 +20,7 @@ class Sectiontitle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         Transform.rotate(
           //회전각도 변환식섹스
