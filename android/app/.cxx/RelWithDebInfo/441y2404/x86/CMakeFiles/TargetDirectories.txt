@@ -1,0 +1,2 @@
+C:/Users/henry/Desktop/Msdl/msdl/android/app/.cxx/RelWithDebInfo/441y2404/x86/CMakeFiles/edit_cache.dir
+C:/Users/henry/Desktop/Msdl/msdl/android/app/.cxx/RelWithDebInfo/441y2404/x86/CMakeFiles/rebuild_cache.dir
