@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:intl/date_symbol_data_file.dart' hide initializeDateFormatting;
+import 'package:intl/intl.dart';
 import 'package:msdl/data/database_helper.dart';
 import 'package:msdl/data/dbPrint.dart';
 import 'package:msdl/dbReset.dart';
@@ -16,11 +18,14 @@ import 'package:msdl/features/screens/workplace/workplace_Screen.dart';
 import 'package:msdl/msdl_theme.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
 // import 'package:intl/date_symbol_data_local.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await initializeDateFormatting('ko_KR');
+
   // resetDatabase(); //db리셋시 주석 해제
   // printAllTables(); // 테이블의 전체 내용을 보고싶을떄
   // await initializeDateFormatting('ko_KR', null);
