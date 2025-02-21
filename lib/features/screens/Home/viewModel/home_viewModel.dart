@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:msdl/features/screens/Home/model/home_model.dart';
 import 'package:msdl/features/screens/Home/repository/home_repository.dart';
 import 'package:msdl/features/screens/authentication/viewModel/viewModel.dart';
@@ -40,7 +41,6 @@ class HomeViewModel extends ChangeNotifier {
     }
   }
 
-  // 🔥 출근(Clock In) 또는 퇴근(Clock Out) 기능
   Future<void> toggleAttendance(BuildContext context) async {
     final authViewModel = Provider.of<AuthViewModel>(context, listen: false);
     int? userId = authViewModel.userId;
@@ -52,37 +52,46 @@ class HomeViewModel extends ChangeNotifier {
 
     if (_homeData == null) return;
 
-    bool isClockIn = !_homeData!.isCheckedIn;
+    // ✅ 현재 상태 반전 (출근/퇴근 토글)
+    bool isNowCheckedIn = !_homeData!.isCheckedIn;
+    DateTime now = DateTime.now();
+
+    // ✅ 출근 시 현재 시간 저장, 퇴근 시 기존 출근 시간 유지
+    String? newCheckInTime = isNowCheckedIn
+        ? DateFormat('HH:mm:ss').format(now)
+        : _homeData!.checkInTime;
+
+    // ✅ 퇴근 시 현재 시간 저장, 출근 시 기존 퇴근 시간 유지
+    String? newCheckOutTime = isNowCheckedIn
+        ? _homeData!.checkOutTime
+        : DateFormat('HH:mm:ss').format(now);
+
+    // ✅ UI 상태 즉시 변경 (사용자가 버튼을 다시 누를 때까지 반영됨)
+    _homeData = _homeData!.copyWith(
+      isCheckedIn: isNowCheckedIn,
+      checkInTime: newCheckInTime,
+      checkOutTime: newCheckOutTime,
+    );
+
+    notifyListeners(); // ✅ UI 즉시 반영
 
     try {
-      // ✅ API 호출하여 서버에 출퇴근 요청 및 시간 받아오기
-      String? recordedTime =
-          await _repository.updateAttendance(userId, isClockIn);
-      if (recordedTime == null) return;
-
-      // ✅ UI 상태 즉시 업데이트 (출퇴근 시간 반영)
-      _homeData = HomeModel(
-        id: _homeData!.id,
-        name: _homeData!.name,
-        role: _homeData!.role,
-        isCheckedIn: isClockIn,
-        workCategory: _homeData!.workCategory,
-        workLocation: _homeData!.workLocation,
-        checkInTime:
-            isClockIn ? recordedTime : _homeData!.checkInTime, // ✅ 출근 시간 갱신
-        checkOutTime:
-            isClockIn ? _homeData!.checkOutTime : recordedTime, // ✅ 퇴근 시간 갱신
-        weeklyTimeline: _homeData!.weeklyTimeline,
-      );
-
-      notifyListeners(); // 🔥 UI 즉시 반영
-
-      // ✅ 0.5초 후 서버에서 최신 데이터 가져오기
-      Future.delayed(Duration(milliseconds: 500), () {
-        fetchHomeData(context);
-      });
+      // ✅ 서버에 출근/퇴근 상태 업데이트 요청
+      await _repository.updateAttendance(userId, isNowCheckedIn);
+      print(isNowCheckedIn ? "✅ 출근 성공!" : "🚪 퇴근 성공!");
     } catch (e) {
       debugPrint("⚠️ Error updating attendance: $e");
+    }
+  }
+
+  void resetAttendance() {
+    if (homeData != null) {
+      _homeData = homeData!.copyWith(
+        checkInTime: "--:--",
+        checkOutTime: "--:--",
+        isCheckedIn: false,
+      );
+      notifyListeners();
     }
   }
 }

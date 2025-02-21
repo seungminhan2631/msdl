@@ -16,9 +16,9 @@ class HomeModel {
     required this.isCheckedIn,
     required this.workCategory,
     required this.workLocation,
-    required this.weeklyTimeline,
     required this.checkInTime,
     required this.checkOutTime,
+    required this.weeklyTimeline,
   });
 
   factory HomeModel.fromJson(Map<String, dynamic> map) {
@@ -33,6 +33,31 @@ class HomeModel {
       checkOutTime: map['check_out_time'] ?? '--:--',
       weeklyTimeline:
           List<Map<String, dynamic>>.from(map['weeklyTimeline'] ?? []),
+    );
+  }
+
+  // ✅ copyWith 메서드 수정
+  HomeModel copyWith({
+    int? id,
+    String? name,
+    String? role,
+    bool? isCheckedIn,
+    String? workCategory,
+    String? workLocation,
+    String? checkInTime,
+    String? checkOutTime,
+    List<Map<String, dynamic>>? weeklyTimeline,
+  }) {
+    return HomeModel(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      role: role ?? this.role,
+      isCheckedIn: isCheckedIn ?? this.isCheckedIn,
+      workCategory: workCategory ?? this.workCategory,
+      workLocation: workLocation ?? this.workLocation,
+      checkInTime: checkInTime ?? this.checkInTime,
+      checkOutTime: checkOutTime ?? this.checkOutTime,
+      weeklyTimeline: weeklyTimeline ?? this.weeklyTimeline,
     );
   }
 }
