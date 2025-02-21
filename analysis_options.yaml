@@ -14,6 +14,7 @@ analyzer:
     deprecated_member_use: ignore
     file_names: ignore
     library_private_types_in_public_api: ignore
+    no_logic_in_create_state: ignore
     non_constant_identifier_names: ignore ignore ignore ignore ignore
     prefer_final_fields: ignore
     prefer_is_empty: ignore

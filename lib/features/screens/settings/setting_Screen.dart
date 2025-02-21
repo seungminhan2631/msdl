@@ -51,6 +51,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
     }
   }
 
+  void _signOut(BuildContext context) {
+    // AuthViewModel을 통해 사용자 정보 초기화
+    Provider.of<AuthViewModel>(context, listen: false).logout();
+
+    Navigator.pushNamedAndRemoveUntil(context, "/", (route) => false);
+  }
+
   @override
   Widget build(BuildContext context) {
     final homeData = Provider.of<HomeViewModel>(context).homeData;
@@ -59,12 +66,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
       child: Scaffold(
         resizeToAvoidBottomInset: false,
         body: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 20.h),
+          padding: EdgeInsets.symmetric(horizontal: 20.h, vertical: 30.h),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               TopTitle(text: "Settings"),
-              Gaps.v80,
+              Gaps.v40,
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -87,7 +94,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ),
                 ],
               ),
-              Gaps.v80,
+              Gaps.v40,
               SettingsBodyText(
                   text: "About", onTap: () => _showAboutDialog(context)),
               Gaps.v28,
@@ -96,8 +103,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
               SettingsBodyText(
                 text: "Sign Out",
                 textColor: Color(0xffCF3B28),
+                onTap: () => _signOut(context),
               ),
-              Gaps.v28,
             ],
           ),
         ),

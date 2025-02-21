@@ -46,7 +46,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
             items: [
               BottomNavigationBarItem(
                 icon: SizedBox(
-                  height: 19.h, // 아이콘의 고정 높이
+                  height: 24.h, // 아이콘의 고정 높이
                   child: Icon(
                     size: Sizes.size36,
                     selectedIndex == 0
@@ -58,7 +58,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
               ),
               BottomNavigationBarItem(
                 icon: SizedBox(
-                  height: 19.h, // 아이콘의 고정 높이
+                  height: 24.h, // 아이콘의 고정 높이
                   child: Icon(
                     size: Sizes.size36,
                     selectedIndex == 1 ? Icons.home : Icons.home_outlined,
@@ -68,7 +68,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
               ),
               BottomNavigationBarItem(
                 icon: SizedBox(
-                  height: 19.h, // 아이콘의 고정 높이
+                  height: 24.h, // 아이콘의 고정 높이
                   child: Icon(
                     size: Sizes.size36,
                     selectedIndex == 2
