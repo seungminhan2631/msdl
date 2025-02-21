@@ -47,6 +47,9 @@ dependencies:
   riverpod_annotation: ^2.6.1
   geocoding: ^3.0.0
   flutter_google_places_sdk: ^0.3.10
+  firebase_core: ^3.12.0
+  cloud_firestore: ^5.6.4
+  firebase_crashlytics: ^4.3.3
 
 dev_dependencies:
   flutter_test:

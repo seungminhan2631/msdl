@@ -21,7 +21,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
           border: Border(
             top: BorderSide(
               color: Color(0xFFCACACA),
-              width: 2.0.w,
+              width: 1.0.w,
             ),
           ),
           borderRadius: BorderRadius.only(
