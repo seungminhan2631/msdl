@@ -81,19 +81,19 @@ def update_attendance():
     action = data['action']
 
     # 현재 시간 기록
-    current_time = datetime.now().strftime("%H:%M:%S")
+    current_time = datetime.now().strftime("%H:%M")
 
     if action == "check_in":
         new_attendance = Attendance(
             user_id=user_id, 
-            date=datetime.now().strftime("%Y-%m-%d"), 
+            date=datetime.now().strftime("%Y-%m"),
             check_in_time=current_time  # ✅ 출근 시간 기록
         )
         db.session.add(new_attendance)
     else:
         attendance = Attendance.query.filter_by(
             user_id=user_id, 
-            date=datetime.now().strftime("%Y-%m-%d")
+            date=datetime.now().strftime("%Y-%m")
         ).first()
 
         if attendance:
