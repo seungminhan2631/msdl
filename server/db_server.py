@@ -75,19 +75,28 @@ def home(user_id):
 from datetime import datetime
 
 @app.route('/attendance/update', methods=['POST'])
+@app.route('/attendance/update', methods=['POST'])
 def update_attendance():
     data = request.json
     user_id = data['user_id']
     action = data['action']
 
+<<<<<<< HEAD
+=======
     # 현재 시간 기록
+>>>>>>> 7d1f08c7d24ea87cc48efb82b88ef878e4714f0e
     current_time = datetime.now().strftime("%H:%M")
 
     if action == "check_in":
         new_attendance = Attendance(
             user_id=user_id, 
+<<<<<<< HEAD
+            date=datetime.now().strftime("%Y-%m-%d"), 
+            check_in_time=current_time  
+=======
             date=datetime.now().strftime("%Y-%m"),
             check_in_time=current_time  # ✅ 출근 시간 기록
+>>>>>>> 7d1f08c7d24ea87cc48efb82b88ef878e4714f0e
         )
         db.session.add(new_attendance)
     else:
@@ -97,11 +106,10 @@ def update_attendance():
         ).first()
 
         if attendance:
-            attendance.check_out_time = current_time  # ✅ 퇴근 시간 기록
+            attendance.check_out_time = current_time  
 
     db.session.commit()
     return jsonify({"message": "Attendance updated", "time": current_time}), 200
-
 
 
 @app.route('/users', methods=['GET'])

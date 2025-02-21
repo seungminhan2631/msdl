@@ -112,6 +112,8 @@ class _GroupScreenState extends State<GroupScreen> {
                                 itemBuilder: (context, index) {
                                   final user = groupData[role]![index];
                                   return ListTile(
+                                    dense: true, // ✅ 패딩 최소화
+
                                     contentPadding: EdgeInsets.symmetric(
                                         vertical: 0, horizontal: Sizes.size20),
                                     visualDensity: VisualDensity(vertical: -4),
@@ -120,14 +122,24 @@ class _GroupScreenState extends State<GroupScreen> {
                                       color: role.color,
                                       size: Sizes.size28,
                                     ),
-                                    title: Text(
-                                      user.name,
-                                      style: TextStyle(
-                                          fontFamily: "Andika",
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: Sizes.size18),
+                                    title: Row(
+                                      children: [
+                                        Expanded(
+                                          child: Text(
+                                            user.name,
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: TextStyle(
+                                                fontFamily: "Andika",
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.bold,
+                                                fontSize:
+                                                    Sizes.size14 + Sizes.size4),
+                                          ),
+                                        ),
+                                      ],
                                     ),
+
                                     subtitle: Text(
                                       user.category,
                                       style: TextStyle(
@@ -141,7 +153,7 @@ class _GroupScreenState extends State<GroupScreen> {
                                       style: TextStyle(
                                           fontFamily: "Andika",
                                           color: Color(0xffF1F1F1),
-                                          fontSize: Sizes.size14),
+                                          fontSize: Sizes.size12),
                                     ),
                                   );
                                 },
