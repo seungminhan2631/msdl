@@ -1,139 +1,201 @@
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart' as maps;
 import 'package:geolocator/geolocator.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:flutter/services.dart' show rootBundle;
+import 'package:msdl/constants/size_config.dart';
 
 class WorkplaceScreen extends StatefulWidget {
-  const WorkplaceScreen({super.key});
-
   @override
-  State<WorkplaceScreen> createState() => _WorkplaceScreenState();
+  _WorkplaceScreenState createState() => _WorkplaceScreenState();
 }
 
 class _WorkplaceScreenState extends State<WorkplaceScreen> {
-  late GoogleMapController mapController;
-  LatLng _currentPosition = const LatLng(37.5665, 126.9780); // 기본 위치 (서울)
+  late maps.GoogleMapController _mapController;
 
-  // 마커 이미지 변수 (nullable 처리)
-  BitmapDescriptor? _markerStatic;
-  BitmapDescriptor? _markerMoving;
-  bool _isMoving = false; // 카메라 이동 상태 변수
+  // 초기 지도 위치 (순천향대학교)
+  maps.LatLng _currentPosition = maps.LatLng(36.7667, 126.9322);
+
+  // 현재 주소 저장
+  String _currentAddress = "위치를 불러오는 중...";
+
+  // 마커 애니메이션을 위한 Y축 오프셋 값
+  double _markerYOffset = 0;
+
+  // 다크 모드 지도 스타일 JSON 저장
+  String? _darkMapStyle;
 
   @override
   void initState() {
     super.initState();
-    _getUserLocation();
-    _loadCustomMarkers(); // 마커 이미지 로드
+    _determinePosition(); // 앱 실행 시 현재 위치 가져오기
+    _loadMapStyle(); // 다크 모드 스타일 로드
   }
 
-  // 마커 이미지 불러오기 (예외 방지)
-  Future<void> _loadCustomMarkers() async {
+  // 📌 다크 모드 스타일 JSON 로드
+  Future<void> _loadMapStyle() async {
+    _darkMapStyle = await rootBundle.loadString('assets/map_style.json');
+  }
+
+  // 📌 사용자의 현재 위치 가져오는 함수
+  Future<void> _determinePosition() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) return;
+
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.deniedForever) return;
+    }
+
+    // 현재 위치 가져오기
+    Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
+    maps.LatLng newPosition =
+        maps.LatLng(position.latitude, position.longitude);
+
+    // 현재 위치 업데이트
+    setState(() {
+      _currentPosition = newPosition;
+    });
+
+    // 주소 업데이트
+    _updateAddress(newPosition);
+
+    // 카메라 이동 (현재 위치로)
+    _mapController.animateCamera(maps.CameraUpdate.newLatLng(newPosition));
+  }
+
+  // 📌 현재 위치의 주소를 변환하는 함수
+  Future<void> _updateAddress(maps.LatLng position) async {
     try {
-      final staticMarker = await BitmapDescriptor.fromAssetImage(
-          const ImageConfiguration(size: Size(48, 48)),
-          'assets/images/박보영.jpg');
-
-      final movingMarker = await BitmapDescriptor.fromAssetImage(
-          const ImageConfiguration(size: Size(48, 48)),
-          'assets/images/한승민.png');
-
-      if (mounted) {
+      List<Placemark> placemarks =
+          await placemarkFromCoordinates(position.latitude, position.longitude);
+      if (placemarks.isNotEmpty) {
         setState(() {
-          _markerStatic = staticMarker;
-          _markerMoving = movingMarker;
+          _currentAddress =
+              "${placemarks[0].street}, ${placemarks[0].locality}, ${placemarks[0].country}";
         });
       }
     } catch (e) {
-      print("마커 로드 오류: $e");
-    }
-  }
-
-  // 위치 권한 확인 및 현재 위치 가져오기
-  Future<void> _getUserLocation() async {
-    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      print("위치 서비스가 비활성화됨");
-      return;
-    }
-
-    LocationPermission permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        print("위치 권한이 거부됨");
-        return;
-      }
-    }
-
-    if (permission == LocationPermission.deniedForever) {
-      print("위치 권한이 영구적으로 거부됨");
-      return;
-    }
-
-    Position position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high);
-
-    if (mounted) {
       setState(() {
-        _currentPosition = LatLng(position.latitude, position.longitude);
-      });
-    }
-
-    mapController.animateCamera(CameraUpdate.newLatLng(_currentPosition));
-  }
-
-  // 카메라 이동 이벤트 추가
-  void _onCameraMove(CameraPosition position) {
-    if (mounted) {
-      setState(() {
-        _isMoving = true;
+        _currentAddress = "주소를 찾을 수 없음";
       });
     }
   }
 
-  // 카메라 이동 종료 이벤트 추가
-  void _onCameraIdle() {
-    if (mounted) {
-      setState(() {
-        _isMoving = false;
-      });
+  // 📌 Google Map 생성 시 호출되는 함수 (다크 모드 적용)
+  void _onMapCreated(maps.GoogleMapController controller) {
+    _mapController = controller;
+    if (_darkMapStyle != null) {
+      _mapController.setMapStyle(_darkMapStyle); // 📍 다크 모드 적용
     }
-  }
-
-  // 지도 초기화
-  void _onMapCreated(GoogleMapController controller) {
-    mapController = controller;
-    _getUserLocation();
   }
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        FocusScope.of(context).unfocus();
-      },
-      child: Scaffold(
-        appBar: AppBar(title: const Text("Google Maps Workplace")),
-        body: GoogleMap(
-          onMapCreated: _onMapCreated,
-          initialCameraPosition: CameraPosition(
-            target: _currentPosition,
-            zoom: 15.0,
-          ),
-          myLocationEnabled: false, // 기본 현재 위치 아이콘 숨김 (커스텀 마커 사용)
-          myLocationButtonEnabled: true,
-          onCameraMove: _onCameraMove, // 카메라 이동 이벤트 추가
-          onCameraIdle: _onCameraIdle, // 카메라 멈춤 이벤트 추가
-          markers: {
-            Marker(
-              markerId: const MarkerId("current_location"),
-              position: _currentPosition,
-              icon: (_isMoving ? _markerMoving : _markerStatic) ??
-                  BitmapDescriptor.defaultMarker,
-              infoWindow: const InfoWindow(title: "현재 위치"),
+    return Scaffold(
+      body: Stack(
+        children: [
+          // 📌 Google 지도 (다크 모드 적용됨)
+          maps.GoogleMap(
+            initialCameraPosition: maps.CameraPosition(
+              target: _currentPosition,
+              zoom: 14.0,
             ),
-          },
-        ),
+            onMapCreated: _onMapCreated, // 다크 모드 적용
+            onCameraMove: (maps.CameraPosition position) {
+              setState(() {
+                _markerYOffset = -10; // 마커를 살짝 위로 올리는 효과
+                _currentPosition = position.target; // 📍 카메라 이동 중 위치 실시간 반영
+              });
+            },
+            onCameraIdle: () {
+              setState(() {
+                _markerYOffset = 0; // 마커 원래 위치로 복귀
+              });
+              _updateAddress(_currentPosition); // 📍 최종 위치의 주소 업데이트
+            },
+          ),
+
+          // 📌 중앙 마커 (애니메이션 적용)
+          Center(
+            child: AnimatedContainer(
+              duration: Duration(milliseconds: 200),
+              transform: Matrix4.translationValues(0, _markerYOffset, 0),
+              child: Icon(
+                Icons.location_pin,
+                size: 50,
+                color: Colors.red,
+              ),
+            ),
+          ),
+
+          // 📌 하단 현재 위치 정보 패널
+          DraggableScrollableSheet(
+            initialChildSize: 0.12,
+            minChildSize: 0.05,
+            maxChildSize: 0.4,
+            builder: (context, scrollController) {
+              return Container(
+                padding: EdgeInsets.symmetric(
+                  vertical: 10,
+                ),
+                decoration: BoxDecoration(
+                  color: Color(0xFF2C2C2C),
+                  border: Border(
+                    top: BorderSide(
+                      color: Color(0xFFCACACA),
+                      width: 2.0.w,
+                    ),
+                  ),
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(16),
+                    topRight: Radius.circular(16),
+                  ),
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    // 손잡이
+                    Container(
+                      width: 80,
+                      height: 3,
+                      decoration: BoxDecoration(
+                        color: Color(0xFFD9D9D9),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 6.h,
+                    ),
+                    Text(
+                      "Current location : ",
+                      style: TextStyle(
+                        color: Color(0xFFFFFFFF),
+                        fontSize: 16,
+                        fontFamily: "Andika",
+                      ),
+                    ),
+                    // 실시간 주소 업데이트
+                    Text(
+                      _currentAddress,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Color(0xFFFFFFFF),
+                        fontSize: 14,
+                        fontFamily: "Andika",
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+        ],
       ),
     );
   }
