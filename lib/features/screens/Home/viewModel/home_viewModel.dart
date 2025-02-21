@@ -55,10 +55,32 @@ class HomeViewModel extends ChangeNotifier {
     bool isClockIn = !_homeData!.isCheckedIn;
 
     try {
-      await _repository.updateAttendance(userId, isClockIn);
-      print(isClockIn ? "✅ 출근 성공!" : "🚪 퇴근 성공!");
+      // ✅ API 호출하여 서버에 출퇴근 요청 및 시간 받아오기
+      String? recordedTime =
+          await _repository.updateAttendance(userId, isClockIn);
+      if (recordedTime == null) return;
 
-      await fetchHomeData(context); // ✅ 변경된 데이터 반영
+      // ✅ UI 상태 즉시 업데이트 (출퇴근 시간 반영)
+      _homeData = HomeModel(
+        id: _homeData!.id,
+        name: _homeData!.name,
+        role: _homeData!.role,
+        isCheckedIn: isClockIn,
+        workCategory: _homeData!.workCategory,
+        workLocation: _homeData!.workLocation,
+        checkInTime:
+            isClockIn ? recordedTime : _homeData!.checkInTime, // ✅ 출근 시간 갱신
+        checkOutTime:
+            isClockIn ? _homeData!.checkOutTime : recordedTime, // ✅ 퇴근 시간 갱신
+        weeklyTimeline: _homeData!.weeklyTimeline,
+      );
+
+      notifyListeners(); // 🔥 UI 즉시 반영
+
+      // ✅ 0.5초 후 서버에서 최신 데이터 가져오기
+      Future.delayed(Duration(milliseconds: 500), () {
+        fetchHomeData(context);
+      });
     } catch (e) {
       debugPrint("⚠️ Error updating attendance: $e");
     }

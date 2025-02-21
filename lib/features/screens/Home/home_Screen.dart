@@ -98,13 +98,14 @@ class _HomescreenState extends State<Homescreen> {
         padding: EdgeInsets.symmetric(
             horizontal: Sizes.size28, vertical: Sizes.size48 + Sizes.size2),
         child: Column(
+          mainAxisSize: MainAxisSize.max,
           children: [
             Sectiontitle(
               icon: Icons.work,
               text: "Medical Solution & Device Lab",
               iconColor: Color(0xff935E38),
             ),
-            Gaps.v8,
+            Gaps.v14,
             CustomContainer(
               child: Stack(
                 children: [
@@ -172,8 +173,8 @@ class _HomescreenState extends State<Homescreen> {
                 ],
               ),
             ),
-            Gaps.v16,
-            Gaps.v3,
+            Gaps.v14,
+            // Gaps.v3,
             Sectiontitle(
               icon: Icons.location_on,
               text: "My Workplace",
@@ -195,12 +196,14 @@ class _HomescreenState extends State<Homescreen> {
               ),
             ),
             Gaps.v16,
-            Gaps.v3,
-            Sectiontitle(
-              iconAngle: 30,
-              icon: Icons.push_pin,
-              text: "Weekly Timeline",
-              iconColor: Color(0xffFFB400).withOpacity(0.9),
+            // Gaps.h10,
+            Expanded(
+              child: Sectiontitle(
+                iconAngle: 30,
+                icon: Icons.push_pin,
+                text: "Weekly Timeline",
+                iconColor: Color(0xffFFB400).withOpacity(0.9),
+              ),
             ),
             Gaps.v8,
             CustomContainer(

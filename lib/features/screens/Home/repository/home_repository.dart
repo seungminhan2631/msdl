@@ -25,7 +25,7 @@ class HomeRepository {
     }
   }
 
-  Future<void> updateAttendance(int userId, bool isClockIn) async {
+  Future<String?> updateAttendance(int userId, bool isClockIn) async {
     try {
       final response = await http.post(
         Uri.parse("$baseUrl/attendance/update"),
@@ -37,12 +37,16 @@ class HomeRepository {
       );
 
       if (response.statusCode == 200) {
-        print("✅ 출퇴근 업데이트 성공");
+        final data = jsonDecode(response.body);
+        print("✅ 출퇴근 업데이트 성공 - 시간: ${data["time"]}");
+        return data["time"]; // ✅ 기록된 시간을 반환
       } else {
         print("❌ 출퇴근 업데이트 실패: ${response.body}");
+        return null;
       }
     } catch (e) {
       print("⚠️ 서버 연결 오류: $e");
+      return null;
     }
   }
 }
