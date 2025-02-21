@@ -9,17 +9,22 @@ enum Role { professor, phd, ms, bs }
 
 extension RoleExtension on Role {
   static Role fromString(String role) {
-    switch (role.trim()) {
-      case 'Professor':
+    // ✅ 문자열을 소문자로 변환하고 공백을 정리하여 비교
+    String normalizedRole =
+        role.trim().toLowerCase().replaceAll(".", "").replaceAll(" ", "");
+
+    switch (normalizedRole) {
+      case 'professor':
         return Role.professor;
-      case 'Ph.D. Student':
+      case 'phdstudent': // ✅ 공백과 마침표 제거 후 비교
         return Role.phd;
-      case 'MS Student':
+      case 'msstudent':
         return Role.ms;
-      case 'BS Student':
+      case 'bsstudent':
         return Role.bs;
+      default:
+        throw ArgumentError("⚠️ 유효하지 않은 Role 값: '$role'");
     }
-    throw ArgumentError("⚠️ 유효하지 않은 Role 값: '$role'");
   }
 
   IconData get icon {

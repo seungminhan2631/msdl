@@ -35,10 +35,8 @@ void main() async {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => AuthViewModel()),
-
         ChangeNotifierProvider(
-            create: (_) =>
-                GroupViewModel()..fetchGroupData()), // ✅ ViewModel 초기화
+            create: (context) => GroupViewModel()..fetchGroupData()),
         ChangeNotifierProvider(create: (_) => HomeViewModel()),
       ],
       child: const msdl(),

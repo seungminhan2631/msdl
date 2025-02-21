@@ -31,7 +31,7 @@ class _HomescreenState extends State<Homescreen> {
   void _loadUserData() {
     final userId = Provider.of<AuthViewModel>(context, listen: false).userId;
     if (userId != null) {
-      Provider.of<HomeViewModel>(context, listen: false).fetchHomeData(userId);
+      Provider.of<HomeViewModel>(context, listen: false).fetchHomeData(context);
     } else {
       print("❌ 로그인된 사용자 ID 없음!");
     }
@@ -145,7 +145,7 @@ class _HomescreenState extends State<Homescreen> {
                     child: ElevatedButton(
                       onPressed: () {
                         Provider.of<HomeViewModel>(context, listen: false)
-                            .toggleAttendance(homeData!.id); // ✅ userId 사용
+                            .toggleAttendance(context); // ✅ userId 사용
                       },
                       style: ElevatedButton.styleFrom(
                         minimumSize: Size(117, 60),

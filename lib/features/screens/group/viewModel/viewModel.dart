@@ -10,6 +10,7 @@ class GroupViewModel extends ChangeNotifier {
 
   Future<void> fetchGroupData() async {
     try {
+      print("🔄 fetchGroupData 실행");
       List<GroupModel> users = await _repository.getGroupUsers();
 
       print("🔍 가져온 사용자 목록 (${users.length}명):");
@@ -19,14 +20,10 @@ class GroupViewModel extends ChangeNotifier {
       }
 
       _groupedUsers = _groupByRole(users);
-
-      // 🔥 변환된 groupedUsers 출력 확인
-      print("📌 groupedUsers 데이터:");
-      _groupedUsers.forEach((role, userList) {
-        print("🔹 Role: $role, Users: ${userList.map((u) => u.name).toList()}");
-      });
+      print("📌 그룹화된 데이터: $_groupedUsers"); // ✅ 그룹화된 데이터 확인
 
       notifyListeners();
+      print("✅ notifyListeners 호출됨"); // ✅ 추가된 디버깅 코드
     } catch (e) {
       debugPrint("⚠️ Error fetching group data: $e");
     }

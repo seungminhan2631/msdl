@@ -21,7 +21,7 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  final AuthViewModel _authViewModel = AuthViewModel();
+  AuthViewModel? authViewModel;
 
   bool? isEmailValid; // ✅ 초기에는 null 상태 (테두리 기본 유지)
   bool? isPasswordValid;
@@ -30,8 +30,9 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   void initState() {
     super.initState();
-    emailController.addListener(_validateEmail); // ✅ 입력 변경 감지
-    passwordController.addListener(_validatePassword);
+    Future.microtask(() {
+      authViewModel = Provider.of<AuthViewModel>(context, listen: false);
+    });
   }
 
   @override
@@ -67,6 +68,9 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void _validateAndSubmit() async {
+    final authViewModel =
+        Provider.of<AuthViewModel>(context, listen: false); // ✅ Provider에서 가져오기
+
     setState(() {
       isEmailValid =
           emailController.text.isNotEmpty && emailController.text.contains("@");
@@ -76,22 +80,21 @@ class _LoginScreenState extends State<LoginScreen> {
     });
 
     if ((isEmailValid ?? false) && (isPasswordValid ?? false)) {
-      bool success = await _authViewModel.login(
+      bool success = await authViewModel.login(
         emailController.text.trim(),
         passwordController.text.trim(),
       );
 
       if (success) {
-        // ✅ 로그인 성공 여부 확인
         print("✅ 로그인 성공!");
 
         // ✅ 로그인한 사용자 정보 가져오기
-        final user = _authViewModel.currentUser;
+        final user = authViewModel.currentUser;
         if (user != null) {
           print(
               "👤 사용자 정보: ID: ${user.id}, Name: ${user.name}, Role: ${user.role}");
           Provider.of<HomeViewModel>(context, listen: false)
-              .fetchHomeData(user.id);
+              .fetchHomeData(context);
         }
 
         WidgetsBinding.instance.addPostFrameCallback((_) {

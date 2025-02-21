@@ -29,7 +29,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   void _loadUserData() {
     final userId = Provider.of<AuthViewModel>(context, listen: false).userId;
     if (userId != null) {
-      Provider.of<HomeViewModel>(context, listen: false).fetchHomeData(userId);
+      Provider.of<HomeViewModel>(context, listen: false).fetchHomeData(context);
     } else {
       print("❌ 로그인된 사용자 ID 없음!");
     }
@@ -94,7 +94,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               SettingsBodyText(text: "Edit Profile"),
               Gaps.v28,
               SettingsBodyText(
-                text: "Log Out",
+                text: "Sign Out",
                 textColor: Color(0xffCF3B28),
               ),
               Gaps.v28,

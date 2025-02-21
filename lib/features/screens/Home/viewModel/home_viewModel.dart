@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:msdl/features/screens/Home/model/home_model.dart';
 import 'package:msdl/features/screens/Home/repository/home_repository.dart';
+import 'package:msdl/features/screens/authentication/viewModel/viewModel.dart';
+import 'package:provider/provider.dart';
 
 class HomeViewModel extends ChangeNotifier {
   final HomeRepository _repository = HomeRepository();
@@ -8,7 +10,15 @@ class HomeViewModel extends ChangeNotifier {
 
   HomeModel? get homeData => _homeData;
 
-  Future<void> fetchHomeData(int userId) async {
+  Future<void> fetchHomeData(BuildContext context) async {
+    final authViewModel = Provider.of<AuthViewModel>(context, listen: false);
+    int? userId = authViewModel.userId;
+
+    if (userId == null) {
+      print("❌ fetchHomeData 실패: userId가 null");
+      return;
+    }
+
     try {
       print("🔍 fetchHomeData 실행 - userId: $userId");
       _homeData = await _repository.getHomeData(userId);
@@ -31,7 +41,15 @@ class HomeViewModel extends ChangeNotifier {
   }
 
   // 🔥 출근(Clock In) 또는 퇴근(Clock Out) 기능
-  Future<void> toggleAttendance(int userId) async {
+  Future<void> toggleAttendance(BuildContext context) async {
+    final authViewModel = Provider.of<AuthViewModel>(context, listen: false);
+    int? userId = authViewModel.userId;
+
+    if (userId == null) {
+      print("❌ toggleAttendance 실패: userId가 null");
+      return;
+    }
+
     if (_homeData == null) return;
 
     bool isClockIn = !_homeData!.isCheckedIn;
@@ -40,7 +58,7 @@ class HomeViewModel extends ChangeNotifier {
       await _repository.updateAttendance(userId, isClockIn);
       print(isClockIn ? "✅ 출근 성공!" : "🚪 퇴근 성공!");
 
-      await fetchHomeData(userId); // ✅ 상태 업데이트 후 UI 반영
+      await fetchHomeData(context); // ✅ 변경된 데이터 반영
     } catch (e) {
       debugPrint("⚠️ Error updating attendance: $e");
     }

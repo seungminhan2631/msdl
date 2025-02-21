@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import '../model/home_model.dart';
 
 class HomeRepository {
-  static const String baseUrl = "http://192.168.1.21:5000";
+  static const String baseUrl = "http://220.69.203.99:5000";
 
   Future<HomeModel?> getHomeData(int userId) async {
     try {

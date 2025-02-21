@@ -45,7 +45,7 @@ class AuthViewModel extends ChangeNotifier {
       }
 
       print("✅ 로그인 성공! ID: ${_currentUser?.id}, Name: ${_currentUser?.name}");
-      notifyListeners();
+      notifyListeners(); // ✅ UI 업데이트
       return true;
     } else {
       print("❌ 로그인 실패: 이메일 또는 비밀번호 확인 필요");
