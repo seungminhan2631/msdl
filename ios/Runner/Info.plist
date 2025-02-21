@@ -4,6 +4,14 @@
 <dict>
 	<key>NSDocumentsDirectoryUsageDescription</key>
 	<string>앱에서 문서를 저장하고 접근하기 위해 필요합니다.</string>
+	<!-- 위치 권한 요청 -->
+    <key>NSLocationWhenInUseUsageDescription</key>
+    <string>이 앱은 사용자의 현재 위치를 검색하는 데 사용됩니다.</string>
+    <key>NSLocationAlwaysUsageDescription</key>
+    <string>이 앱은 사용자의 위치를 지속적으로 사용할 수 있습니다.</string>
+    <!-- Google Maps API Key --> 
+    <key>GMSApiKey</key>
+    <string>AIzaSyDqkZIaLDnIydApRd_OMUsnHDeiOMm8pr4</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
