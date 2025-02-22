@@ -187,11 +187,11 @@ class _WorkplaceScreenState extends State<WorkplaceScreen> {
           elevation: 0,
           backgroundColor: Colors.transparent,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.zero),
+          onPressed: _goToCurrentLocation,
           child: Icon(
             Icons.my_location_rounded,
             color: Colors.red,
           ),
-          onPressed: _goToCurrentLocation,
         ),
       ),
 
