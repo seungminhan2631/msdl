@@ -1,3 +1,5 @@
+// ignore_for_file: sort_child_properties_last
+
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -21,12 +23,19 @@ class _WorkplaceScreenState extends State<WorkplaceScreen> {
   String _currentAddress = "Loading location...";
   double _markerYOffset = 0;
   String? _darkMapStyle;
+  double _floatingButtonOffset = 100;
 
   @override
   void initState() {
     super.initState();
     _determinePosition();
     _loadMapStyle();
+
+    _sheetController.addListener(() {
+      setState(() {
+        _floatingButtonOffset = 200 + (_sheetController.size - 0.28) * 600;
+      });
+    });
   }
 
   Future<void> _loadMapStyle() async {
@@ -62,6 +71,20 @@ class _WorkplaceScreenState extends State<WorkplaceScreen> {
     }
   }
 
+  Future<void> _goToCurrentLocation() async {
+    Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
+    maps.LatLng newPosition =
+        maps.LatLng(position.latitude, position.longitude);
+
+    setState(() {
+      _currentPosition = newPosition;
+    });
+
+    _mapController.animateCamera(maps.CameraUpdate.newLatLng(newPosition));
+    _updateAddress(newPosition);
+  }
+
   void _onMapCreated(maps.GoogleMapController controller) {
     _mapController = controller;
     if (_darkMapStyle != null) {
@@ -87,6 +110,7 @@ class _WorkplaceScreenState extends State<WorkplaceScreen> {
                 zoom: 14.0,
               ),
               onMapCreated: _onMapCreated,
+              zoomControlsEnabled: false,
               onCameraMove: (maps.CameraPosition position) {
                 setState(() {
                   _markerYOffset = -10;
@@ -104,7 +128,7 @@ class _WorkplaceScreenState extends State<WorkplaceScreen> {
 
           Positioned(
             top: 40,
-            left: 10,
+            left: 20,
             child: GestureDetector(
               onTap: () {
                 Navigator.pushNamed(context, "/homeScreen");
@@ -126,6 +150,21 @@ class _WorkplaceScreenState extends State<WorkplaceScreen> {
                 size: 50,
                 color: Colors.red,
               ),
+            ),
+          ),
+
+          Positioned(
+            bottom: _floatingButtonOffset,
+            right: 5,
+            child: FloatingActionButton(
+              elevation: 0,
+              backgroundColor: Colors.transparent,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.zero),
+              child: Icon(
+                Icons.my_location_rounded,
+                color: Colors.red,
+              ),
+              onPressed: _goToCurrentLocation,
             ),
           ),
 
