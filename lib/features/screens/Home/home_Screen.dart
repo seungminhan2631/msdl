@@ -10,6 +10,7 @@ import 'package:msdl/features/screens/Home/widget/common/customContainer.dart';
 import 'package:msdl/features/screens/Home/widget/common/sectionTitle.dart';
 import 'package:msdl/features/screens/Home/widget/screenWidget/ProfileSection.dart';
 import 'package:msdl/commons/widgets/buttons/customBottomNavigationbar.dart';
+import 'package:msdl/features/screens/Home/widget/screenWidget/WeeklyTimelineSection.dart';
 import 'package:msdl/features/screens/Home/widget/screenWidget/WorkplaceSection.dart';
 import 'package:msdl/features/screens/authentication/viewModel/viewModel.dart';
 import 'package:msdl/features/screens/workplace/workplace_Screen.dart';
@@ -143,8 +144,15 @@ class _HomescreenState extends State<Homescreen> {
               ),
               Gaps.v8,
               CustomContainer(
-                child: Column(
-                  children: [],
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      SizedBox(
+                        height: MediaQuery.of(context).size.height * 0.5,
+                        child: Weeklytimelinesection(),
+                      )
+                    ],
+                  ),
                 ),
               ),
             ],

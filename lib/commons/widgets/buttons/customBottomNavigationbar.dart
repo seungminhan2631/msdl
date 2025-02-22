@@ -15,12 +15,11 @@ class CustomBottomNavigationBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      bottom: false, // 불필요한 여백 방지
       child: Material(
         elevation: 0, // 그림자 제거
         color: Colors.transparent,
         child: Container(
-          height: 65.h,
+          height: 60.h,
           decoration: BoxDecoration(
             border: Border(
               top: BorderSide(
@@ -76,7 +75,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
                         : Icons.settings_outlined,
                   ),
                 ),
-                label: "1212",
+                label: "",
               ),
             ],
           ),
