@@ -60,18 +60,17 @@ class msdl extends StatelessWidget {
           ),
           initialRoute: "/",
           routes: {
-            "/": (context) => WorkplaceScreen(),
-            "/chooseRole_Screen": (context) => ChooseRoleScreen(), // 직책 선택
-            "/nameScreen": (context) => NameScreen(), // 이름 설정정
-            "/createAccount_Screen": (context) => SignupScreen(), // 회원가입
-            "/SignupScreen": (context) => SignupScreen(), // 회원가입
-            "/settingsScreen": (context) => SettingsScreen(), // 설정
-            "/homeScreen": (context) => Homescreen(), // 홈
-            "/workplaceScreen": (context) => WorkplaceScreen(), // 구글맵
-            "/groupScreen": (context) => GroupScreen(), // 그룹
-            "/editYourProfileScreen": (context) =>
-                EditYourProfileScreen(), // 사진, 이름, 비밀번호, 직책 설정
-            "/editPasswordScreen": (context) => EditPasswordScreen(), // 비밀번호 변경
+            "/": (context) => LoginScreen(),
+            "/chooseRole_Screen": (context) => ChooseRoleScreen(),
+            "/nameScreen": (context) => NameScreen(),
+            "/createAccount_Screen": (context) => SignupScreen(),
+            "/SignupScreen": (context) => SignupScreen(),
+            "/settingsScreen": (context) => SettingsScreen(),
+            "/homeScreen": (context) => Homescreen(),
+            "/workplaceScreen": (context) => WorkplaceScreen(),
+            "/groupScreen": (context) => GroupScreen(),
+            "/editYourProfileScreen": (context) => EditYourProfileScreen(),
+            "/editPasswordScreen": (context) => EditPasswordScreen(),
           },
         );
       },
