@@ -12,7 +12,7 @@ import 'package:msdl/features/screens/authentication/name_Screen.dart';
 import 'package:msdl/features/screens/authentication/signUp_Screen.dart';
 import 'package:msdl/features/screens/authentication/login_Screen.dart';
 import 'package:msdl/features/screens/authentication/viewModel/viewModel.dart';
-import 'package:msdl/features/screens/group/viewModel/viewModel.dart';
+import 'package:msdl/features/screens/Group/viewModel/viewModel.dart';
 import 'package:msdl/features/screens/settings/edit_password_Screen.dart';
 import 'package:msdl/features/screens/settings/edit_your_profile_Screen.dart';
 import 'package:msdl/features/screens/settings/setting_Screen.dart';
@@ -22,29 +22,18 @@ import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
-// import 'package:intl/date_symbol_data_local.dart';
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initializeDateFormatting('ko_KR');
 
-  // resetDatabase(); //db리셋시 주석 해제
-  // printAllTables(); // 테이블의 전체 내용을 보고싶을떄
-  // await initializeDateFormatting('ko_KR', null);
-  try {
-    // await DatabaseHelper.instance.database;
-    // await DatabaseHelper.instance.printAllUsers();
-    print("데이터베이스 정상적으로 로드됨!");
-  } catch (e) {
-    print("데이터베이스 로드 중 오류 발생: $e");
-  }
+  try {} catch (e) {}
   runApp(
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => AuthViewModel()),
         ChangeNotifierProvider(
-            create: (context) => GroupViewModel()..fetchGroupData()),
-        ChangeNotifierProvider(create: (_) => HomeViewModel()),
+            create: (context) => GroupViewModel()), // ✅ 중복 등록 제거
+        ChangeNotifierProvider(create: (context) => HomeViewModel()),
       ],
       child: const msdl(),
     ),

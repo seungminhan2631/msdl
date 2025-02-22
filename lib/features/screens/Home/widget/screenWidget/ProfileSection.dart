@@ -49,9 +49,9 @@ class ProfileSection extends StatelessWidget {
             ),
           ),
           Positioned(
-            left: Sizes.size96 + Sizes.size96,
+            left: Sizes.size96 + Sizes.size20,
             top: Sizes.size11 + Sizes.size56,
-            child: ClockInOutButton(homeData: homeData),
+            child: ClockInOutButton(),
           ),
         ],
       ),

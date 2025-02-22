@@ -6,13 +6,12 @@ import 'package:msdl/features/screens/Home/viewModel/home_viewModel.dart';
 import 'package:provider/provider.dart';
 
 class ClockInOutButton extends StatelessWidget {
-  final HomeModel? homeData;
-
-  const ClockInOutButton({Key? key, this.homeData}) : super(key: key);
+  const ClockInOutButton({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final homeViewModel = Provider.of<HomeViewModel>(context);
+    final homeData = homeViewModel.homeData; // ✅ ViewModel에서 가져오기
 
     return ElevatedButton(
       onPressed: homeViewModel.isButtonDisabled
