@@ -70,7 +70,7 @@ class msdl extends StatelessWidget {
           ),
           initialRoute: "/",
           routes: {
-            "/": (context) => EditYourProfileScreen(),
+            "/": (context) => EditPasswordScreen(),
             "/chooseRole_Screen": (context) => ChooseRoleScreen(),
             "/nameScreen": (context) => NameScreen(),
             "/createAccount_Screen": (context) => SignupScreen(),
