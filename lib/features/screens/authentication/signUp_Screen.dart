@@ -204,6 +204,7 @@ class _SignupScreenState extends State<SignupScreen>
                         ),
                       ),
                     );
+                    
                   },
                 ),
                 Gaps.v64,

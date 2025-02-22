@@ -76,119 +76,124 @@ class _EditYourProfileScreenState extends State<EditYourProfileScreen> {
   Widget build(BuildContext context) {
     final homeData = Provider.of<HomeViewModel>(context).homeData;
 
-    return Scaffold(
-      body: Padding(
-        padding: EdgeInsets.symmetric(vertical: Sizes.size20 + Sizes.size12),
-        child: Center(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TopTitle(
-                text: "Edit Your Profile",
-                fontSize: 37.w,
-              ),
-              CircleAvatar(
-                radius: 80,
-                backgroundImage: AssetImage("assets/images/박보영.jpg"),
-              ),
-              Text(
-                "NAME",
-                style: TextStyle(
-                  fontSize: Sizes.size20,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
+    return GestureDetector(
+      onTap: () {
+        FocusScope.of(context).unfocus();
+      },
+      child: Scaffold(
+        body: Padding(
+          padding: EdgeInsets.symmetric(vertical: Sizes.size20 + Sizes.size12),
+          child: Center(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TopTitle(
+                  text: "Edit Your Profile",
+                  fontSize: 37.w,
                 ),
-              ),
-              Gaps.v10,
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: Sizes.size40),
-                child: SizedBox(
-                  width: double.infinity,
-                  child: TextField(
-                    decoration: InputDecoration(
-                      filled: true,
-                      fillColor: Color(0xFF151515).withOpacity(0.98),
-                      hintText: "Enter your name",
-                      hintStyle: TextStyle(
-                        fontFamily: "Andika",
-                        color: Color(0xFFF1F1F1).withOpacity(0.6),
-                        fontWeight: FontWeight.w400,
-                      ),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                        borderSide: BorderSide(
-                          color: Color(0xFFAAAAAA),
-                        ),
-                      ),
-                    ),
-                    style: TextStyle(color: Colors.white),
+                CircleAvatar(
+                  radius: 80,
+                  backgroundImage: AssetImage("assets/images/박보영.jpg"),
+                ),
+                Text(
+                  "NAME",
+                  style: TextStyle(
+                    fontSize: Sizes.size20,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
                   ),
                 ),
-              ),
-              Text(
-                "PASSWORD",
-                style: TextStyle(
-                  fontSize: Sizes.size20,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
-              ),
-              TextButton(
-                onPressed: () {
-                  Navigator.pushNamed(context, "/editPasswordScreen");
-                },
-                child: Text(
-                  "Keep Your Account Safe",
-                ),
-              ),
-              Gaps.v20,
-              Column(
-                children: List.generate(roles.length, (index) {
-                  return Padding(
-                    padding: EdgeInsets.symmetric(horizontal: Sizes.size40),
-                    child: Row(
-                      children: [
-                        Icon(
-                          icons[index],
-                          color: _iconColor(index),
+                Gaps.v10,
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: Sizes.size40),
+                  child: SizedBox(
+                    width: double.infinity,
+                    child: TextField(
+                      decoration: InputDecoration(
+                        filled: true,
+                        fillColor: Color(0xFF151515).withOpacity(0.98),
+                        hintText: "Enter your name",
+                        hintStyle: TextStyle(
+                          fontFamily: "Andika",
+                          color: Color(0xFFF1F1F1).withOpacity(0.6),
+                          fontWeight: FontWeight.w400,
                         ),
-                        Gaps.h24,
-                        Expanded(
-                          child: Text(
-                            roles[index],
-                            style: TextStyle(
-                              fontFamily: "Andika",
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                              fontSize: Sizes.size20,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide: BorderSide(
+                            color: Color(0xFFAAAAAA),
+                          ),
+                        ),
+                      ),
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                ),
+                Text(
+                  "PASSWORD",
+                  style: TextStyle(
+                    fontSize: Sizes.size20,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+                TextButton(
+                  onPressed: () {
+                    Navigator.pushNamed(context, "/editPasswordScreen");
+                  },
+                  child: Text(
+                    "Keep Your Account Safe",
+                  ),
+                ),
+                Gaps.v20,
+                Column(
+                  children: List.generate(roles.length, (index) {
+                    return Padding(
+                      padding: EdgeInsets.symmetric(horizontal: Sizes.size40),
+                      child: Row(
+                        children: [
+                          Icon(
+                            icons[index],
+                            color: _iconColor(index),
+                          ),
+                          Gaps.h24,
+                          Expanded(
+                            child: Text(
+                              roles[index],
+                              style: TextStyle(
+                                fontFamily: "Andika",
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                                fontSize: Sizes.size20,
+                              ),
                             ),
                           ),
-                        ),
-                        Checkbox(
-                          value: selectedIndex == index,
-                          activeColor: Colors.white,
-                          checkColor: msdlTheme.shadowColor,
-                          onChanged: (value) => _onClick(index),
-                          side: BorderSide(
-                            color: hasError && selectedIndex == null
-                                ? Color(0xFFB1384E) // 선택 안 했을 때 빨간 테두리
-                                : Color(0xffAAAAAA), // 정상 상태에서는 흰색
-                            width: 2,
+                          Checkbox(
+                            value: selectedIndex == index,
+                            activeColor: Colors.white,
+                            checkColor: msdlTheme.shadowColor,
+                            onChanged: (value) => _onClick(index),
+                            side: BorderSide(
+                              color: hasError && selectedIndex == null
+                                  ? Color(0xFFB1384E) // 선택 안 했을 때 빨간 테두리
+                                  : Color(0xffAAAAAA), // 정상 상태에서는 흰색
+                              width: 2,
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
-                  );
-                }),
-              ),
-            ],
+                        ],
+                      ),
+                    );
+                  }),
+                ),
+              ],
+            ),
           ),
         ),
-      ),
-      bottomNavigationBar: SafeArea(
-        child: CustomBottomNavigationBar(
-          onItemTapped: _onItemTapped,
-          selectedIndex: _selectedIndex,
+        bottomNavigationBar: SafeArea(
+          child: CustomBottomNavigationBar(
+            onItemTapped: _onItemTapped,
+            selectedIndex: _selectedIndex,
+          ),
         ),
       ),
     );
