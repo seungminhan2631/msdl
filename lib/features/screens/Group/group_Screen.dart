@@ -7,8 +7,8 @@ import 'package:msdl/constants/sizes.dart';
 import 'package:msdl/features/screens/Group/repository/repository.dart';
 import 'package:msdl/features/screens/Home/viewModel/home_viewModel.dart';
 import 'package:msdl/features/screens/group/model/model.dart';
-import 'package:msdl/features/screens/Home/widget/customContainer.dart';
-import 'package:msdl/features/screens/Home/widget/sectionTitle.dart';
+import 'package:msdl/features/screens/Home/widget/common/customContainer.dart';
+import 'package:msdl/features/screens/Home/widget/common/sectionTitle.dart';
 import 'package:msdl/features/screens/group/viewModel/viewModel.dart';
 import 'package:provider/provider.dart';
 
