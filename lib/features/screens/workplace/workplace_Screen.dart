@@ -9,7 +9,12 @@ import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_google_places_sdk/flutter_google_places_sdk.dart'
     as places;
 import 'package:msdl/commons/widgets/buttons/customButton.dart';
+import 'package:msdl/constants/gaps.dart';
 import 'package:msdl/constants/size_config.dart';
+import 'package:msdl/constants/sizes.dart';
+import 'package:msdl/features/screens/workplace/widget/DraggableBottomSheet.dart'
+    as bottom;
+import 'package:msdl/features/screens/workplace/widget/boxInBottomBar.dart';
 
 class WorkplaceScreen extends StatefulWidget {
   @override
@@ -131,253 +136,129 @@ class _WorkplaceScreenState extends State<WorkplaceScreen> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
-        FocusScope.of(context).unfocus();
-      },
-      child: Scaffold(
-        resizeToAvoidBottomInset: false,
-        body: Stack(
-          children: [
-            GestureDetector(
-              onTap: () {
-                _sheetController.animateTo(0.12,
-                    duration: Duration(milliseconds: 300),
-                    curve: Curves.easeInOut);
-              },
-              child: maps.GoogleMap(
-                initialCameraPosition: maps.CameraPosition(
-                  target: _currentPosition,
-                  zoom: 14.0,
-                ),
-                onMapCreated: _onMapCreated,
-                onCameraMove: (maps.CameraPosition position) {
-                  setState(() {
-                    _markerYOffset = -10;
-                    _currentPosition = position.target;
-                  });
-                },
-                onCameraIdle: () {
-                  setState(() {
-                    _markerYOffset = 0;
-                  });
-                  _updateAddress(_currentPosition);
-                },
-              ),
-            ),
-
-            Positioned(
-              top: 40,
-              left: 10,
-              right: 20,
-              child: Row(
-                children: [
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.pushNamed(context, "/homeScreen");
+        onTap: () {
+          FocusScope.of(context).unfocus();
+        },
+        child: Scaffold(
+            resizeToAvoidBottomInset: false,
+            body: Stack(
+              children: [
+                GestureDetector(
+                  onTap: () {
+                    _sheetController.animateTo(0.12,
+                        duration: Duration(milliseconds: 300),
+                        curve: Curves.easeInOut);
+                  },
+                  child: maps.GoogleMap(
+                    initialCameraPosition: maps.CameraPosition(
+                      target: _currentPosition,
+                      zoom: 14.0,
+                    ),
+                    onMapCreated: _onMapCreated,
+                    onCameraMove: (maps.CameraPosition position) {
+                      setState(() {
+                        _markerYOffset = -10;
+                        _currentPosition = position.target;
+                      });
                     },
-                    child: Icon(
-                      Icons.arrow_back_ios_rounded,
-                      color: Color(0xFFAAAAAA),
-                    ),
+                    onCameraIdle: () {
+                      setState(() {
+                        _markerYOffset = 0;
+                      });
+                      _updateAddress(_currentPosition);
+                    },
                   ),
-                  SizedBox(width: 10.w),
-                  Expanded(
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Color(0xFF2C2C2C).withOpacity(0.5),
-                        borderRadius: BorderRadius.circular(5),
-                        border: Border.all(color: Colors.red),
-                      ),
-                      child: TextField(
-                        cursorColor: Color(0xFFAAAAAA),
-                        controller: _searchController,
-                        onChanged: _searchPlaces,
-                        decoration: InputDecoration(
-                          hintText: "Search location",
-                          hintStyle: TextStyle(
-                            fontFamily: "Andika",
-                            fontWeight: FontWeight.w700,
-                            fontSize: 17,
-                          ),
-                          prefixIcon:
-                              Icon(Icons.search_rounded, color: Colors.red),
-                          border: InputBorder.none,
-                          contentPadding: EdgeInsets.symmetric(vertical: 10),
-                        ),
-                      ),
-                    ),
-                  ),
-
-                  // 검색 결과 리스트 (자동완성 최대 2개만 표시)
-                  if (_predictions.isNotEmpty)
-                    Container(
-                      margin: EdgeInsets.only(top: 4),
-                      decoration: BoxDecoration(
-                        color: Color(0xFF2C2C2C),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: ListView.builder(
-                        shrinkWrap: true,
-                        itemCount:
-                            _predictions.length > 2 ? 2 : _predictions.length,
-                        itemBuilder: (context, index) {
-                          return ListTile(
-                            title: Text(_predictions[index].fullText),
-                            onTap: () {
-                              _searchController.text =
-                                  _predictions[index].fullText;
-                              _moveToSearchedLocation(
-                                  _predictions[index].fullText);
-                            },
-                          );
-                        },
-                      ),
-                    ),
-                ],
-              ),
-            ),
-
-            // 중앙 마커
-            Center(
-              child: AnimatedContainer(
-                duration: Duration(milliseconds: 200),
-                transform: Matrix4.translationValues(0, _markerYOffset, 0),
-                child: Icon(
-                  Icons.location_pin,
-                  size: 50,
-                  color: Colors.red,
                 ),
-              ),
-            ),
-
-            // 하단 현재 위치 정보 패널
-            DraggableScrollableSheet(
-              controller: _sheetController,
-              initialChildSize: 0.12,
-              minChildSize: 0.05,
-              maxChildSize: 0.4,
-              builder: (context, scrollController) {
-                return Container(
-                  padding: EdgeInsets.symmetric(vertical: 10),
-                  decoration: BoxDecoration(
-                    border: Border(
-                      top: BorderSide(
-                        color: Color(0xFFCACACA),
-                        width: 1.0.w,
+                Positioned(
+                  top: 40,
+                  left: 10,
+                  right: 20,
+                  child: Row(
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.pushNamed(context, "/homeScreen");
+                        },
+                        child: Icon(
+                          Icons.arrow_back_ios_rounded,
+                          color: Color(0xFFAAAAAA),
+                        ),
                       ),
-                    ),
-                    color: Color(0xFF2C2C2C),
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(16),
-                      topRight: Radius.circular(16),
-                    ),
-                  ),
-                  child: SingleChildScrollView(
-                    controller: scrollController,
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Container(
-                          width: 80,
-                          height: 3,
+                      SizedBox(width: 10.w),
+                      Expanded(
+                        child: Container(
                           decoration: BoxDecoration(
-                            color: Color(0xFFD9D9D9),
-                            borderRadius: BorderRadius.circular(10),
+                            color: Color(0xFF2C2C2C).withOpacity(0.5),
+                            borderRadius: BorderRadius.circular(5),
+                            border: Border.all(color: Colors.red),
+                          ),
+                          child: TextField(
+                            cursorColor: Color(0xFFAAAAAA),
+                            controller: _searchController,
+                            onChanged: _searchPlaces,
+                            decoration: InputDecoration(
+                              hintText: "Search location",
+                              hintStyle: TextStyle(
+                                fontFamily: "Andika",
+                                fontWeight: FontWeight.w700,
+                                fontSize: 17,
+                              ),
+                              prefixIcon:
+                                  Icon(Icons.search_rounded, color: Colors.red),
+                              border: InputBorder.none,
+                              contentPadding:
+                                  EdgeInsets.symmetric(vertical: 10),
+                            ),
                           ),
                         ),
-                        SizedBox(height: 6),
-                        Text(
-                          "Current location : ",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 16,
-                            fontFamily: "Andika",
+                      ),
+
+                      // 검색 결과 리스트 (자동완성 최대 2개만 표시)
+                      if (_predictions.isNotEmpty)
+                        Container(
+                          margin: EdgeInsets.only(top: 4),
+                          decoration: BoxDecoration(
+                            color: Color(0xFF2C2C2C),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: ListView.builder(
+                            shrinkWrap: true,
+                            itemCount: _predictions.length > 2
+                                ? 2
+                                : _predictions.length,
+                            itemBuilder: (context, index) {
+                              return ListTile(
+                                title: Text(_predictions[index].fullText),
+                                onTap: () {
+                                  _searchController.text =
+                                      _predictions[index].fullText;
+                                  _moveToSearchedLocation(
+                                      _predictions[index].fullText);
+                                },
+                              );
+                            },
                           ),
                         ),
-                        Text(
-                          _currentAddress,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 14,
-                            fontFamily: "Andika",
-                          ),
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            _BoxInBottomBar(
-                              text: "Lab",
-                              icon: Icons.science_outlined,
-                              iconColor: Color(0xFFFFB400),
-                            ),
-                            _BoxInBottomBar(
-                              text: "Home",
-                              icon: Icons.home_work_outlined,
-                              iconColor: Color(0xFF3F51B5),
-                            ),
-                            _BoxInBottomBar(
-                              text: "Out Of Office (OOO)",
-                              icon: Icons.business_center_outlined,
-                              iconColor: Color(0xFF935E38),
-                            ),
-                            _BoxInBottomBar(
-                              text: "Other",
-                              icon: Icons.more_horiz_outlined,
-                              iconColor: Color(0xFF151515),
-                            ),
-                          ],
-                        ),
-                        SizedBox(
-                          height: 10.h,
-                        ),
-                        CustomButton(
-                          text: "Add New Workplace",
-                          routeName: "/homeScreen",
-                        ),
-                      ],
+                    ],
+                  ),
+                ),
+
+                // 중앙 마커
+                Center(
+                  child: AnimatedContainer(
+                    duration: Duration(milliseconds: 200),
+                    transform: Matrix4.translationValues(0, _markerYOffset, 0),
+                    child: Icon(
+                      Icons.location_pin,
+                      size: 50,
+                      color: Colors.red,
                     ),
                   ),
-                );
-              },
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _BoxInBottomBar extends StatelessWidget {
-  final String text;
-  final IconData icon;
-  final Color iconColor;
-
-  const _BoxInBottomBar({
-    required this.text,
-    required this.icon,
-    required this.iconColor,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 85.w,
-      height: 100.h,
-      decoration: BoxDecoration(
-          color: const Color(0xFF2C2C2C),
-          borderRadius: BorderRadius.circular(5),
-          border: Border.all(color: const Color(0xFFAAAAAA), width: 1.w)),
-      child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-        Icon(icon, color: iconColor),
-        const SizedBox(height: 5),
-        Text(text,
-            style: const TextStyle(
-                color: Colors.white,
-                fontFamily: "Andika",
-                fontWeight: FontWeight.w700,
-                fontSize: 15))
-      ]),
-    );
+                ),
+                bottom.bottomScrollSheet(
+                    sheetController: _sheetController,
+                    currentAddress: _currentAddress)
+              ],
+            )));
   }
 }

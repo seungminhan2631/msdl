@@ -10,7 +10,9 @@ import 'package:msdl/features/screens/Home/widget/common/customContainer.dart';
 import 'package:msdl/features/screens/Home/widget/common/sectionTitle.dart';
 import 'package:msdl/features/screens/Home/widget/screenWidget/ProfileSection.dart';
 import 'package:msdl/commons/widgets/buttons/customBottomNavigationbar.dart';
+import 'package:msdl/features/screens/Home/widget/screenWidget/WorkplaceSection.dart';
 import 'package:msdl/features/screens/authentication/viewModel/viewModel.dart';
+import 'package:msdl/features/screens/workplace/workplace_Screen.dart';
 import 'package:provider/provider.dart';
 
 class Homescreen extends StatefulWidget {
@@ -130,15 +132,8 @@ class _HomescreenState extends State<Homescreen> {
             Gaps.v14,
             ProfileSection(homeData: homeData),
             Gaps.v24,
-            Sectiontitle(
-              icon: Icons.location_on,
-              text: "My Workplace",
-              iconColor: Color(0xff3F51B5),
-            ),
             Gaps.v8,
-            CustomContainer(
-              child: Column(),
-            ),
+            Workplacesection(),
             Gaps.v24,
             Sectiontitle(
               iconAngle: 30,
