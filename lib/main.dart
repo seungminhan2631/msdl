@@ -60,7 +60,7 @@ class msdl extends StatelessWidget {
           ),
           initialRoute: "/",
           routes: {
-            "/": (context) => Weeklytimelinesection(),
+            "/": (context) => WorkplaceScreen(),
             "/chooseRole_Screen": (context) => ChooseRoleScreen(), // 직책 선택
             "/nameScreen": (context) => NameScreen(), // 이름 설정정
             "/createAccount_Screen": (context) => SignupScreen(), // 회원가입
