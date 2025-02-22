@@ -32,7 +32,8 @@ class HomeRepository {
         headers: {"Content-Type": "application/json"},
         body: jsonEncode({
           "user_id": userId,
-          "action": isClockIn ? "check_in" : "check_out",
+          "action":
+              isClockIn ? "check_in" : "check_out", // 출근일 경우 "check_in" 보내기
         }),
       );
 

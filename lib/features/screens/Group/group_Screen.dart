@@ -4,6 +4,8 @@ import 'package:msdl/commons/widgets/buttons/customBottomNavigationbar.dart';
 import 'package:msdl/constants/gaps.dart';
 import 'package:msdl/constants/size_config.dart';
 import 'package:msdl/constants/sizes.dart';
+import 'package:msdl/features/screens/Group/repository/repository.dart';
+import 'package:msdl/features/screens/Home/viewModel/home_viewModel.dart';
 import 'package:msdl/features/screens/group/model/model.dart';
 import 'package:msdl/features/screens/Home/widget/customContainer.dart';
 import 'package:msdl/features/screens/Home/widget/sectionTitle.dart';
@@ -25,6 +27,14 @@ class _GroupScreenState extends State<GroupScreen> {
   void initState() {
     super.initState();
     Future.microtask(() => context.read<GroupViewModel>().fetchGroupData());
+    _resetAttendanceIfNeeded();
+  }
+
+  void _resetAttendanceIfNeeded() {
+    DateTime now = DateTime.now();
+    if (now.hour == 0 && now.minute == 0) {
+      GroupRepository().resetAttendance();
+    }
   }
 
   void _onItemTapped(int index) {
@@ -40,7 +50,7 @@ class _GroupScreenState extends State<GroupScreen> {
 
   @override
   Widget build(BuildContext context) {
-    String todayDate = DateFormat('yyyy.MM.dd').format(DateTime.now());
+    String todayDate = DateFormat('yyyy.MM').format(DateTime.now());
     final groupData = context.watch<GroupViewModel>().groupedUsers;
 
     return SafeArea(
@@ -149,7 +159,7 @@ class _GroupScreenState extends State<GroupScreen> {
                                           fontSize: Sizes.size12),
                                     ),
                                     trailing: Text(
-                                      "In: ${user.checkInTime} | Out: ${user.checkOutTime}",
+                                      "In: ${user.checkInTime.substring(0, 5)} | Out: ${user.checkOutTime.substring(0, 5)}",
                                       style: TextStyle(
                                           fontFamily: "Andika",
                                           color: Color(0xffF1F1F1),

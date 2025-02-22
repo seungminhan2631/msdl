@@ -10,7 +10,71 @@ class HomeViewModel extends ChangeNotifier {
   HomeModel? _homeData;
 
   HomeModel? get homeData => _homeData;
+  bool _isCheckedIn = false;
+  bool get isCheckedIn => _isCheckedIn;
 
+  // 출근 상태 업데이트
+  void setCheckedIn(bool isCheckedIn) {
+    _isCheckedIn = isCheckedIn;
+    notifyListeners();
+  }
+
+  // 출근 상태 업데이트
+  // 출근 또는 퇴근 상태 반전
+  Future<void> toggleAttendance(BuildContext context) async {
+    final authViewModel = Provider.of<AuthViewModel>(context, listen: false);
+    int? userId = authViewModel.userId;
+
+    if (userId == null) {
+      print("❌ toggleAttendance 실패: userId가 null");
+      return;
+    }
+
+    // 출근 상태 확인 (출근이 되어 있으면 퇴근을 처리하고, 퇴근 상태에서만 출근을 처리)
+    bool isCheckedIn =
+        _homeData?.checkInTime != "--:--"; // 출근 상태라면 true, 출근하지 않았다면 false
+
+    DateTime now = DateTime.now();
+    String newCheckInTime = isCheckedIn
+        ? "--:--"
+        : DateFormat('HH:mm:ss').format(now); // 출근하지 않으면 출근 시간 설정, 아니면 퇴근 시간 설정
+    String newCheckOutTime = isCheckedIn
+        ? DateFormat('HH:mm:ss').format(now)
+        : "--:--"; // 퇴근 중이면 퇴근 시간 설정, 아니면 출근 시간 설정
+
+    // 출퇴근 상태 반전
+    if (!isCheckedIn) {
+      // 출근 상태로 변경
+      _homeData = _homeData!.copyWith(
+        checkInTime: newCheckInTime,
+        checkOutTime: newCheckOutTime,
+        isCheckedIn: true, // 출근 상태로 변경
+      );
+    } else {
+      // 퇴근 상태로 변경
+      _homeData = _homeData!.copyWith(
+        checkInTime: newCheckInTime,
+        checkOutTime: newCheckOutTime,
+        isCheckedIn: false, // 퇴근 상태로 변경
+      );
+    }
+
+    try {
+      // 서버에 반영 (출근 또는 퇴근 상태 반영)
+      await _repository.updateAttendance(userId, !isCheckedIn);
+      print(isCheckedIn ? "✅ 퇴근 성공!" : "✅ 출근 성공!");
+
+      // 최신 데이터 가져오기
+      await fetchHomeData(context); // 서버에서 최신 데이터 가져오기
+    } catch (e) {
+      print("⚠️ 출퇴근 정보 업데이트 실패: $e");
+    }
+
+    // UI 갱신
+    notifyListeners();
+  }
+
+  // 홈 데이터 가져오기
   Future<void> fetchHomeData(BuildContext context) async {
     final authViewModel = Provider.of<AuthViewModel>(context, listen: false);
     int? userId = authViewModel.userId;
@@ -21,66 +85,10 @@ class HomeViewModel extends ChangeNotifier {
     }
 
     try {
-      print("🔍 fetchHomeData 실행 - userId: $userId");
       _homeData = await _repository.getHomeData(userId);
-
-      if (_homeData != null) {
-        print("✅ HomeModel 데이터 가져오기 성공!");
-        print("👤 사용자 이름: ${_homeData?.name}");
-        print("📌 역할: ${_homeData?.role}");
-        print("🟢 출근 상태: ${_homeData?.isCheckedIn}");
-        print("📍 근무 위치: ${_homeData?.workLocation}");
-        print("📊 주간 출근 기록: ${_homeData?.weeklyTimeline}");
-      } else {
-        print("❌ 홈 데이터가 없습니다.");
-      }
-
-      notifyListeners();
+      notifyListeners(); // UI 갱신
     } catch (e) {
-      debugPrint("⚠️ Error fetching home data: $e");
-    }
-  }
-
-  Future<void> toggleAttendance(BuildContext context) async {
-    final authViewModel = Provider.of<AuthViewModel>(context, listen: false);
-    int? userId = authViewModel.userId;
-
-    if (userId == null) {
-      print("❌ toggleAttendance 실패: userId가 null");
-      return;
-    }
-
-    if (_homeData == null) return;
-
-    // ✅ 현재 상태 반전 (출근/퇴근 토글)
-    bool isNowCheckedIn = !_homeData!.isCheckedIn;
-    DateTime now = DateTime.now();
-
-    // ✅ 출근 시 현재 시간 저장, 퇴근 시 기존 출근 시간 유지
-    String? newCheckInTime = isNowCheckedIn
-        ? DateFormat('HH:mm:ss').format(now)
-        : _homeData!.checkInTime;
-
-    // ✅ 퇴근 시 현재 시간 저장, 출근 시 기존 퇴근 시간 유지
-    String? newCheckOutTime = isNowCheckedIn
-        ? _homeData!.checkOutTime
-        : DateFormat('HH:mm:ss').format(now);
-
-    // ✅ UI 상태 즉시 변경 (사용자가 버튼을 다시 누를 때까지 반영됨)
-    _homeData = _homeData!.copyWith(
-      isCheckedIn: isNowCheckedIn,
-      checkInTime: newCheckInTime,
-      checkOutTime: newCheckOutTime,
-    );
-
-    notifyListeners(); // ✅ UI 즉시 반영
-
-    try {
-      // ✅ 서버에 출근/퇴근 상태 업데이트 요청
-      await _repository.updateAttendance(userId, isNowCheckedIn);
-      print(isNowCheckedIn ? "✅ 출근 성공!" : "🚪 퇴근 성공!");
-    } catch (e) {
-      debugPrint("⚠️ Error updating attendance: $e");
+      print("⚠️ 데이터 가져오기 실패: $e");
     }
   }
 
