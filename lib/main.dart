@@ -6,6 +6,7 @@ import 'package:msdl/data/dbPrint.dart';
 import 'package:msdl/dbReset.dart';
 import 'package:msdl/features/screens/Home/home_Screen.dart';
 import 'package:msdl/features/screens/Home/viewModel/home_viewModel.dart';
+import 'package:msdl/features/screens/Home/widget/screenWidget/WeeklyTimelineSection.dart';
 import 'package:msdl/features/screens/authentication/choose_role_Screen.dart';
 import 'package:msdl/features/screens/Group/group_Screen.dart';
 import 'package:msdl/features/screens/authentication/name_Screen.dart';
@@ -59,17 +60,18 @@ class msdl extends StatelessWidget {
           ),
           initialRoute: "/",
           routes: {
-            "/": (context) => SettingsScreen(),
-            "/chooseRole_Screen": (context) => ChooseRoleScreen(),
-            "/nameScreen": (context) => NameScreen(),
-            "/createAccount_Screen": (context) => SignupScreen(),
-            "/SignupScreen": (context) => SignupScreen(),
-            "/settingsScreen": (context) => SettingsScreen(),
-            "/homeScreen": (context) => Homescreen(),
-            "/workplaceScreen": (context) => WorkplaceScreen(),
-            "/groupScreen": (context) => GroupScreen(),
-            "/editYourProfileScreen": (context) => EditYourProfileScreen(),
-            "/editPasswordScreen": (context) => EditPasswordScreen(),
+            "/": (context) => Weeklytimelinesection(),
+            "/chooseRole_Screen": (context) => ChooseRoleScreen(), // 직책 선택
+            "/nameScreen": (context) => NameScreen(), // 이름 설정정
+            "/createAccount_Screen": (context) => SignupScreen(), // 회원가입
+            "/SignupScreen": (context) => SignupScreen(), // 회원가입
+            "/settingsScreen": (context) => SettingsScreen(), // 설정
+            "/homeScreen": (context) => Homescreen(), // 홈
+            "/workplaceScreen": (context) => WorkplaceScreen(), // 구글맵
+            "/groupScreen": (context) => GroupScreen(), // 그룹
+            "/editYourProfileScreen": (context) =>
+                EditYourProfileScreen(), // 사진, 이름, 비밀번호, 직책 설정
+            "/editPasswordScreen": (context) => EditPasswordScreen(), // 비밀번호 변경
           },
         );
       },
