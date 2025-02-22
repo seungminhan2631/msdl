@@ -1,3 +1,5 @@
+// ignore_for_file: non_constant_identifier_names
+
 import 'package:flutter/material.dart';
 import 'package:msdl/commons/widgets/buttons/customBottomNavigationbar.dart';
 import 'package:msdl/commons/widgets/topTitle.dart';
@@ -98,7 +100,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
               SettingsBodyText(
                   text: "About", onTap: () => _showAboutDialog(context)),
               Gaps.v28,
-              SettingsBodyText(text: "Edit Profile"),
+              SettingsBodyText(
+                text: "Edit Profile",
+                onTap: () {
+                  Navigator.pushNamed(context, "/editYourProfileScreen");
+                },
+              ),
               Gaps.v28,
               SettingsBodyText(
                 text: "Sign Out",

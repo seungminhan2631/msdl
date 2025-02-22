@@ -87,9 +87,22 @@ class _EditYourProfileScreenState extends State<EditYourProfileScreen> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                TopTitle(
-                  text: "Edit Your Profile",
-                  fontSize: 37.w,
+                Row(
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.pushNamed(context, "/settingsScreen");
+                      },
+                      child: Icon(
+                        Icons.arrow_back_ios_rounded,
+                        color: Color(0xFFAAAAAA),
+                      ),
+                    ),
+                    TopTitle(
+                      text: "Edit Your Profile",
+                      fontSize: 37.w,
+                    ),
+                  ],
                 ),
                 CircleAvatar(
                   radius: 80,
