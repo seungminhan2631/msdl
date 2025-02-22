@@ -19,7 +19,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
         elevation: 0, // 그림자 제거
         color: Colors.transparent,
         child: Container(
-          height: 60.h,
+          height: Sizes.size60 + Sizes.size3,
           decoration: BoxDecoration(
             border: Border(
               top: BorderSide(
