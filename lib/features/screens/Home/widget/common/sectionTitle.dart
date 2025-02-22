@@ -35,9 +35,9 @@ class Sectiontitle extends StatelessWidget {
         Text(
           text,
           style: TextStyle(
-            fontSize: Sizes.size20,
+            fontSize: Sizes.size18,
             fontFamily: "Andika",
-            fontWeight: FontWeight.bold,
+            fontWeight: FontWeight.w700,
             color: Color(0xffF1F1F1),
           ),
         ),

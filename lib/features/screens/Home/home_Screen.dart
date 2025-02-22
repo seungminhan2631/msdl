@@ -90,7 +90,7 @@ class _HomescreenState extends State<Homescreen> {
         backgroundColor: Color(0xff151515).withOpacity(0.98),
         elevation: 0,
         title: Padding(
-          padding: EdgeInsets.only(left: Sizes.size72 + Sizes.size24),
+          padding: EdgeInsets.only(left: Sizes.size32 + Sizes.size24),
           child: Row(
             children: [
               Text(
@@ -119,33 +119,36 @@ class _HomescreenState extends State<Homescreen> {
           ),
         ),
       ),
-      body: Padding(
-        padding: EdgeInsets.symmetric(
-            horizontal: Sizes.size28, vertical: Sizes.size36),
-        child: Column(
-          children: [
-            Sectiontitle(
-              icon: Icons.work,
-              text: "Medical Solution & Device Lab",
-              iconColor: Color(0xff935E38),
-            ),
-            Gaps.v14,
-            ProfileSection(homeData: homeData),
-            Gaps.v24,
-            Gaps.v8,
-            Workplacesection(),
-            Gaps.v24,
-            Sectiontitle(
-              iconAngle: 30,
-              icon: Icons.push_pin,
-              text: "Weekly Timeline",
-              iconColor: Color(0xffFFB400).withOpacity(0.9),
-            ),
-            Gaps.v8,
-            CustomContainer(
-              child: Column(),
-            ),
-          ],
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: EdgeInsets.symmetric(
+              horizontal: Sizes.size28, vertical: Sizes.size36),
+          child: Column(
+            children: [
+              Sectiontitle(
+                icon: Icons.work,
+                text: "Medical Solution & Device Lab",
+                iconColor: Color(0xff935E38),
+              ),
+              Gaps.v14,
+              ProfileSection(homeData: homeData),
+              Gaps.v24,
+              Workplacesection(),
+              Gaps.v24,
+              Sectiontitle(
+                iconAngle: 30,
+                icon: Icons.push_pin,
+                text: "Weekly Timeline",
+                iconColor: Color(0xffFFB400).withOpacity(0.9),
+              ),
+              Gaps.v8,
+              CustomContainer(
+                child: Column(
+                  children: [],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
       bottomNavigationBar: CustomBottomNavigationBar(
