@@ -27,7 +27,6 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initializeDateFormatting('ko_KR');
 
-  try {} catch (e) {}
   runApp(
     MultiProvider(
       providers: [
@@ -60,7 +59,7 @@ class msdl extends StatelessWidget {
           ),
           initialRoute: "/",
           routes: {
-            "/": (context) => WorkplaceScreen(),
+            "/": (context) => Homescreen(),
             "/chooseRole_Screen": (context) => ChooseRoleScreen(),
             "/nameScreen": (context) => NameScreen(),
             "/createAccount_Screen": (context) => SignupScreen(),
