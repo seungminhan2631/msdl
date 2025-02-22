@@ -13,6 +13,7 @@ import 'package:msdl/features/screens/authentication/signUp_Screen.dart';
 import 'package:msdl/features/screens/authentication/login_Screen.dart';
 import 'package:msdl/features/screens/authentication/viewModel/viewModel.dart';
 import 'package:msdl/features/screens/group/viewModel/viewModel.dart';
+import 'package:msdl/features/screens/settings/edit_password_Screen.dart';
 import 'package:msdl/features/screens/settings/edit_your_profile_Screen.dart';
 import 'package:msdl/features/screens/settings/setting_Screen.dart';
 import 'package:msdl/features/screens/workplace/workplace_Screen.dart';
@@ -78,6 +79,8 @@ class msdl extends StatelessWidget {
             "/homeScreen": (context) => Homescreen(),
             "/workplaceScreen": (context) => WorkplaceScreen(),
             "/groupScreen": (context) => GroupScreen(),
+            "/editYourProfileScreen": (context) => EditYourProfileScreen(),
+            "/editPasswordScreen": (context) => EditPasswordScreen(),
           },
         );
       },
