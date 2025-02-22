@@ -70,19 +70,7 @@ def login():
     if user:
         return jsonify({"user_id": user.id})
     return jsonify({"error": "Invalid credentials"}), 401
-@app.route('/users', methods=['GET'])
-def get_users():
-    users = User.query.all()
-    user_list = [
-        {
-            "id": user.id,
-            "email": user.email,
-            "name": user.name,
-            "role": user.role
-        }
-        for user in users
-    ]
-    return jsonify(user_list)
+
 @app.route('/attendance/update', methods=['POST'])
 def update_attendance():
     data = request.json
@@ -125,6 +113,18 @@ def get_group_users():
             "category": "My WorkPlace",  # ✅ 카테고리 기본값 설정 (필요하면 DB 필드 추가)
         })
 
+    return jsonify(result)
+@app.route('/users', methods=['GET'])
+def get_users():
+    users = User.query.all()
+    result = []
+    for user in users:
+        result.append({
+            "id": user.id,
+            "name": user.name,
+            "role": user.role,
+            "email": user.email,
+        })
     return jsonify(result)
 @app.route('/home/<int:user_id>', methods=['GET'])
 def get_home_user(user_id):

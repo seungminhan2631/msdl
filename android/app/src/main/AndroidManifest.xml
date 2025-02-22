@@ -5,6 +5,7 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/> <!-- 정밀한 위치 접근 (GPS) -->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/> <!-- 대략적인 위치 접근 (Wifi, 기지국) -->
 
+
      <!-- GPS 및 네트워크 기반 위치 사용 선언 -->
     <uses-feature android:name="android.hardware.location.gps" /> <!-- GPS 기능 사용 -->
     <uses-feature android:name="android.hardware.location.network" />  <!-- 네트워크 기반 위치 사용 -->

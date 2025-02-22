@@ -53,13 +53,53 @@ class _HomescreenState extends State<Homescreen> {
     });
   }
 
-  void _loadUserData() {
+  void _loadUserData() async {
     final userId = Provider.of<AuthViewModel>(context, listen: false).userId;
     if (userId != null) {
-      Provider.of<HomeViewModel>(context, listen: false).fetchHomeData(context);
+      await Provider.of<HomeViewModel>(context, listen: false)
+          .fetchHomeData(context);
+      setState(() {});
     } else {
       print("❌ 로그인된 사용자 ID 없음!");
     }
+  }
+
+  void _handleClockInOut() {
+    final homeData =
+        Provider.of<HomeViewModel>(context, listen: false).homeData;
+
+    if (homeData?.checkInTime == "--:--") {
+      // 출근 처리
+      Provider.of<HomeViewModel>(context, listen: false)
+          .toggleAttendance(context);
+    } else if (homeData?.checkOutTime == "--:--") {
+      // 퇴근 처리
+      Provider.of<HomeViewModel>(context, listen: false)
+          .toggleAttendance(context);
+    } else {
+      // 이미 퇴근한 상태일 경우, 덮어쓰기를 확인하는 다이얼로그 띄우기
+      _showEndOfDayDialog();
+    }
+
+    setState(() {});
+  }
+
+  void _showEndOfDayDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text("오늘은 하루가 끝났습니다."),
+        content: Text("오늘은 더 이상 출근할 수 없습니다."),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context); // 다이얼로그 닫기
+            },
+            child: Text("확인"),
+          ),
+        ],
+      ),
+    );
   }
 
   void _startTimer() {
@@ -98,7 +138,7 @@ class _HomescreenState extends State<Homescreen> {
     } else if (homeData?.checkOutTime == "--:--") {
       return "근무중 ${_formatDuration(_workDuration)}"; // 근무 중 (타이머)
     } else {
-      return "퇴근완료 ${homeData!.checkOutTime}"; // 퇴근 완료 (퇴근 시간 표시)
+      return "퇴근완료 ${homeData!.checkOutTime.substring(0, 5)}"; // 퇴근 완료 (퇴근 시간 표시 - 시:분)
     }
   }
 
@@ -202,8 +242,13 @@ class _HomescreenState extends State<Homescreen> {
                     ),
                   ),
                   Positioned(
-                    left: Sizes.size20, // 🔥 프로필 아이콘 오른쪽에 배치
-                    top: Sizes.size96,
+                    left: Sizes.size32,
+                    top: Sizes.size60,
+                    child: ProfileAvatar(),
+                  ),
+                  Positioned(
+                    left: Sizes.size96 + Sizes.size20, // 🔥 프로필 아이콘 오른쪽에 배치
+                    top: Sizes.size60,
                     child: Text(
                       homeData?.name ?? "name...",
                       style: TextStyle(
@@ -220,51 +265,24 @@ class _HomescreenState extends State<Homescreen> {
                     child: Column(
                       children: [
                         ElevatedButton(
-                          onPressed: homeData?.isCheckedIn == false
-                              ? () {
-                                  Provider.of<HomeViewModel>(context,
-                                          listen: false)
-                                      .toggleAttendance(context);
-                                }
-                              : null, // 체크인 상태가 아닐 때만 클릭 가능
+                          onPressed: _handleClockInOut,
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: homeData?.isCheckedIn == false
-                                ? const Color(0xff2C2C2C)
-                                : Colors.grey, // 활성화 상태 표시
-                            minimumSize: Size(60.w, 32.h), // ✅ 버튼 크기 고정
+                            backgroundColor: homeData?.checkInTime == "--:--"
+                                ? Color(0xff2C2C2C) // 출근 상태
+                                : Color(0xffDE4141), // 퇴근 상태
+                            minimumSize: Size(60.w, 32.h),
                           ),
                           child: Text(
-                            "Clock In",
-                            style: TextStyle(
-                                fontSize: Sizes.size16,
-                                color: Color(0xff70AB3C),
-                                fontWeight: FontWeight.bold),
-                          ),
-                        ),
-                        Gaps.v14,
-                        ElevatedButton(
-                          onPressed: homeData?.isCheckedIn == true
-                              ? () {
-                                  Provider.of<HomeViewModel>(context,
-                                          listen: false)
-                                      .toggleAttendance(context);
-                                }
-                              : null, // 체크아웃 상태가 아닐 때만 클릭 가능
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: homeData?.isCheckedIn == true
-                                ? const Color(0xff2C2C2C)
-                                : Colors.grey, // 활성화 상태 표시
-                            minimumSize: Size(60.w, 40.h), // ✅ 버튼 크기 고정
-                          ),
-                          child: Text(
-                            "Clock Out",
+                            homeData?.checkInTime == "--:--"
+                                ? "Clock In"
+                                : "Clock Out",
                             style: TextStyle(
                               fontSize: Sizes.size16,
-                              color: Color(0xffDE4141),
+                              color: Color.fromARGB(255, 0, 89, 173),
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                        ),
+                        )
                       ],
                     ),
                   ),
@@ -272,7 +290,6 @@ class _HomescreenState extends State<Homescreen> {
               ),
             ),
             Gaps.v24,
-            // Gaps.v3,
             Sectiontitle(
               icon: Icons.location_on,
               text: "My Workplace",
@@ -280,21 +297,9 @@ class _HomescreenState extends State<Homescreen> {
             ),
             Gaps.v8,
             CustomContainer(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: homeData?.workLocation != null
-                    ? [
-                        Text(homeData!.workLocation,
-                            style: TextStyle(color: Colors.white)),
-                      ]
-                    : [
-                        Text("No workplace assigned",
-                            style: TextStyle(color: Colors.white))
-                      ],
-              ),
+              child: Column(),
             ),
             Gaps.v24,
-
             Sectiontitle(
               iconAngle: 30,
               icon: Icons.push_pin,
@@ -303,24 +308,7 @@ class _HomescreenState extends State<Homescreen> {
             ),
             Gaps.v8,
             CustomContainer(
-              child: Column(
-                children: homeData?.weeklyTimeline.isNotEmpty ?? false
-                    ? homeData!.weeklyTimeline.map((entry) {
-                        return ListTile(
-                          title: Text(entry["date"],
-                              style: TextStyle(color: Colors.white)),
-                          trailing: Icon(
-                              entry["status"] == "Checked In"
-                                  ? Icons.check
-                                  : Icons.close,
-                              color: Colors.green),
-                        );
-                      }).toList()
-                    : [
-                        Text("No weekly attendance data",
-                            style: TextStyle(color: Colors.white))
-                      ],
-              ),
+              child: Column(),
             ),
           ],
         ),

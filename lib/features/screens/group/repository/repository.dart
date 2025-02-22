@@ -28,4 +28,20 @@ class GroupRepository {
       return [];
     }
   }
+
+  Future<void> resetAttendance() async {
+    try {
+      final response = await http.get(
+        Uri.parse("$baseUrl/reset_attendance"),
+      );
+
+      if (response.statusCode == 200) {
+        print("✅ 출퇴근 시간이 초기화되었습니다.");
+      } else {
+        print("❌ 출퇴근 시간 초기화 실패: ${response.body}");
+      }
+    } catch (e) {
+      print("⚠️ 서버 연결 오류: $e");
+    }
+  }
 }
