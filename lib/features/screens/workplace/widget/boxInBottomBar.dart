@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:msdl/constants/gaps.dart';
-import 'package:msdl/constants/size_config.dart';
 import 'package:msdl/constants/sizes.dart';
 
 class BoxInBottomBar extends StatelessWidget {
@@ -17,16 +16,13 @@ class BoxInBottomBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 85.w,
-      height: 100.h,
+      width: Sizes.size80 + Sizes.size5,
+      height: Sizes.size80 + Sizes.size20,
       decoration: BoxDecoration(
-        color: const Color(0xFF2C2C2C),
-        borderRadius: BorderRadius.circular(5),
-        border: Border.all(
-          color: const Color(0xFFAAAAAA),
-          width: 1.w,
-        ),
-      ),
+          color: const Color(0xFF2C2C2C),
+          borderRadius: BorderRadius.circular(5),
+          border:
+              Border.all(color: const Color(0xFFAAAAAA), width: Sizes.size1)),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -38,8 +34,8 @@ class BoxInBottomBar extends StatelessWidget {
                 color: Colors.white,
                 fontFamily: "Andika",
                 fontWeight: FontWeight.w700,
-                fontSize: Sizes.size14),
-          ),
+                fontSize: Sizes.size14 + Sizes.size1),
+          )
         ],
       ),
     );
