@@ -8,19 +8,24 @@ import 'package:provider/provider.dart';
 class HomeViewModel extends ChangeNotifier {
   final HomeRepository _repository = HomeRepository();
   HomeModel? _homeData;
+  bool _isButtonDisabled = false; // ✅ 버튼 활성/비활성 상태 추가
 
   HomeModel? get homeData => _homeData;
-  bool _isCheckedIn = false;
-  bool get isCheckedIn => _isCheckedIn;
+  bool get isButtonDisabled => _isButtonDisabled;
 
-  // 출근 상태 업데이트
-  void setCheckedIn(bool isCheckedIn) {
-    _isCheckedIn = isCheckedIn;
-    notifyListeners();
+  // ✅ 현재 출퇴근 상태에 따라 텍스트 반환
+  String getWorkStatusText() {
+    if (_homeData?.isCheckedIn == false && _homeData?.checkInTime == "--:--") {
+      return "출근 전";
+    } else if (_homeData?.isCheckedIn == true &&
+        _homeData?.checkOutTime == "--:--") {
+      return "근무 중";
+    } else {
+      return "오늘 하루도 수고하셨습니다!";
+    }
   }
 
-  // 출근 상태 업데이트
-  // 출근 또는 퇴근 상태 반전
+  // ✅ 출퇴근 상태 토글
   Future<void> toggleAttendance(BuildContext context) async {
     final authViewModel = Provider.of<AuthViewModel>(context, listen: false);
     int? userId = authViewModel.userId;
@@ -30,51 +35,60 @@ class HomeViewModel extends ChangeNotifier {
       return;
     }
 
-    // 출근 상태 확인 (출근이 되어 있으면 퇴근을 처리하고, 퇴근 상태에서만 출근을 처리)
-    bool isCheckedIn =
-        _homeData?.checkInTime != "--:--"; // 출근 상태라면 true, 출근하지 않았다면 false
-
-    DateTime now = DateTime.now();
-    String newCheckInTime = isCheckedIn
-        ? "--:--"
-        : DateFormat('HH:mm:ss').format(now); // 출근하지 않으면 출근 시간 설정, 아니면 퇴근 시간 설정
-    String newCheckOutTime = isCheckedIn
-        ? DateFormat('HH:mm:ss').format(now)
-        : "--:--"; // 퇴근 중이면 퇴근 시간 설정, 아니면 출근 시간 설정
-
-    // 출퇴근 상태 반전
-    if (!isCheckedIn) {
-      // 출근 상태로 변경
-      _homeData = _homeData!.copyWith(
-        checkInTime: newCheckInTime,
-        checkOutTime: newCheckOutTime,
-        isCheckedIn: true, // 출근 상태로 변경
-      );
-    } else {
-      // 퇴근 상태로 변경
-      _homeData = _homeData!.copyWith(
-        checkInTime: newCheckInTime,
-        checkOutTime: newCheckOutTime,
-        isCheckedIn: false, // 퇴근 상태로 변경
-      );
-    }
+    bool isCheckedIn = _homeData?.isCheckedIn ?? false;
+    String action = isCheckedIn ? "check_out" : "check_in";
 
     try {
-      // 서버에 반영 (출근 또는 퇴근 상태 반영)
-      await _repository.updateAttendance(userId, !isCheckedIn);
+      await _repository.updateAttendance(userId, action);
       print(isCheckedIn ? "✅ 퇴근 성공!" : "✅ 출근 성공!");
 
+      // ✅ 퇴근한 경우 버튼 비활성화
+      if (isCheckedIn) {
+        _isButtonDisabled = true; // 🔥 버튼 비활성화
+        _showGoodJobDialog(context);
+      }
+
       // 최신 데이터 가져오기
-      await fetchHomeData(context); // 서버에서 최신 데이터 가져오기
+      await fetchHomeData(context);
     } catch (e) {
       print("⚠️ 출퇴근 정보 업데이트 실패: $e");
     }
 
-    // UI 갱신
     notifyListeners();
   }
 
-  // 홈 데이터 가져오기
+  // ✅ 자정(00:00) 초기화 시 버튼 다시 활성화
+  void resetAttendance() {
+    if (homeData != null) {
+      _homeData = homeData!.copyWith(
+        checkInTime: "--:--",
+        checkOutTime: "--:--",
+        isCheckedIn: false,
+      );
+      _isButtonDisabled = false; // ✅ 버튼 다시 활성화
+      notifyListeners();
+    }
+  }
+
+  // ✅ "오늘 하루도 수고하셨습니다!" 메시지 띄우기
+  void _showGoodJobDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text("퇴근 처리 "),
+        content: Text("퇴근처리가 되었습니다 !"),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context); // 다이얼로그 닫기
+            },
+            child: Text("확인"),
+          ),
+        ],
+      ),
+    );
+  }
+
   Future<void> fetchHomeData(BuildContext context) async {
     final authViewModel = Provider.of<AuthViewModel>(context, listen: false);
     int? userId = authViewModel.userId;
@@ -85,21 +99,10 @@ class HomeViewModel extends ChangeNotifier {
     }
 
     try {
-      _homeData = await _repository.getHomeData(userId);
-      notifyListeners(); // UI 갱신
+      _homeData = await _repository.fetchHomeData(userId);
+      notifyListeners();
     } catch (e) {
       print("⚠️ 데이터 가져오기 실패: $e");
-    }
-  }
-
-  void resetAttendance() {
-    if (homeData != null) {
-      _homeData = homeData!.copyWith(
-        checkInTime: "--:--",
-        checkOutTime: "--:--",
-        isCheckedIn: false,
-      );
-      notifyListeners();
     }
   }
 }

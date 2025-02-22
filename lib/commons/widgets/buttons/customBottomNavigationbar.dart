@@ -20,7 +20,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
         elevation: 0, // 그림자 제거
         color: Colors.transparent,
         child: Container(
-          height: 65.h, // 바텀 바의 고정 높이 설정
+          height: 65.h,
           decoration: BoxDecoration(
             border: Border(
               top: BorderSide(
