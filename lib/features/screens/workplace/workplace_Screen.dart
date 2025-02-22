@@ -188,6 +188,9 @@ class _WorkplaceScreenState extends State<WorkplaceScreen> {
           backgroundColor: Colors.transparent,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.zero),
           onPressed: _goToCurrentLocation,
+          highlightElevation: 0,
+          splashColor: Colors.transparent,
+          hoverElevation: 0,
           child: Icon(
             Icons.my_location_rounded,
             color: Colors.red,
@@ -197,7 +200,9 @@ class _WorkplaceScreenState extends State<WorkplaceScreen> {
 
       // 하단 현재 위치 정보 패널
       draglesheet(
-          sheetController: _sheetController, currentAddress: _currentAddress),
+        sheetController: _sheetController,
+        currentAddress: _currentAddress,
+      ),
     ];
     return Scaffold(
       resizeToAvoidBottomInset: false,

@@ -144,15 +144,13 @@ class _HomescreenState extends State<Homescreen> {
               ),
               Gaps.v8,
               CustomContainer(
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.5,
-                        child: Weeklytimelinesection(),
-                      )
-                    ],
-                  ),
+                child: Column(
+                  children: [
+                    SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.2,
+                      child: Weeklytimelinesection(),
+                    )
+                  ],
                 ),
               ),
             ],

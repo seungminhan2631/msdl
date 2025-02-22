@@ -53,7 +53,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
                         : Icons.people_alt_outlined,
                   ),
                 ),
-                label: "",
+                label: "group",
               ),
               BottomNavigationBarItem(
                 icon: SizedBox(
@@ -63,7 +63,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
                     selectedIndex == 1 ? Icons.home : Icons.home_outlined,
                   ),
                 ),
-                label: "",
+                label: "home",
               ),
               BottomNavigationBarItem(
                 icon: SizedBox(
@@ -75,7 +75,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
                         : Icons.settings_outlined,
                   ),
                 ),
-                label: "",
+                label: "setting",
               ),
             ],
           ),
