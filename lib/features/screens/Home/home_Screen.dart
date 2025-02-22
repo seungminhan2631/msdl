@@ -12,6 +12,7 @@ import 'package:msdl/features/screens/Home/widget/screenWidget/ProfileSection.da
 import 'package:msdl/commons/widgets/buttons/customBottomNavigationbar.dart';
 import 'package:msdl/features/screens/Home/widget/screenWidget/WorkplaceSection.dart';
 import 'package:msdl/features/screens/authentication/viewModel/viewModel.dart';
+import 'package:msdl/features/screens/workplace/workplace_Screen.dart';
 import 'package:provider/provider.dart';
 
 class Homescreen extends StatefulWidget {

@@ -8,7 +8,12 @@ import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:msdl/commons/widgets/buttons/customButton.dart';
+import 'package:msdl/constants/gaps.dart';
 import 'package:msdl/constants/size_config.dart';
+import 'package:msdl/constants/sizes.dart';
+import 'package:msdl/features/screens/workplace/widget/DraggableBottomSheet.dart'
+    as bottom;
+import 'package:msdl/features/screens/workplace/widget/boxInBottomBar.dart';
 
 class WorkplaceScreen extends StatefulWidget {
   @override
