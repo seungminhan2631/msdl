@@ -146,18 +146,26 @@ def update_location():
     if not user_id or not current_location or not category:
         return jsonify({"error": "Missing data"}), 400
 
-    # ✅ 같은 user_id라도 새로운 위치를 추가
-    new_location = Location(
-        user_id=user_id,
-        current_location=current_location,
-        category=category
-    )
-    db.session.add(new_location)
+    # ✅ 같은 user_id + 같은 category의 데이터가 있는지 확인
+    existing_location = Location.query.filter_by(user_id=user_id, category=category).first()
+
+    if existing_location:
+        # ✅ 같은 카테고리가 있으면 기존 데이터를 덮어쓰기
+        existing_location.current_location = current_location
+        existing_location.created_at = datetime.utcnow()
+        print(f"🔄 기존 위치 덮어쓰기 완료: user_id={user_id}, category={category}, location={current_location}")
+    else:
+        # ✅ 같은 카테고리가 없으면 새로 추가
+        new_location = Location(
+            user_id=user_id,
+            current_location=current_location,
+            category=category
+        )
+        db.session.add(new_location)
+        print(f"✅ 새로운 위치 추가: user_id={user_id}, category={category}, location={current_location}")
+
     db.session.commit()
-
-    print(f"✅ 데이터 저장 완료: user_id={user_id}, location={current_location}, category={category}")
-    return jsonify({"message": "Location added successfully!"}), 200
-
+    return jsonify({"message": "Location updated successfully!"}), 200
 
 
 @app.route('/location/category/<int:user_id>', methods=['GET'])

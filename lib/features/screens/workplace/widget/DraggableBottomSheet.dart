@@ -136,7 +136,7 @@ class _DraggleSheetState extends State<DraggleSheet> {
                 CustomButton(
                   onPressed: () => _onAddWorkplacePressed(context),
                   text: "Add New Workplace",
-                  routeName: "/",
+                  routeName: "/homeScreen",
                 ),
               ],
             ),
