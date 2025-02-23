@@ -1,11 +1,10 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:msdl/features/screens/Home/model/WeeklyAttendance%20_mdel.dart';
 import 'package:msdl/features/screens/Home/model/workplace_model.dart';
 
 class WeeklyAttendanceRepository {
-  final String baseUrl;
-
-  WeeklyAttendanceRepository({required this.baseUrl});
+  static String baseUrl = "http://220.69.203.99:5000";
 
   Future<List<WeeklyAttendance>> fetchWeeklyAttendance(int userId) async {
     final response =

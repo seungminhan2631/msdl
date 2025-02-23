@@ -6,6 +6,7 @@ import 'package:msdl/constants/size_config.dart';
 import 'package:msdl/constants/sizes.dart';
 import 'package:msdl/features/screens/Home/model/home_model.dart';
 import 'package:msdl/features/screens/Home/viewModel/home_viewModel.dart';
+import 'package:msdl/features/screens/Home/viewModel/workplace_viewModel.dart';
 import 'package:msdl/features/screens/Home/widget/common/customContainer.dart';
 import 'package:msdl/features/screens/Home/widget/common/sectionTitle.dart';
 import 'package:msdl/features/screens/Home/widget/screenWidget/ProfileSection.dart';
@@ -134,7 +135,7 @@ class _HomescreenState extends State<Homescreen> {
               Gaps.v14,
               ProfileSection(homeData: homeData),
               Gaps.v24,
-              Workplacesection(),
+              WorkplaceSection(),
               Gaps.v24,
               Sectiontitle(
                 iconAngle: 30,
