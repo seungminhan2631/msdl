@@ -62,4 +62,6 @@ class WorkplaceRepository {
       throw Exception('Failed to update workplace');
     }
   }
+
+  fetchUserWorkplaces(int userId) {}
 }

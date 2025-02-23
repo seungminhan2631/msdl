@@ -226,6 +226,7 @@ def get_group_attendance():
     return jsonify(result), 200
 
 
+#그룹 스크린에서 모든 사용자의 workplace뿌려줄떄 사용
 
 @app.route('/locations', methods=['GET'])
 def get_all_locations():
@@ -243,6 +244,7 @@ def get_all_locations():
 
     return jsonify(result), 200  # ✅ Flask 기본 설정을 활용해 UTF-8 유지
 
+#홈스크린에서 workplace뿌려줄떄 사용
 @app.route('/location/<int:user_id>', methods=['GET'])
 def get_location(user_id):
     locations = Location.query.filter_by(user_id=user_id).all()

@@ -8,6 +8,7 @@ import 'package:msdl/data/dbPrint.dart';
 import 'package:msdl/dbReset.dart';
 import 'package:msdl/features/screens/Home/home_Screen.dart';
 import 'package:msdl/features/screens/Home/viewModel/home_viewModel.dart';
+import 'package:msdl/features/screens/Home/viewModel/workplace_viewModel.dart';
 import 'package:msdl/features/screens/Home/widget/screenWidget/WeeklyTimelineSection.dart';
 import 'package:msdl/features/screens/authentication/choose_role_Screen.dart';
 import 'package:msdl/features/screens/Group/group_Screen.dart';
@@ -37,9 +38,9 @@ void main() async {
         ChangeNotifierProvider(create: (_) => AuthViewModel()),
         ChangeNotifierProvider(create: (_) => HomeViewModel()),
         ChangeNotifierProvider(create: (_) => GroupViewModel()),
+        ChangeNotifierProvider(create: (_) => HomeWorkplaceViewModel()),
         ChangeNotifierProvider(
-          create: (context) => WorkplaceViewModel(WorkplaceRepository()),
-        ),
+            create: (_) => WorkplaceViewModel(WorkplaceRepository())),
       ],
       child: const msdl(),
     ),

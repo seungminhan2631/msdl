@@ -1,35 +1,21 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:msdl/features/screens/Home/model/workplace_model.dart';
 
-class WorkplaceRepository {
+class HomeWorkplaceRepository {
   static const String baseUrl = "http://220.69.203.99:5000";
 
-  Future<void> updateLocation(
-      int userId, String latitude, String longitude, String category) async {
-    final response = await http.post(
-      Uri.parse('$baseUrl/location/update'),
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode({
-        'user_id': userId,
-        'latitude': latitude,
-        'longitude': longitude,
-        'category': category,
-      }),
-    );
-
-    if (response.statusCode != 200) {
-      throw Exception('Failed to update location');
-    }
-  }
-
-  Future<String> fetchLocationCategory(int userId) async {
-    final response =
-        await http.get(Uri.parse('$baseUrl/location/category/$userId'));
+  // ✅ 유저의 모든 Workplace 가져오기
+  Future<List<HomeWorkplace>> fetchUserWorkplaces(int userId) async {
+    final response = await http.get(Uri.parse('$baseUrl/location/$userId'));
 
     if (response.statusCode == 200) {
-      return jsonDecode(response.body)['category'];
+      final data = jsonDecode(response.body);
+      final List<dynamic> locations = data['locations']; // ✅ 리스트 반환
+
+      return locations.map((json) => HomeWorkplace.fromJson(json)).toList();
     } else {
-      throw Exception('Failed to load location category');
+      throw Exception('Failed to load workplaces');
     }
   }
 }
