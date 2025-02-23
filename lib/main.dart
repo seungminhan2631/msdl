@@ -1,32 +1,26 @@
 import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_file.dart' hide initializeDateFormatting;
 import 'package:intl/intl.dart';
-import 'package:msdl/data/database_helper.dart';
-import 'package:msdl/data/dbPrint.dart';
-import 'package:msdl/dbReset.dart';
 import 'package:msdl/features/screens/Home/home_Screen.dart';
-import 'package:msdl/features/screens/Home/viewModel/home_viewModel.dart';
 import 'package:msdl/features/screens/Home/viewModel/workplace_viewModel.dart';
-import 'package:msdl/features/screens/Home/widget/screenWidget/WeeklyTimelineSection.dart';
 import 'package:msdl/features/screens/authentication/choose_role_Screen.dart';
 import 'package:msdl/features/screens/Group/group_Screen.dart';
 import 'package:msdl/features/screens/authentication/name_Screen.dart';
 import 'package:msdl/features/screens/authentication/signUp_Screen.dart';
 import 'package:msdl/features/screens/authentication/login_Screen.dart';
-import 'package:msdl/features/screens/authentication/viewModel/viewModel.dart';
-import 'package:msdl/features/screens/Group/viewModel/viewModel.dart';
 import 'package:msdl/features/screens/settings/edit_password_Screen.dart';
 import 'package:msdl/features/screens/settings/edit_your_profile_Screen.dart';
 import 'package:msdl/features/screens/settings/setting_Screen.dart';
-import 'package:msdl/features/screens/workplace/repository/workplace_repository.dart';
-import 'package:msdl/features/screens/workplace/viewModel/workplace_viewmodel.dart';
 import 'package:msdl/features/screens/workplace/workplace_Screen.dart';
 import 'package:msdl/msdl_theme.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:msdl/features/screens/Home/viewModel/home_viewModel.dart';
+import 'package:msdl/features/screens/authentication/viewModel/viewModel.dart';
+import 'package:msdl/features/screens/Group/viewModel/viewModel.dart';
+import 'package:msdl/features/screens/workplace/viewModel/workplace_viewmodel.dart';
+import 'package:msdl/features/screens/workplace/repository/workplace_repository.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -42,18 +36,17 @@ void main() async {
         ChangeNotifierProvider(
             create: (_) => WorkplaceViewModel(WorkplaceRepository())),
       ],
-      child: const msdl(),
+      child: const MsdlApp(),
     ),
   );
 }
 
-class msdl extends StatelessWidget {
-  const msdl({super.key});
+class MsdlApp extends StatelessWidget {
+  const MsdlApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
-      // MediaQuery에 따른 반응형 UI
       builder: (context, constraints) {
         return MaterialApp(
           debugShowCheckedModeBanner: false,
@@ -65,18 +58,77 @@ class msdl extends StatelessWidget {
             scaffoldBackgroundColor: Color(0xFF151515).withOpacity(0.98),
           ),
           initialRoute: "/",
-          routes: {
-            "/": (context) => LoginScreen(),
-            "/chooseRole_Screen": (context) => ChooseRoleScreen(),
-            "/nameScreen": (context) => NameScreen(),
-            "/createAccount_Screen": (context) => SignupScreen(),
-            "/SignupScreen": (context) => SignupScreen(),
-            "/settingsScreen": (context) => SettingsScreen(),
-            "/homeScreen": (context) => Homescreen(),
-            "/workplaceScreen": (context) => WorkplaceScreen(),
-            "/groupScreen": (context) => GroupScreen(),
-            "/editYourProfileScreen": (context) => EditYourProfileScreen(),
-            "/editPasswordScreen": (context) => EditPasswordScreen(),
+          onGenerateRoute: (settings) {
+            WidgetBuilder builder;
+            bool applySlideAnimation = false; // 🔥 기본적으로 슬라이드 애니메이션 적용 안 함
+
+            switch (settings.name) {
+              case "/":
+                builder = (context) => LoginScreen();
+                applySlideAnimation = true; // 🔥 슬라이드 애니메이션 적용
+                break;
+              case "/chooseRole_Screen":
+                builder = (context) => ChooseRoleScreen();
+                applySlideAnimation = true; // 🔥 슬라이드 애니메이션 적용
+                break;
+              case "/nameScreen":
+                builder = (context) => NameScreen();
+                applySlideAnimation = true; // 🔥 슬라이드 애니메이션 적용
+                break;
+              case "/createAccount_Screen":
+              case "/SignupScreen":
+                builder = (context) => SignupScreen();
+                applySlideAnimation = true; // 🔥 슬라이드 애니메이션 적용
+                break;
+              case "/settingsScreen":
+                builder = (context) => SettingsScreen();
+                break;
+              case "/editYourProfileScreen":
+                builder = (context) => EditYourProfileScreen();
+                applySlideAnimation = true; // 🔥 슬라이드 애니메이션 적용
+                break;
+              case "/editPasswordScreen":
+                builder = (context) => EditPasswordScreen();
+                applySlideAnimation = true; // 🔥 슬라이드 애니메이션 적용
+                break;
+              case "/homeScreen":
+                builder = (context) => Homescreen();
+                break;
+              case "/workplaceScreen":
+                builder = (context) => WorkplaceScreen();
+                break;
+              case "/groupScreen":
+                builder = (context) => GroupScreen();
+                break;
+              default:
+                throw Exception("Invalid route: ${settings.name}");
+            }
+
+            // ✅ 특정 화면에만 슬라이드 애니메이션 적용
+            if (applySlideAnimation) {
+              return PageRouteBuilder(
+                pageBuilder: (context, animation, secondaryAnimation) =>
+                    builder(context),
+                transitionsBuilder:
+                    (context, animation, secondaryAnimation, child) {
+                  const begin = Offset(1.0, 0.0); // 오른쪽에서 왼쪽으로 슬라이드
+                  const end = Offset.zero;
+                  const curve = Curves.easeInOut;
+
+                  var tween = Tween(begin: begin, end: end)
+                      .chain(CurveTween(curve: curve));
+                  var offsetAnimation = animation.drive(tween);
+
+                  return SlideTransition(
+                    position: offsetAnimation,
+                    child: child,
+                  );
+                },
+              );
+            }
+
+            // ✅ 나머지 화면은 기본 MaterialPageRoute 사용
+            return MaterialPageRoute(builder: builder, settings: settings);
           },
         );
       },
