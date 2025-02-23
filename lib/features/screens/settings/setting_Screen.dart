@@ -1,6 +1,9 @@
 // ignore_for_file: non_constant_identifier_names
 
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:msdl/commons/widgets/buttons/customBottomNavigationbar.dart';
 import 'package:msdl/commons/widgets/topTitle.dart';
 import 'package:msdl/constants/gaps.dart';
@@ -11,7 +14,9 @@ import 'package:msdl/msdl_theme.dart';
 import 'package:msdl/features/screens/Home/home_Screen.dart';
 import 'package:msdl/features/screens/Group/group_Screen.dart';
 import 'package:msdl/features/screens/authentication/viewModel/viewModel.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -21,10 +26,13 @@ class SettingsScreen extends StatefulWidget {
 
 class _SettingsScreenState extends State<SettingsScreen> {
   int _selectedIndex = 2;
+  String? _profileImagePath;
+
   @override
   void initState() {
     super.initState();
     _loadUserData();
+    _loadProfileImage();
   }
 
 //로그인한 userId를
@@ -34,6 +42,37 @@ class _SettingsScreenState extends State<SettingsScreen> {
       Provider.of<HomeViewModel>(context, listen: false).fetchHomeData(context);
     } else {
       print("❌ 로그인된 사용자 ID 없음!");
+    }
+  }
+
+  // 저장된 프로필 이미지 경로 불러오기
+  Future<void> _loadProfileImage() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _profileImagePath = prefs.getString('profile_image'); // 저장된 이미지 경로 불러오기
+    });
+  }
+
+  // 📸 갤러리에서 이미지 선택 및 저장
+  Future<void> _pickImage() async {
+    final ImagePicker picker = ImagePicker();
+    final XFile? pickedFile =
+        await picker.pickImage(source: ImageSource.gallery);
+
+    if (pickedFile != null) {
+      final File imageFile = File(pickedFile.path); // 선택한 파일 가져오기
+      final directory =
+          await getApplicationDocumentsDirectory(); // 앱 내 저장 폴더 가져오기
+      final String newPath =
+          '${directory.path}/profile_image.jpg'; // 파일 저장 경로 설정
+
+      final savedImage = await imageFile.copy(newPath); // 선택한 이미지를 새로운 경로에 저장
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('profile_image', savedImage.path); // 저장된 이미지 경로 저장
+
+      setState(() {
+        _profileImagePath = savedImage.path; // UI 업데이트
+      });
     }
   }
 
@@ -107,9 +146,27 @@ class _SettingsScreenState extends State<SettingsScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  CircleAvatar(
-                    radius: 80,
-                    backgroundImage: AssetImage("assets/images/박보영.jpg"),
+                  GestureDetector(
+                    onTap: _pickImage,
+                    child: CircleAvatar(
+                      radius: 80,
+                      backgroundImage: _profileImagePath != null
+                          ? FileImage(File(_profileImagePath!)) // 저장된 이미지 표시
+                          : AssetImage("assets/images/박보영.jpg") // 기본 이미지 표시시
+                              as ImageProvider,
+                      child: Align(
+                        alignment: Alignment.bottomRight,
+                        child: CircleAvatar(
+                          backgroundColor: Color(0xFF151515),
+                          radius: 18,
+                          child: Icon(
+                            Icons.add_photo_alternate_outlined,
+                            color: Color(0xFF90CAF9),
+                            size: Sizes.size20,
+                          ),
+                        ),
+                      ),
+                    ),
                   ),
                   SizedBox(width: 30.w),
                   Column(

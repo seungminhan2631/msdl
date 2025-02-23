@@ -63,7 +63,7 @@ class MsdlApp extends StatelessWidget {
 
             switch (settings.name) {
               case "/":
-                builder = (context) => LoginScreen();
+                builder = (context) => SettingsScreen();
                 applySlideAnimation = true; // 🔥 슬라이드 애니메이션 적용
                 break;
               case "/chooseRole_Screen":
