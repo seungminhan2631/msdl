@@ -19,6 +19,8 @@ import 'package:msdl/features/screens/Group/viewModel/viewModel.dart';
 import 'package:msdl/features/screens/settings/edit_password_Screen.dart';
 import 'package:msdl/features/screens/settings/edit_your_profile_Screen.dart';
 import 'package:msdl/features/screens/settings/setting_Screen.dart';
+import 'package:msdl/features/screens/workplace/repository/workplace_repository.dart';
+import 'package:msdl/features/screens/workplace/viewModel/workplace_viewmodel.dart';
 import 'package:msdl/features/screens/workplace/workplace_Screen.dart';
 import 'package:msdl/msdl_theme.dart';
 import 'package:path_provider/path_provider.dart';
@@ -32,10 +34,12 @@ void main() async {
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (context) => AuthViewModel()),
+        ChangeNotifierProvider(create: (_) => AuthViewModel()),
+        ChangeNotifierProvider(create: (_) => HomeViewModel()),
+        ChangeNotifierProvider(create: (_) => GroupViewModel()),
         ChangeNotifierProvider(
-            create: (context) => GroupViewModel()), // ✅ 중복 등록 제거
-        ChangeNotifierProvider(create: (context) => HomeViewModel()),
+          create: (context) => WorkplaceViewModel(WorkplaceRepository()),
+        ),
       ],
       child: const msdl(),
     ),
