@@ -22,7 +22,7 @@ class ProfileSection extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Padding(
-            padding: EdgeInsets.only(top: Sizes.size16),
+            padding: EdgeInsets.only(top: Sizes.size12),
             child: Align(
               alignment: Alignment.center,
               child: Text(
