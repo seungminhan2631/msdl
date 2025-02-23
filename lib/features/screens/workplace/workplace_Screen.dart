@@ -193,7 +193,7 @@ class _WorkplaceScreenState extends State<WorkplaceScreen> {
           hoverElevation: 0,
           child: Icon(
             Icons.my_location_rounded,
-            color: Colors.red,
+            color: Color(0xFFEB3223),
           ),
         ),
       ),
