@@ -56,8 +56,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
   void _signOut(BuildContext context) {
     // AuthViewModel을 통해 사용자 정보 초기화
     Provider.of<AuthViewModel>(context, listen: false).logout();
-
-    Navigator.pushNamedAndRemoveUntil(context, "/", (route) => false);
+    Future.delayed(Duration(milliseconds: 200), () {
+      if (mounted) {
+        Navigator.pushReplacementNamed(context, "/");
+      }
+    });
   }
 
   void _confirmSignOut(BuildContext context) {
