@@ -36,7 +36,7 @@ class ProfileSection extends StatelessWidget {
               ),
             ),
           ),
-          Gaps.v24,
+          Gaps.v16,
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [

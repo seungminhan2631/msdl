@@ -22,17 +22,17 @@ class _ProfileAvatarState extends State<ProfileAvatar> {
     return InkWell(
       onTap: _pickImage,
       child: CircleAvatar(
-        radius: Sizes.size32,
-        backgroundColor: Color(0xffF1F1F1).withOpacity(0.8),
+        radius: Sizes.size40,
+        backgroundColor: Color(0xFF935E38).withOpacity(0.8),
         backgroundImage: _image != null ? FileImage(_image!) : null,
         child: _image == null
             ? Text(
-                homeData?.name ?? "name...",
+                homeData?.name ?? "Image",
                 style: TextStyle(
                   fontSize: Sizes.size14,
                   fontFamily: "Andika",
                   fontWeight: FontWeight.bold,
-                  color: Color.fromARGB(255, 29, 136, 127),
+                  color: Color(0xffF1F1F1),
                 ),
               )
             : null,
