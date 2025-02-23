@@ -26,21 +26,23 @@ class _WeeklytimelinesectionState extends State<Weeklytimelinesection> {
     final List<DateTime> absentDays = homeViewModel.absentDays;
 
     // 출근, 퇴근, 결석 날짜를 저장
-    Map<DateTime, bool> markedDates = {};
+    Map<DateTime, String> markedDates = {};
 
     // 출근한 날짜
     for (var day in attendanceDays) {
-      markedDates[DateTime(day.year, day.month, day.day)] = true; // 출근 (초록색색)
+      markedDates[DateTime(day.year, day.month, day.day)] =
+          "checkIn"; // 출근 (초록색색)
     }
 
     // 결석한 날짜
     for (var day in checkoutDays) {
-      markedDates[DateTime(day.year, day.month, day.day)] = false; // 퇴근 (파란색)
+      markedDates[DateTime(day.year, day.month, day.day)] =
+          "checkOut"; // 퇴근 (파란색)
     }
 
     for (var day in absentDays) {
       markedDates[DateTime(day.year, day.month, day.day)] =
-          "absent" as bool; // 결석 (빨간색색)
+          "absent"; // 결석 (빨간섹)
     }
 
     return TableCalendar(

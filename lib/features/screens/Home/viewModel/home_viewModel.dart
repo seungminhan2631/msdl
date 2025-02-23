@@ -73,6 +73,8 @@ class HomeViewModel extends ChangeNotifier {
 
       print(isCurrentlyCheckedIn ? "✅ 퇴근 성공!" : "✅ 출근 성공!");
 
+      _updateAbsentDays();
+
       // ✅ UI 갱신
       notifyListeners();
 
@@ -99,7 +101,7 @@ class HomeViewModel extends ChangeNotifier {
     }
   }
 
-  // ✅ 아예 출근하지 않은 날짜 찾기
+  // ✅ 결석석 날짜 찾기
   void _updateAbsentDays() {
     DateTime startDate = DateTime(2025, 1, 1);
     DateTime endDate = DateTime(2025, 12, 31);
