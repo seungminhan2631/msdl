@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:msdl/commons/widgets/buttons/customButton.dart';
 import 'package:msdl/constants/gaps.dart';
@@ -23,16 +25,12 @@ class DraggleSheet extends StatefulWidget {
 }
 
 class _DraggleSheetState extends State<DraggleSheet> {
-  String _selectedCategory = "Other"; // 🔥 기본값 설정
+  String? _selectedCategory;
 
-  void _saveCategory(BuildContext context, String category) {
-    print("✅ _saveCategory 눌림: $category");
-
-    if (_selectedCategory != category) {
-      setState(() {
-        _selectedCategory = category;
-      });
-    }
+  void _saveCategory(String category) {
+    setState(() {
+      _selectedCategory = category;
+    });
   }
 
   void _onAddWorkplacePressed(BuildContext context) {
@@ -43,9 +41,12 @@ class _DraggleSheetState extends State<DraggleSheet> {
 
     // ✅ UI가 멈추지 않도록 Future.delayed 추가
     Future.delayed(Duration(milliseconds: 100), () async {
+      if (!mounted) return;
       await workplaceViewModel.addWorkPlace(
-          context, widget._currentAddress, _selectedCategory);
+          context, widget._currentAddress, _selectedCategory ?? "Other");
     });
+
+    Navigator.pushReplacementNamed(context, "/homeScreen");
   }
 
   @override
@@ -110,25 +111,29 @@ class _DraggleSheetState extends State<DraggleSheet> {
                       text: "Lab",
                       icon: Icons.science_outlined,
                       iconColor: Color(0xFFFFB400),
-                      onPressed: () => _saveCategory(context, "Lab"),
+                      isSelected: _selectedCategory == "Lab",
+                      onPressed: () => _saveCategory("Lab"),
                     ),
                     BoxInBottomBar(
                       text: "Home",
                       icon: Icons.home_work_outlined,
                       iconColor: Color(0xFF3F51B5),
-                      onPressed: () => _saveCategory(context, "Home"),
+                      isSelected: _selectedCategory == "Home",
+                      onPressed: () => _saveCategory("Home"),
                     ),
                     BoxInBottomBar(
                       text: "Off-Site",
                       icon: Icons.business_center_outlined,
                       iconColor: Color(0xFF935E38),
-                      onPressed: () => _saveCategory(context, "Off-Site"),
+                      isSelected: _selectedCategory == "Off-Site",
+                      onPressed: () => _saveCategory("Off-Site"),
                     ),
                     BoxInBottomBar(
                       text: "Other",
                       icon: Icons.more_horiz_outlined,
                       iconColor: Color(0xFF151515),
-                      onPressed: () => _saveCategory(context, "Other"),
+                      isSelected: _selectedCategory == "Other",
+                      onPressed: () => _saveCategory("Other"),
                     ),
                   ],
                 ),

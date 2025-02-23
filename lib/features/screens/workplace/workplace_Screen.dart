@@ -33,10 +33,17 @@ class _WorkplaceScreenState extends State<WorkplaceScreen> {
     _loadMapStyle();
 
     _sheetController.addListener(() {
+      if (!mounted) return;
       setState(() {
         _floatingButtonOffset = 200 + (_sheetController.size - 0.28) * 600;
       });
     });
+  }
+
+  @override
+  void dispose() {
+    _sheetController.dispose();
+    super.dispose();
   }
 
   Future<void> _loadMapStyle() async {
@@ -73,6 +80,8 @@ class _WorkplaceScreenState extends State<WorkplaceScreen> {
     Position position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high);
 
+    if (!mounted) return;
+
     setState(() {
       _currentPosition = maps.LatLng(position.latitude, position.longitude);
     });
@@ -89,6 +98,8 @@ class _WorkplaceScreenState extends State<WorkplaceScreen> {
         String locality = placemarks[0].locality ?? "";
         String country = placemarks[0].country ?? "";
 
+        if (!mounted) return;
+
         setState(() {
           _currentAddress = buildingName.isNotEmpty ? buildingName : streetName;
           if (locality.isNotEmpty) _currentAddress += ", $locality";
@@ -96,6 +107,7 @@ class _WorkplaceScreenState extends State<WorkplaceScreen> {
         });
       }
     } catch (e) {
+      if (!mounted) return;
       setState(() {
         _currentAddress = "주소를 찾을 수 없음";
       });
@@ -107,6 +119,8 @@ class _WorkplaceScreenState extends State<WorkplaceScreen> {
         desiredAccuracy: LocationAccuracy.high);
     maps.LatLng newPosition =
         maps.LatLng(position.latitude, position.longitude);
+
+    if (!mounted) return;
 
     setState(() {
       _currentPosition = newPosition;
@@ -139,12 +153,14 @@ class _WorkplaceScreenState extends State<WorkplaceScreen> {
           onMapCreated: _onMapCreated,
           zoomControlsEnabled: false,
           onCameraMove: (maps.CameraPosition position) {
+            if (!mounted) return;
             setState(() {
               _markerYOffset = -10;
               _currentPosition = position.target;
             });
           },
           onCameraIdle: () {
+            if (!mounted) return;
             setState(() {
               _markerYOffset = 0;
             });
