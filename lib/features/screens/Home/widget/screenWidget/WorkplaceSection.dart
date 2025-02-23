@@ -48,7 +48,7 @@ class _WorkplaceSectionState extends State<WorkplaceSection> {
                     Navigator.pushNamed(context, "/workplaceScreen");
                   },
                   child: Transform.translate(
-                    offset: Offset(0, 3.h),
+                    offset: Offset(0, 2.h),
                     child: Icon(
                       Icons.arrow_forward_ios_rounded,
                       color: Color(0xFFAAAAAA),
@@ -58,7 +58,7 @@ class _WorkplaceSectionState extends State<WorkplaceSection> {
                 ),
               ],
             ),
-            Gaps.v12,
+            Gaps.v8,
             CustomContainer(
               child: SizedBox(
                 height: 150.h,
