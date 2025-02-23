@@ -29,7 +29,7 @@ class Attendance(db.Model):
 class Location(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id', ondelete="CASCADE"), nullable=False)
-    currentLocation = db.Column(db.String, nullable=False)
+    current_location = db.Column(db.String, nullable=False)
     category = db.Column(db.String, nullable=False)
 
 #회원가입 요청하는 쿼리
@@ -128,15 +128,15 @@ def get_group_users():
 def update_location():
     data = request.json
     user_id = data['user_id']
-    currentLocation = data['currentLocation']
+    current_location = data['current_location']
     category = data['category']
     
     location = Location.query.filter_by(user_id=user_id).first()
     if location:
-        location.currentLocation = currentLocation
+        location.current_location = current_location
         location.category = category
     else:
-        new_location = Location(user_id=user_id, currentLocation=currentLocation,category=category)
+        new_location = Location(user_id=user_id, current_location=current_location,category=category)
         db.session.add(new_location)
     
     db.session.commit()
@@ -195,6 +195,35 @@ def get_group_attendance():
         })
 
     return jsonify(result), 200
+@app.route('/locations', methods=['GET'])
+def get_all_locations():
+    """모든 유저들의 위치 정보를 가져오는 API"""
+    locations = Location.query.all()
+    result = []
+
+    for location in locations:
+        user = User.query.get(location.user_id)
+        result.append({
+            "user_id": location.user_id,
+            "name": user.name if user else "Unknown",
+            "current_location": location.current_location,
+            "category": location.category
+        })
+
+    return jsonify(result), 200
+@app.route('/location/<int:user_id>', methods=['GET'])
+def get_user_location(user_id):
+    """특정 유저의 위치 정보를 가져오는 API"""
+    location = Location.query.filter_by(user_id=user_id).first()
+    
+    if location:
+        return jsonify({
+            "user_id": location.user_id,
+            "current_location": location.current_location,
+            "category": location.category
+        }), 200
+    else:
+        return jsonify({"error": "Location not found"}), 404
 
 # 🔥 기존 데이터베이스 파일 삭제 후 다시 생성
 db_path = "server_database.db"

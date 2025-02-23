@@ -3,10 +3,15 @@ import 'package:msdl/commons/widgets/buttons/customButton.dart';
 import 'package:msdl/constants/gaps.dart';
 import 'package:msdl/constants/size_config.dart';
 import 'package:msdl/constants/sizes.dart';
+import 'package:msdl/features/screens/Group/viewModel/viewModel.dart';
+import 'package:msdl/features/screens/authentication/viewModel/viewModel.dart';
 import 'package:msdl/features/screens/workplace/widget/boxInBottomBar.dart';
+import 'package:provider/provider.dart';
+import 'package:msdl/features/screens/workplace/viewmodel/workplace_viewmodel.dart';
+import 'package:msdl/features/screens/Home/viewmodel/home_viewmodel.dart';
 
-class draglesheet extends StatelessWidget {
-  const draglesheet({
+class DraggleSheet extends StatelessWidget {
+  const DraggleSheet({
     super.key,
     required DraggableScrollableController sheetController,
     required String currentAddress,
@@ -15,6 +20,30 @@ class draglesheet extends StatelessWidget {
 
   final DraggableScrollableController _sheetController;
   final String _currentAddress;
+
+  // ✅ Workplace 추가 메서드
+  void _addWorkPlace(BuildContext context) async {
+    final workplaceViewModel =
+        Provider.of<WorkplaceViewModel>(context, listen: false);
+    final homeViewModel = Provider.of<HomeViewModel>(context, listen: false);
+    final groupViewModel = Provider.of<GroupViewModel>(context, listen: false);
+
+    final authViewModel = Provider.of<AuthViewModel>(context, listen: false);
+    int? userId = authViewModel.userId; // ✅ 여기서 userId를 가져옴
+    try {
+      // ✅ Workplace 추가
+      await workplaceViewModel.updateUserWorkplace(
+          userId!, _currentAddress, "Other", context);
+
+      // ✅ HomeScreen과 GroupScreen 데이터 갱신
+      await homeViewModel.fetchHomeData(context);
+      await groupViewModel.fetchGroupUsers();
+
+      print("✅ Workplace 추가 및 데이터 동기화 완료!");
+    } catch (e) {
+      print("❌ Workplace 추가 실패: $e");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -98,7 +127,7 @@ class draglesheet extends StatelessWidget {
                 ),
                 Gaps.v32,
                 GestureDetector(
-                  onTap: () {},
+                  onTap: () => _addWorkPlace(context), // ✅ 수정된 버튼 동작
                   child: CustomButton(
                     text: "Add New Workplace",
                     routeName: "/homeScreen",
