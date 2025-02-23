@@ -152,7 +152,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       radius: 80,
                       backgroundImage: _profileImagePath != null
                           ? FileImage(File(_profileImagePath!)) // 저장된 이미지 표시
-                          : AssetImage("assets/images/박보영.jpg") // 기본 이미지 표시시
+                          : AssetImage("assets/images/민교수님.png") // 기본 이미지 표시
                               as ImageProvider,
                       child: Align(
                         alignment: Alignment.bottomRight,
@@ -173,11 +173,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       SettingsProfileText(
-                        text: homeData?.role ?? "이쁜이",
+                        text: homeData?.role ?? "카와이",
                       ),
                       SizedBox(height: 20.h),
                       SettingsProfileText(
-                        text: homeData?.name ?? "박보영",
+                        text: homeData?.name ?? "세동쨩",
                       ),
                     ],
                   ),

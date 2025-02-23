@@ -83,6 +83,7 @@ flutter:
     - assets/font/
     - assets/images/박보영.jpg
     - assets/images/한승민.png
+    - assets/images/민교수님.png
     - assets/map_style.json
 
   # To add assets to your application, add an assets section, like this:
