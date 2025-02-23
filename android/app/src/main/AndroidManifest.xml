@@ -9,6 +9,7 @@
      <!-- GPS 및 네트워크 기반 위치 사용 선언 -->
     <uses-feature android:name="android.hardware.location.gps" /> <!-- GPS 기능 사용 -->
     <uses-feature android:name="android.hardware.location.network" />  <!-- 네트워크 기반 위치 사용 -->
+    <uses-feature android:glEsVersion="0x00030002" android:required="true"/>
 
     <application
         android:label="msdl"

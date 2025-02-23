@@ -4,12 +4,20 @@ from flask_cors import CORS
 from datetime import datetime
 import os
 
+# ✅ SQLAlchemy 인스턴스 생성 (앱 미등록 상태)
+db = SQLAlchemy()
+
+# ✅ Flask 앱 생성
 app = Flask(__name__)
 CORS(app)
+
+# ✅ DB 설정
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///server_database.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['JSON_AS_ASCII'] = False
 
-db = SQLAlchemy(app)
+# ✅ 앱과 SQLAlchemy 연결
+db.init_app(app)
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -31,6 +39,8 @@ class Location(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id', ondelete="CASCADE"), nullable=False)
     current_location = db.Column(db.String, nullable=False)
     category = db.Column(db.String, nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)  # 🔥 위치 추가 시간 저장
+
 
 #회원가입 요청하는 쿼리
 @app.route('/auth/register', methods=['POST'])
@@ -127,29 +137,40 @@ def get_group_users():
 @app.route('/location/update', methods=['POST'])
 def update_location():
     data = request.json
-    user_id = data['user_id']
-    current_location = data['current_location']
-    category = data['category']
-    
-    location = Location.query.filter_by(user_id=user_id).first()
-    if location:
-        location.current_location = current_location
-        location.category = category
-    else:
-        new_location = Location(user_id=user_id, current_location=current_location,category=category)
-        db.session.add(new_location)
-    
+    print(f"📡 서버에서 받은 데이터: {data}")  # 🔥 디버깅용 출력
+
+    user_id = data.get('user_id')
+    current_location = data.get('current_location')
+    category = data.get('category')
+
+    if not user_id or not current_location or not category:
+        return jsonify({"error": "Missing data"}), 400
+
+    # ✅ 같은 user_id라도 새로운 위치를 추가
+    new_location = Location(
+        user_id=user_id,
+        current_location=current_location,
+        category=category
+    )
+    db.session.add(new_location)
     db.session.commit()
-    return jsonify({"message": "Location updated"}), 200
+
+    print(f"✅ 데이터 저장 완료: user_id={user_id}, location={current_location}, category={category}")
+    return jsonify({"message": "Location added successfully!"}), 200
+
+
 
 @app.route('/location/category/<int:user_id>', methods=['GET'])
 def get_location_category(user_id):
     location = Location.query.filter_by(user_id=user_id).first()
+    
     if location:
         return jsonify({"category": location.category}), 200
     else:
-        return jsonify({"error": "Location not found"}), 404
+        # ✅ 기본 카테고리 제공 (데이터가 없을 경우)
+        return jsonify({"category": "Unknown"}), 200
 
+#승민아 여기야 섹스
 @app.route('/attendance/weekly/<int:user_id>', methods=['GET'])
 def get_weekly_attendance(user_id):
     weekly_attendance_records = Attendance.query.filter_by(user_id=user_id).all()
@@ -195,46 +216,66 @@ def get_group_attendance():
         })
 
     return jsonify(result), 200
+
+
+
 @app.route('/locations', methods=['GET'])
 def get_all_locations():
     """모든 유저들의 위치 정보를 가져오는 API"""
     locations = Location.query.all()
-    result = []
-
-    for location in locations:
-        user = User.query.get(location.user_id)
-        result.append({
+    result = [
+        {
             "user_id": location.user_id,
-            "name": user.name if user else "Unknown",
-            "current_location": location.current_location,
+            "name": User.query.get(location.user_id).name if User.query.get(location.user_id) else "Unknown",
+            "current_location": location.current_location,  # ✅ 유니코드로 저장되더라도 상관없음
             "category": location.category
-        })
+        }
+        for location in locations
+    ]
 
-    return jsonify(result), 200
+    return jsonify(result), 200  # ✅ Flask 기본 설정을 활용해 UTF-8 유지
+
 @app.route('/location/<int:user_id>', methods=['GET'])
-def get_user_location(user_id):
-    """특정 유저의 위치 정보를 가져오는 API"""
-    location = Location.query.filter_by(user_id=user_id).first()
-    
-    if location:
-        return jsonify({
-            "user_id": location.user_id,
-            "current_location": location.current_location,
-            "category": location.category
-        }), 200
-    else:
+def get_location(user_id):
+    locations = Location.query.filter_by(user_id=user_id).all()
+
+    if not locations:
+        return jsonify({"user_id": user_id, "locations": []}), 200
+
+    result = [
+        {
+            "location_id": loc.id,
+            "current_location": loc.current_location,
+            "category": loc.category,
+            "created_at": loc.created_at.strftime('%Y-%m-%d %H:%M:%S')  # ✅ 추가된 시간 포함
+        } for loc in locations
+    ]
+
+    return jsonify({"user_id": user_id, "locations": result}), 200
+
+
+
+# ✅ 특정 위치 삭제 API 추가
+@app.route('/location/delete', methods=['POST'])
+def delete_location():
+    data = request.json
+    user_id = data.get('user_id')
+    location_id = data.get('location_id')
+
+    if not user_id or not location_id:
+        return jsonify({"error": "Missing data"}), 400
+
+    location = Location.query.filter_by(id=location_id, user_id=user_id).first()
+    if not location:
         return jsonify({"error": "Location not found"}), 404
 
-# 🔥 기존 데이터베이스 파일 삭제 후 다시 생성
-db_path = "server_database.db"
-if os.path.exists(db_path):
-    os.remove(db_path)
-    print("🔥 기존 데이터베이스 삭제 완료!")
-
-with app.app_context():
-    db.create_all()  # 새 데이터베이스 생성
-    print("✅ 새 데이터베이스 생성 완료!")
+    db.session.delete(location)
+    db.session.commit()
     
+    return jsonify({"message": "Location deleted"}), 200
+
+
+
 if __name__ == "__main__":
     with app.app_context():
         db.create_all()
