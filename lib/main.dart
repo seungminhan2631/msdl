@@ -19,6 +19,7 @@ import 'package:msdl/features/screens/Group/viewModel/viewModel.dart';
 import 'package:msdl/features/screens/settings/edit_password_Screen.dart';
 import 'package:msdl/features/screens/settings/edit_your_profile_Screen.dart';
 import 'package:msdl/features/screens/settings/setting_Screen.dart';
+import 'package:msdl/features/screens/workplace/model/workplace_model.dart';
 import 'package:msdl/features/screens/workplace/workplace_Screen.dart';
 import 'package:msdl/msdl_theme.dart';
 import 'package:path_provider/path_provider.dart';
@@ -61,7 +62,7 @@ class msdl extends StatelessWidget {
           ),
           initialRoute: "/",
           routes: {
-            "/": (context) => LoginScreen(),
+            "/": (context) => Homescreen(),
             "/chooseRole_Screen": (context) => ChooseRoleScreen(),
             "/nameScreen": (context) => NameScreen(),
             "/createAccount_Screen": (context) => SignupScreen(),

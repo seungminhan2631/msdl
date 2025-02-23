@@ -12,10 +12,19 @@ class HomeViewModel extends ChangeNotifier {
   HomeModel? get homeData => _homeData;
   bool get isButtonDisabled => _isButtonDisabled;
 
+  List<DateTime> get attendanceDays => _attendanceDays; // 출근 기록
+  List<DateTime> _attendanceDays = [];
+
+  List<DateTime> get checkoutDays => _checkoutDays; // 퇴근 기록
+  List<DateTime> _checkoutDays = [];
+
+  List<DateTime> get absentDays => _absentDays; // 결석 기록
+  List<DateTime> _absentDays = [];
+
   // ✅ 현재 출퇴근 상태에 따라 텍스트 반환
   String getWorkStatusText() {
     if (_homeData?.isCheckedIn == false && _homeData?.checkInTime == "--:--") {
-      return "출근 전";
+      return "오늘 하루도 힘내세요!";
     } else if (_homeData?.isCheckedIn == true &&
         _homeData?.checkOutTime == "--:--") {
       return "근무 중";
@@ -37,10 +46,21 @@ class HomeViewModel extends ChangeNotifier {
     try {
       bool isCurrentlyCheckedIn = _homeData?.isCheckedIn ?? false;
       String currentTime = DateFormat('HH:mm:ss').format(DateTime.now());
+      DateTime today = DateTime.now();
 
       // ✅ 서버에 출퇴근 요청 보내기
       await _repository.updateAttendance(
           userId, isCurrentlyCheckedIn ? "check_out" : "check_in");
+
+      if (!isCurrentlyCheckedIn) {
+        // 출근 처리
+        _attendanceDays.add(today);
+      } else {
+        // 퇴근 처리
+        _checkoutDays.add(today);
+      }
+
+      _updateAbsentDays();
 
       // ✅ 로컬 데이터 업데이트
       _homeData = _homeData!.copyWith(
@@ -77,6 +97,23 @@ class HomeViewModel extends ChangeNotifier {
       _isButtonDisabled = false; // ✅ 버튼 다시 활성화
       notifyListeners();
     }
+  }
+
+  // ✅ 아예 출근하지 않은 날짜 찾기
+  void _updateAbsentDays() {
+    DateTime startDate = DateTime(2025, 1, 1);
+    DateTime endDate = DateTime(2025, 12, 31);
+    _absentDays.clear();
+
+    for (DateTime day = startDate;
+        day.isBefore(endDate.add(Duration(days: 1)));
+        day = day.add(Duration(days: 1))) {
+      if (!_attendanceDays.contains(day) && !_checkoutDays.contains(day)) {
+        _absentDays.add(day);
+      }
+    }
+
+    notifyListeners();
   }
 
   // ✅ "오늘 하루도 수고하셨습니다!" 메시지 띄우기

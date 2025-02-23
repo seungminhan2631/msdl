@@ -146,10 +146,9 @@ class _HomescreenState extends State<Homescreen> {
               CustomContainer(
                 child: Column(
                   children: [
-                    SizedBox(
-                      height: MediaQuery.of(context).size.height * 0.2,
+                    Expanded(
                       child: Weeklytimelinesection(),
-                    )
+                    ),
                   ],
                 ),
               ),

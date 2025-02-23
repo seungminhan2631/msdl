@@ -26,6 +26,7 @@ class _LoginScreenState extends State<LoginScreen> {
   bool? isEmailValid; // ✅ 초기에는 null 상태 (테두리 기본 유지)
   bool? isPasswordValid;
   bool loginFailed = false;
+  bool _isDisposed = false;
 
   @override
   void initState() {
@@ -37,8 +38,11 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   void dispose() {
-    emailController.dispose();
-    passwordController.dispose();
+    if (!_isDisposed) {
+      emailController.dispose();
+      passwordController.dispose();
+      _isDisposed = true;
+    }
     super.dispose();
   }
 
