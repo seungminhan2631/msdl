@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:msdl/constants/sizes.dart';
 import 'package:msdl/features/screens/Home/viewModel/home_viewModel.dart';
 import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
@@ -44,7 +45,7 @@ class _WeeklytimelinesectionState extends State<Weeklytimelinesection> {
       firstDay: DateTime(2025, 1, 1), // 📆 시작 날짜
       lastDay: DateTime(2025, 12, 31), // 📆 종료 날짜
       locale: 'en_US', // 🌍 언어 설정 (영어)
-      daysOfWeekHeight: 25, // 📏 요일 높이 설정
+      daysOfWeekHeight: Sizes.size18, // 📏 요일 높이 설정
       selectedDayPredicate: (day) =>
           isSameDay(_selectedDay, day), // 📌 선택된 날짜 스타일 적용
       onDaySelected: (selectedDay, focusedDay) {
@@ -66,8 +67,7 @@ class _WeeklytimelinesectionState extends State<Weeklytimelinesection> {
         todayDecoration: BoxDecoration(
           color: Colors.transparent,
           shape: BoxShape.circle,
-          border:
-              Border.all(color: Colors.green, width: 1.5), // 🟢 오늘 날짜 테두리 강조
+          border: Border.all(color: Colors.green, width: 2), // 🟢 오늘 날짜 테두리 강조
         ),
         todayTextStyle: const TextStyle(
           fontWeight: FontWeight.bold,
@@ -106,8 +106,8 @@ class _WeeklytimelinesectionState extends State<Weeklytimelinesection> {
   Widget _buildMarker(DateTime date, Color color, String text) {
     return Center(
       child: Container(
-        width: 30,
-        height: 30,
+        width: Sizes.size32,
+        height: Sizes.size32,
         decoration: BoxDecoration(
           color: color, // 🎨 배경 색상
           shape: BoxShape.circle, // 🔵 원형 마커
