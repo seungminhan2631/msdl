@@ -46,6 +46,8 @@ class HomeViewModel extends ChangeNotifier {
       bool isCurrentlyCheckedIn = _homeData?.isCheckedIn ?? false;
       String currentTime = DateFormat('HH:mm:ss').format(DateTime.now());
       String action = isCurrentlyCheckedIn ? "check_out" : "check_in";
+      String selectedWorkplace =
+          workplaceViewModel.currentCategory; // 선택한 근무지 가져오기
 
       // ✅ Flask 서버에 출퇴근 요청 보내기
       final response = await http.post(
@@ -54,6 +56,7 @@ class HomeViewModel extends ChangeNotifier {
         body: json.encode({
           "user_id": userId,
           "action": action,
+          "workplace": selectedWorkplace,
         }),
       );
 
