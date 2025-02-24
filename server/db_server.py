@@ -205,6 +205,7 @@ def get_weekly_attendance(user_id):
     
     weekly_timeline = [
         {
+            "id":user_id,
             "date": record.date,
             "weekly_attendance": record.weekly_attendance
         } for record in weekly_attendance_records
