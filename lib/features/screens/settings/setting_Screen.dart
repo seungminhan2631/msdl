@@ -10,6 +10,9 @@ import 'package:msdl/constants/gaps.dart';
 import 'package:msdl/constants/size_config.dart';
 import 'package:msdl/constants/sizes.dart';
 import 'package:msdl/features/screens/Home/viewModel/home_viewModel.dart';
+import 'package:msdl/features/screens/settings/widget/setting_Screen.dart';
+import 'package:msdl/features/screens/settings/widget/settings_body_text.dart';
+import 'package:msdl/features/screens/settings/widget/settings_profile_text.dart';
 import 'package:msdl/msdl_theme.dart';
 import 'package:msdl/features/screens/Home/home_Screen.dart';
 import 'package:msdl/features/screens/Group/group_Screen.dart';
@@ -289,80 +292,4 @@ void _showAboutDialog(BuildContext context) {
       );
     },
   );
-}
-
-TextStyle SettingAboutButtonStyle() {
-  return TextStyle(
-    fontFamily: "Andika",
-    color: Color(0xFF90CAF9),
-    fontSize: Sizes.size14,
-    fontWeight: FontWeight.bold,
-  );
-}
-
-class SettingsBodyText extends StatelessWidget {
-  final String text;
-  final VoidCallback? onTap;
-  final Color? textColor;
-  final TextStyle? headlineLarge = msdlTheme.primaryTextTheme.headlineLarge;
-
-  SettingsBodyText({
-    super.key,
-    required this.text,
-    this.onTap,
-    this.textColor,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      child: Column(
-        children: [
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: Sizes.size36),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  text,
-                  style: headlineLarge?.copyWith(
-                    fontSize: 32.w,
-                    fontWeight: FontWeight.w400,
-                    color: textColor ?? headlineLarge?.color,
-                  ),
-                ),
-                Icon(Icons.arrow_forward_ios_rounded,
-                    color: Colors.white, size: Sizes.size20),
-              ],
-            ),
-          ),
-          SizedBox(height: Sizes.size10),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 30.h),
-            child: Divider(color: Colors.grey, thickness: 0.7.h),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class SettingsProfileText extends StatelessWidget {
-  final String text;
-
-  const SettingsProfileText({super.key, required this.text});
-
-  @override
-  Widget build(BuildContext context) {
-    return Text(
-      text,
-      style: TextStyle(
-        fontSize: Sizes.size24,
-        fontFamily: "Andika",
-        fontWeight: FontWeight.w700,
-        color: Color(0xFFF1F1F1),
-      ),
-    );
-  }
 }
