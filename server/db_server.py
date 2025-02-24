@@ -118,18 +118,11 @@ def login():
 def update_attendance():
     data = request.json
     user_id = data.get('user_id')
-    location_category = data.get('location_category')  # ✅ 어떤 근무지에서 출석했는지 받기
     action = data.get('action')
-
-    if not user_id or not action:
-        return jsonify({"error": "Missing data"}), 400
+    location_id = data.get('location_id')  # ✅ 추가된 location_id 필드
 
     current_time = datetime.now().strftime("%H:%M")
     today_date = datetime.now().strftime("%Y-%m-%d")
-
-    # ✅ 근무지 정보 찾기
-    location = Location.query.filter_by(user_id=user_id, category=location_category).first()
-    location_id = location.id if location else None  # 없으면 None
 
     attendance = Attendance.query.filter_by(user_id=user_id, date=today_date).first()
 
@@ -137,26 +130,25 @@ def update_attendance():
         if not attendance:
             new_attendance = Attendance(
                 user_id=user_id,
-                location_id=location_id,  # ✅ 근무지 정보 저장
                 date=today_date,
                 check_in_time=current_time,
-                weekly_attendance=True
+                weekly_attendance=True,
+                location_id=location_id  # ✅ 출근한 근무지 저장
             )
             db.session.add(new_attendance)
         else:
             attendance.check_in_time = current_time
-            attendance.location_id = location_id  # ✅ 기존 출석 정보에 근무지 업데이트
+            attendance.weekly_attendance = True
+            attendance.location_id = location_id  # ✅ 기존 출근 기록 수정
 
     elif action == "check_out" and attendance:
         attendance.check_out_time = current_time
 
     db.session.commit()
+    return jsonify({"message": "Attendance updated"}), 200
 
-    return jsonify({
-        "message": "Attendance updated",
-        "time": current_time,
-        "location_id": location_id
-    }), 200
+
+
 
 @app.route('/home/<int:user_id>', methods=['GET'])
 def get_home_user(user_id):
@@ -272,7 +264,6 @@ def get_all_users():
 
 
 #그룹 스크린에서 모든 사용자의 workplace뿌려줄떄 사용
-
 @app.route('/locations', methods=['GET'])
 def get_all_locations():
     """모든 유저들의 위치 정보를 가져오는 API"""
@@ -329,31 +320,40 @@ def delete_location():
     
     return jsonify({"message": "Location deleted"}), 200
 
-# 📌 그룹 스크린: 모든 유저의 출석 정보를 가져옴
+import requests
+
 @app.route('/group/attendance', methods=['GET'])
 def get_group_attendance():
-    """모든 유저의 출석 정보를 가져오는 API"""
-    users = User.query.all()
-    today_date = datetime.now().strftime("%Y-%m-%d")
-    result = []
+    """모든 유저의 출석 정보를 가져오는 API (users/all 기반)"""
+    users_all_url = "http://220.69.203.99:5000/users/all"  # ✅ users/all 가져오기
+    response = requests.get(users_all_url)
 
-    for user in users:
-        attendance = Attendance.query.filter_by(user_id=user.id, date=today_date).first()
+    if response.status_code == 200:
+        users_data = response.json()
+        
+        # 🔥 디버깅: users/all 데이터 확인
+        print("🔥 users/all 데이터:", users_data)
 
-        # ✅ 사용자가 마지막으로 출근한 카테고리 가져오기
-        last_location = Location.query.filter_by(user_id=user.id).order_by(Location.created_at.desc()).first()
-        category = last_location.category if last_location else "Unknown"  # ✅ 없으면 "Unknown"으로 표시
+        result = []
+        for user in users_data:
+            attendance = user.get("attendance", {})
+            category = attendance.get("workplace", "Unknown")  # ✅ 강제 업데이트
 
-        result.append({
-            "id": user.id,
-            "name": user.name,
-            "role": user.role,
-            "category": category,  # ✅ 출근한 근무지 추가
-            "check_in_time": attendance.check_in_time if attendance else "--:--",
-            "check_out_time": attendance.check_out_time if attendance else "--:--"
-        })
+            result.append({
+                "id": user["user_id"],
+                "name": user["name"],
+                "role": user["role"],
+                "category": category,  # ✅ users/all에서 가져온 workplace 값 사용
+                "check_in_time": attendance.get("check_in_time", "--:--"),
+                "check_out_time": attendance.get("check_out_time", "--:--")
+            })
 
-    return jsonify(result), 200
+        return jsonify(result), 200
+    else:
+        return jsonify({"error": "Failed to fetch users/all"}), 500
+
+
+
 
 #진작 이거로 할걸 ㅋㅋ
 @app.route('/users/all', methods=['GET'])
@@ -366,7 +366,7 @@ def get_all_users_info():
         # 유저 출석 정보 가져오기 (가장 최근 출석 데이터)
         attendance = Attendance.query.filter_by(user_id=user.id).order_by(Attendance.date.desc()).first()
         
-        # 유저의 출석 근무지 정보 가져오기
+        # ✅ 유저의 출석 근무지 정보 가져오기 (출근 기록이 있으면 가져옴)
         workplace_name = None
         if attendance and attendance.location_id:
             workplace = Location.query.get(attendance.location_id)
@@ -384,7 +384,7 @@ def get_all_users_info():
             for loc in workplaces
         ]
 
-        result.append({
+        user_data = {
             "user_id": user.id,
             "name": user.name,
             "email": user.email,
@@ -396,9 +396,15 @@ def get_all_users_info():
                 "workplace": workplace_name  # ✅ 출석한 근무지 추가
             },
             "workplaces": workplace_list
-        })
+        }
+
+        # 🔥 디버깅 로그 추가
+        print(f"🔥 users/all - {user.name} 출근지: {user_data['attendance']['workplace']}")
+
+        result.append(user_data)
 
     return jsonify(result), 200
+
 
 
 

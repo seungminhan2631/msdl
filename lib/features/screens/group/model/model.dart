@@ -74,7 +74,7 @@ extension RoleExtension on Role {
 class GroupUser {
   final int id;
   final String name;
-  final Role role; // ✅ `String` → `Role` 변경
+  final Role role;
   final String category;
   final String checkInTime;
   final String checkOutTime;
@@ -90,14 +90,15 @@ class GroupUser {
 
   factory GroupUser.fromJson(Map<String, dynamic> json) {
     return GroupUser(
-      id: json['id'] ?? 0,
+      id: json['user_id'] ?? 0,
       name: json['name'] ?? "Unknown",
-      role: RoleExtension.fromString(json['role'] ?? "Unknown"), // ✅ Role 변환
-      category: json['category'] ?? "Unknown",
-      checkInTime: json['check_in_time'] ?? "--:--",
-      checkOutTime: json['check_out_time'] ?? "--:--",
+      role: RoleExtension.fromString(json['role'] ?? "Unknown"),
+      category: json['attendance']?['workplace'] ?? "Unknown", // ✅ Null 방지
+      checkInTime: json['attendance']?['check_in_time'] ?? "--:--",
+      checkOutTime: json['attendance']?['check_out_time'] ?? "--:--",
     );
   }
+
   GroupUser copyWith({
     int? id,
     String? name,
@@ -105,7 +106,6 @@ class GroupUser {
     String? category,
     String? checkInTime,
     String? checkOutTime,
-    bool? isCheckedIn,
   }) {
     return GroupUser(
       id: id ?? this.id,

@@ -10,12 +10,26 @@ class GroupViewModel extends ChangeNotifier {
 
   // ✅ ViewModel이 생성될 때 자동으로 fetch 실행
   GroupViewModel() {
-    fetchGroupUsers(); // ✅ 생성자에서 자동 실행
+    fetchGroupViewModel(); // ✅ 생성자에서 자동 실행
   }
 
   // ✅ 그룹 사용자 데이터 가져오기
-  Future<void> fetchGroupUsers() async {
-    _groupUsers = await _repository.fetchGroupUsers();
+  Future<void> fetchGroupViewModel() async {
+    print("🔥 fetchGroupViewModel 실행됨"); // ✅ 실행 로그 추가
+
+    List<GroupUser> fetchedUsers = await _repository.fetchGroupUsers();
+
+    // ✅ workplace 값이 null이면 "Unknown"으로 설정
+    _groupUsers = fetchedUsers.map((user) {
+      return user.copyWith(
+        category: user.category == "N/A" || user.category == null
+            ? "Unknown"
+            : user.category,
+      );
+    }).toList();
+
+    print("✅ 그룹 사용자 데이터 변환 완료: $_groupUsers"); // ✅ 변환된 데이터 확인
+
     notifyListeners();
   }
 
