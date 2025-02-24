@@ -34,6 +34,8 @@ class Attendance(db.Model):
     check_in_time = db.Column(db.String, default="--:--")
     check_out_time = db.Column(db.String, default="--:--")
     weekly_attendance = db.Column(db.Boolean, default=False)
+    workplace_category = db.Column(db.String, nullable=True)  # ✅ 이 부분 추가!
+
 
 
 class Location(db.Model):
@@ -42,52 +44,6 @@ class Location(db.Model):
     current_location = db.Column(db.String, nullable=False)
     category = db.Column(db.String, nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)  # 🔥 위치 추가 시간 저장
-
-    # ✅ 출퇴근 상태 변경 (`POST`)
-@app.route('/attendance/update', methods=['POST'])
-def update_attendance():
-    data = request.json
-    user_id = data['user_id']
-    action = data['action']
-    current_time = datetime.now().strftime("%H:%M")
-    today_date = datetime.now().strftime("%Y-%m-%d")
-    
-    attendance = Attendance.query.filter_by(user_id=user_id, date=today_date).first()
-    
-    if action == "check_in":
-        if not attendance:
-            new_attendance = Attendance(
-                user_id=user_id,
-                date=today_date,
-                check_in_time=current_time
-            )
-            db.session.add(new_attendance)
-        else:
-            attendance.check_in_time = current_time
-    elif action == "check_out" and attendance:
-        attendance.check_out_time = current_time
-    
-    db.session.commit()
-    return jsonify({"message": "Attendance updated", "time": current_time}), 200
-
-# ✅ 출퇴근 상태 조회 (`GET`)
-@app.route('/home/<int:user_id>', methods=['GET'])
-def get_home_user(user_id):
-    user = User.query.get(user_id)
-    if not user:
-        return jsonify({"error": "User not found"}), 404
-
-    today_date = datetime.now().strftime("%Y-%m-%d")
-    attendance = Attendance.query.filter_by(user_id=user.id, date=today_date).first()
-
-    return jsonify({
-        "id": user.id,
-        "name": user.name,
-        "role": user.role,
-        "is_checked_in": bool(attendance and attendance.check_in_time != "--:--"),
-        "check_in_time": attendance.check_in_time if attendance else "--:--",
-        "check_out_time": attendance.check_out_time if attendance else "--:--",
-    }), 200
 
 
 #회원가입 요청하는 쿼리
@@ -119,33 +75,42 @@ def update_attendance():
     data = request.json
     user_id = data.get('user_id')
     action = data.get('action')
-    location_id = data.get('location_id')  # ✅ 추가된 location_id 필드
+    workplace = data.get('workplace')  # ✅ Flutter에서 받은 workplace 값
+
+    if not user_id or not action:
+        return jsonify({"error": "Missing required fields"}), 400
 
     current_time = datetime.now().strftime("%H:%M")
     today_date = datetime.now().strftime("%Y-%m-%d")
 
     attendance = Attendance.query.filter_by(user_id=user_id, date=today_date).first()
 
-    if action == "check_in":
-        if not attendance:
-            new_attendance = Attendance(
-                user_id=user_id,
-                date=today_date,
-                check_in_time=current_time,
-                weekly_attendance=True,
-                location_id=location_id  # ✅ 출근한 근무지 저장
-            )
-            db.session.add(new_attendance)
-        else:
-            attendance.check_in_time = current_time
-            attendance.weekly_attendance = True
-            attendance.location_id = location_id  # ✅ 기존 출근 기록 수정
+    try:
+        if action == "check_in":
+            if not attendance:
+                new_attendance = Attendance(
+                    user_id=user_id,
+                    date=today_date,
+                    check_in_time=current_time,
+                    weekly_attendance=True,
+                    workplace_category=workplace  # ✅ 저장할 때 workplace 사용
+                )
+                db.session.add(new_attendance)
+            else:
+                attendance.check_in_time = current_time
+                attendance.weekly_attendance = True
+                attendance.workplace_category = workplace  # ✅ 기존 데이터 업데이트
 
-    elif action == "check_out" and attendance:
-        attendance.check_out_time = current_time
+        elif action == "check_out" and attendance:
+            attendance.check_out_time = current_time
 
-    db.session.commit()
-    return jsonify({"message": "Attendance updated"}), 200
+        db.session.commit()
+        return jsonify({"message": "Attendance updated", "time": current_time, "workplace": workplace}), 200
+
+    except Exception as e:
+        db.session.rollback()
+        print(f"⚠️ 출퇴근 업데이트 오류: {e}")  # 🔥 디버깅용 로그
+        return jsonify({"error": "Internal Server Error", "details": str(e)}), 500
 
 
 
@@ -233,7 +198,7 @@ def get_location_category(user_id):
         # ✅ 기본 카테고리 제공 (데이터가 없을 경우)
         return jsonify({"category": "Unknown"}), 200
 
-
+#승민아 여기야 섹스
 @app.route('/attendance/weekly/<int:user_id>', methods=['GET'])
 def get_weekly_attendance(user_id):
     weekly_attendance_records = Attendance.query.filter_by(user_id=user_id).all()
@@ -334,19 +299,17 @@ def get_group_attendance():
         # 🔥 디버깅: users/all 데이터 확인
         print("🔥 users/all 데이터:", users_data)
 
-        result = []
-        for user in users_data:
-            attendance = user.get("attendance", {})
-            category = attendance.get("workplace", "Unknown")  # ✅ 강제 업데이트
-
-            result.append({
+        result = [
+            {
                 "id": user["user_id"],
                 "name": user["name"],
                 "role": user["role"],
-                "category": category,  # ✅ users/all에서 가져온 workplace 값 사용
-                "check_in_time": attendance.get("check_in_time", "--:--"),
-                "check_out_time": attendance.get("check_out_time", "--:--")
-            })
+                "category": user["attendance"].get("workplace", "Unknown"),  # ✅ users/all에서 가져옴
+                "check_in_time": user["attendance"].get("check_in_time", "--:--"),
+                "check_out_time": user["attendance"].get("check_out_time", "--:--")
+            }
+            for user in users_data
+        ]
 
         return jsonify(result), 200
     else:
@@ -366,11 +329,8 @@ def get_all_users_info():
         # 유저 출석 정보 가져오기 (가장 최근 출석 데이터)
         attendance = Attendance.query.filter_by(user_id=user.id).order_by(Attendance.date.desc()).first()
         
-        # ✅ 유저의 출석 근무지 정보 가져오기 (출근 기록이 있으면 가져옴)
-        workplace_name = None
-        if attendance and attendance.location_id:
-            workplace = Location.query.get(attendance.location_id)
-            workplace_name = workplace.category if workplace else "Unknown"
+        # ✅ `Attendance` 테이블에서 workplace 가져오기
+        workplace_name = attendance.workplace_category if attendance and attendance.workplace_category else "Unknown"
 
         # 유저의 모든 Workplace 가져오기
         workplaces = Location.query.filter_by(user_id=user.id).all()
@@ -384,7 +344,7 @@ def get_all_users_info():
             for loc in workplaces
         ]
 
-        user_data = {
+        result.append({
             "user_id": user.id,
             "name": user.name,
             "email": user.email,
@@ -393,17 +353,13 @@ def get_all_users_info():
                 "date": attendance.date if attendance else "N/A",
                 "check_in_time": attendance.check_in_time if attendance else "--:--",
                 "check_out_time": attendance.check_out_time if attendance else "--:--",
-                "workplace": workplace_name  # ✅ 출석한 근무지 추가
+                "workplace": workplace_name  # ✅ 최신 workplace 반영
             },
             "workplaces": workplace_list
-        }
-
-        # 🔥 디버깅 로그 추가
-        print(f"🔥 users/all - {user.name} 출근지: {user_data['attendance']['workplace']}")
-
-        result.append(user_data)
+        })
 
     return jsonify(result), 200
+
 
 
 

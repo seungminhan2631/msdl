@@ -30,12 +30,14 @@ class HomeViewModel extends ChangeNotifier {
     }
   }
 
-  // ✅ 출퇴근 상태 토글
   Future<void> toggleAttendance(BuildContext context) async {
     final authViewModel = Provider.of<AuthViewModel>(context, listen: false);
-    final workplaceViewModel = Provider.of<HomeWorkplaceViewModel>(context,
-        listen: false); // ✅ 근무지 정보 가져오기
+    final workplaceViewModel =
+        Provider.of<HomeWorkplaceViewModel>(context, listen: false);
+
     int? userId = authViewModel.userId;
+    String selectedCategory =
+        workplaceViewModel.selectedCategory; // ✅ 선택한 근무지 가져오기
 
     if (userId == null) {
       print("❌ toggleAttendance 실패: userId가 null");
@@ -46,36 +48,40 @@ class HomeViewModel extends ChangeNotifier {
       bool isCurrentlyCheckedIn = _homeData?.isCheckedIn ?? false;
       String currentTime = DateFormat('HH:mm:ss').format(DateTime.now());
       String action = isCurrentlyCheckedIn ? "check_out" : "check_in";
-      String selectedWorkplace =
-          workplaceViewModel.currentCategory; // 선택한 근무지 가져오기
 
-      // ✅ Flask 서버에 출퇴근 요청 보내기
       final response = await http.post(
         Uri.parse("$_baseUrl/attendance/update"),
         headers: {"Content-Type": "application/json"},
         body: json.encode({
           "user_id": userId,
           "action": action,
-          "workplace": selectedWorkplace,
+          "workplace": isCurrentlyCheckedIn
+              ? null
+              : selectedCategory, // ✅ category → workplace 변경
         }),
       );
 
-      _homeData = _homeData!.copyWith(
-        isCheckedIn: !isCurrentlyCheckedIn,
-        checkInTime:
-            isCurrentlyCheckedIn ? _homeData!.checkInTime : currentTime,
-        checkOutTime:
-            isCurrentlyCheckedIn ? currentTime : _homeData!.checkOutTime,
-      );
+      if (response.statusCode == 200) {
+        // ✅ 출근한 경우 선택한 근무지 업데이트
+        _homeData = _homeData!.copyWith(
+          isCheckedIn: !isCurrentlyCheckedIn,
+          checkInTime:
+              isCurrentlyCheckedIn ? _homeData!.checkInTime : currentTime,
+          checkOutTime:
+              isCurrentlyCheckedIn ? currentTime : _homeData!.checkOutTime,
+        );
 
-      print(isCurrentlyCheckedIn ? "✅ 퇴근 성공!" : "✅ 출근 성공!");
+        print(isCurrentlyCheckedIn
+            ? "✅ 퇴근 성공! 근무지 정보 유지"
+            : "✅ 출근 성공! 근무지: $selectedCategory");
 
-      // ✅ UI 갱신
-      notifyListeners();
+        notifyListeners();
 
-      if (isCurrentlyCheckedIn) {
-        _showGoodJobDialog(context); // 퇴근 처리 다이얼로그 띄우기
-        _isButtonDisabled = true; // 🔥 버튼 비활성화
+        // ✅ 퇴근 시 다이얼로그 띄우기
+        if (isCurrentlyCheckedIn) {
+          _showGoodJobDialog(context);
+          _isButtonDisabled = true;
+        }
       } else {
         print("❌ 출퇴근 업데이트 실패: ${response.statusCode}");
       }
