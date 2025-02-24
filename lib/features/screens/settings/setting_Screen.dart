@@ -1,8 +1,10 @@
 // ignore_for_file: non_constant_identifier_names
 
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:msdl/commons/widgets/buttons/customBottomNavigationbar.dart';
 import 'package:msdl/commons/widgets/topTitle.dart';
@@ -30,6 +32,7 @@ class SettingsScreen extends StatefulWidget {
 class _SettingsScreenState extends State<SettingsScreen> {
   int _selectedIndex = 2;
   String? _profileImagePath;
+  final String _serverUrl = "http://220.69.203.99:5000";
 
   @override
   void initState() {
@@ -48,34 +51,51 @@ class _SettingsScreenState extends State<SettingsScreen> {
     }
   }
 
-  // 저장된 프로필 이미지 경로 불러오기
   Future<void> _loadProfileImage() async {
-    final prefs = await SharedPreferences.getInstance();
-    setState(() {
-      _profileImagePath = prefs.getString('profile_image'); // 저장된 이미지 경로 불러오기
-    });
+    final userId = Provider.of<AuthViewModel>(context, listen: false).userId;
+    if (userId == null) return;
+
+    final response =
+        await http.get(Uri.parse("$_serverUrl/get_profile_image/$userId"));
+    if (response.statusCode == 200) {
+      final imageUrl = jsonDecode(response.body)['image_url'];
+      setState(() {
+        _profileImagePath = "$_serverUrl$imageUrl";
+      });
+    }
   }
 
-  // 📸 갤러리에서 이미지 선택 및 저장
+  //프로필 이미지 선택 및 서버 업로드
   Future<void> _pickImage() async {
     final ImagePicker picker = ImagePicker();
     final XFile? pickedFile =
         await picker.pickImage(source: ImageSource.gallery);
 
     if (pickedFile != null) {
-      final File imageFile = File(pickedFile.path); // 선택한 파일 가져오기
-      final directory =
-          await getApplicationDocumentsDirectory(); // 앱 내 저장 폴더 가져오기
-      final String newPath =
-          '${directory.path}/profile_image.jpg'; // 파일 저장 경로 설정
+      final File imageFile = File(pickedFile.path);
+      final bytes = await imageFile.readAsBytes();
+      String base64Image = base64Encode(bytes); // ✅ Base64 변환
 
-      final savedImage = await imageFile.copy(newPath); // 선택한 이미지를 새로운 경로에 저장
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.setString('profile_image', savedImage.path); // 저장된 이미지 경로 저장
+      final userId = Provider.of<AuthViewModel>(context, listen: false).userId;
+      if (userId == null) return;
 
-      setState(() {
-        _profileImagePath = savedImage.path; // UI 업데이트
-      });
+      final response = await http.post(
+        Uri.parse("$_serverUrl/upload_profile_image"),
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode({"userId": userId, "image": base64Image}),
+      );
+
+      if (response.statusCode == 200) {
+        final imageUrl = jsonDecode(response.body)['image_url'];
+
+        //UI 업데이트 및 로컬 저장
+        setState(() {
+          _profileImagePath = "$_serverUrl$imageUrl";
+        });
+
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setString('profile_image', _profileImagePath!);
+      }
     }
   }
 
@@ -152,9 +172,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   GestureDetector(
                     onTap: _pickImage,
                     child: CircleAvatar(
-                      radius: 80,
+                      radius: Sizes.size80,
                       backgroundImage: _profileImagePath != null
-                          ? FileImage(File(_profileImagePath!)) // 저장된 이미지 표시
+                          ? NetworkImage(_profileImagePath!) // 저장된 이미지 표시
                           : AssetImage("assets/images/민교수님.png") // 기본 이미지 표시
                               as ImageProvider,
                       child: Align(

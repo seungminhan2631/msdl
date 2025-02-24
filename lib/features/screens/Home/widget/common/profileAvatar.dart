@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'dart:io';
-
+import 'package:provider/provider.dart';
 import 'package:msdl/constants/sizes.dart';
 import 'package:msdl/features/screens/Home/viewModel/home_viewModel.dart';
-import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfileAvatar extends StatefulWidget {
   @override
@@ -11,32 +10,29 @@ class ProfileAvatar extends StatefulWidget {
 }
 
 class _ProfileAvatarState extends State<ProfileAvatar> {
-  File? _image;
+  String? _profileImagePath;
 
-  Future<void> _pickImage() async {}
+  @override
+  void initState() {
+    super.initState();
+    _loadProfileImage();
+  }
+
+  //로컬에서 프로필 이미지 불러오기
+  Future<void> _loadProfileImage() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _profileImagePath = prefs.getString('profile_image');
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    final homeData = Provider.of<HomeViewModel>(context).homeData;
-
-    return InkWell(
-      onTap: _pickImage,
-      child: CircleAvatar(
-        radius: Sizes.size40,
-        backgroundColor: Color(0xFF935E38).withOpacity(0.8),
-        backgroundImage: _image != null ? FileImage(_image!) : null,
-        child: _image == null
-            ? Text(
-                homeData?.name ?? "Image",
-                style: TextStyle(
-                  fontSize: Sizes.size14,
-                  fontFamily: "Andika",
-                  fontWeight: FontWeight.bold,
-                  color: Color(0xffF1F1F1),
-                ),
-              )
-            : null,
-      ),
+    return CircleAvatar(
+      radius: Sizes.size40,
+      backgroundImage: _profileImagePath != null
+          ? NetworkImage(_profileImagePath!)
+          : AssetImage("assets/images/민교수님.png") as ImageProvider,
     );
   }
 }
