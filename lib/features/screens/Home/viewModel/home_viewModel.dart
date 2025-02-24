@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:msdl/features/screens/Home/model/WeeklyAttendance%20_mdel.dart';
 import 'package:msdl/features/screens/Home/model/home_model.dart';
 import 'package:msdl/features/screens/Home/repository/home_repository.dart';
+import 'package:msdl/features/screens/Home/viewModel/workplace_viewModel.dart';
 import 'package:msdl/features/screens/authentication/viewModel/viewModel.dart';
 import 'package:provider/provider.dart';
 
@@ -32,6 +33,8 @@ class HomeViewModel extends ChangeNotifier {
   // ✅ 출퇴근 상태 토글
   Future<void> toggleAttendance(BuildContext context) async {
     final authViewModel = Provider.of<AuthViewModel>(context, listen: false);
+    final workplaceViewModel = Provider.of<HomeWorkplaceViewModel>(context,
+        listen: false); // ✅ 근무지 정보 가져오기
     int? userId = authViewModel.userId;
 
     if (userId == null) {
@@ -54,9 +57,8 @@ class HomeViewModel extends ChangeNotifier {
         }),
       );
 
-      // ✅ 로컬 데이터 업데이트
       _homeData = _homeData!.copyWith(
-        isCheckedIn: !isCurrentlyCheckedIn, // 토글 (출근 ↔ 퇴근)
+        isCheckedIn: !isCurrentlyCheckedIn,
         checkInTime:
             isCurrentlyCheckedIn ? _homeData!.checkInTime : currentTime,
         checkOutTime:
@@ -68,7 +70,6 @@ class HomeViewModel extends ChangeNotifier {
       // ✅ UI 갱신
       notifyListeners();
 
-      // ✅ 퇴근한 경우, 다이얼로그 띄우기
       if (isCurrentlyCheckedIn) {
         _showGoodJobDialog(context); // 퇴근 처리 다이얼로그 띄우기
         _isButtonDisabled = true; // 🔥 버튼 비활성화
