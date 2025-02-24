@@ -81,6 +81,12 @@ class _WeeklytimelinesectionState extends State<Weeklytimelinesection> {
       calendarBuilders: CalendarBuilders(
         defaultBuilder: (context, date, _) {
           final status = attendanceViewModel.getAttendanceStatus(date);
+          final today = DateTime.now();
+
+          // ✅ 현재 날짜 이전이고 기록이 없는 경우 결석 처리
+          if (date.isBefore(today)) {
+            return _buildMarker(date, Colors.red, "X"); // ❌ 빨간색 (결석)
+          }
 
           // 📌 출근 / 퇴근 / 결석 상태에 따라 마커 표시
           if (status == "checkIn") {
@@ -110,9 +116,11 @@ class _WeeklytimelinesectionState extends State<Weeklytimelinesection> {
         child: Center(
           child: Text(
             text,
-            style: const TextStyle(
+            style: TextStyle(
+              fontFamily: "Andika",
               color: Colors.white, // 🎨 텍스트 색상 (흰색)
               fontWeight: FontWeight.bold,
+              fontSize: Sizes.size14,
             ),
           ),
         ),
