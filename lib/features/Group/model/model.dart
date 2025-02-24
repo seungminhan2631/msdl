@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:msdl/data/database_helper.dart';
-import 'package:msdl/features/screens/Group/model/model.dart';
-import 'package:msdl/features/screens/Group/repository/repository.dart';
+import 'package:msdl/features/Group/model/model.dart';
+import 'package:msdl/features/Group/repository/repository.dart';
 
 // Role Enum
 enum Role { professor, phd, ms, bs }

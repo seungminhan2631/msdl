@@ -2,28 +2,26 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_file.dart' hide initializeDateFormatting;
 import 'package:intl/intl.dart';
-import 'package:msdl/features/Edit/screens/edit_password_Screen.dart';
-import 'package:msdl/features/Edit/screens/edit_your_profile_Screen.dart';
-import 'package:msdl/features/Group/screens/group_Screen.dart';
-import 'package:msdl/features/Group/viewModel/viewModel.dart';
 import 'package:msdl/features/Home/screens/home_Screen.dart';
-import 'package:msdl/features/Home/viewModel/home_viewModel.dart';
 import 'package:msdl/features/Home/viewModel/weekly_viewModel.dart';
 import 'package:msdl/features/Home/viewModel/workplace_viewModel.dart';
 import 'package:msdl/features/authentication/screens/choose_role_Screen.dart';
-import 'package:msdl/features/authentication/screens/login_Screen.dart';
+import 'package:msdl/features/Group/screens/group_Screen.dart';
 import 'package:msdl/features/authentication/screens/name_Screen.dart';
 import 'package:msdl/features/authentication/screens/signUp_Screen.dart';
-import 'package:msdl/features/authentication/viewModel/viewModel.dart';
-
-import 'package:msdl/features/screens/settings/setting_Screen.dart';
-import 'package:msdl/features/workplace/repository/workplace_repository.dart';
+import 'package:msdl/features/authentication/screens/login_Screen.dart';
+import 'package:msdl/features/Edit/screens/edit_password_Screen.dart';
+import 'package:msdl/features/Edit/screens/edit_your_profile_Screen.dart';
+import 'package:msdl/features/settings/screens/setting_Screen.dart';
 import 'package:msdl/features/workplace/screens/workplace_Screen.dart';
-import 'package:msdl/features/workplace/viewModel/workplace_viewmodel.dart';
 import 'package:msdl/msdl_theme.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/date_symbol_data_local.dart';
-
+import 'package:msdl/features/Home/viewModel/home_viewModel.dart';
+import 'package:msdl/features/authentication/viewModel/viewModel.dart';
+import 'package:msdl/features/Group/viewModel/viewModel.dart';
+import 'package:msdl/features/workplace/viewModel/workplace_viewmodel.dart';
+import 'package:msdl/features/workplace/repository/workplace_repository.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

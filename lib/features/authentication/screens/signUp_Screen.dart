@@ -8,7 +8,7 @@ import 'package:msdl/commons/widgets/topTitle.dart';
 import 'package:msdl/constants/gaps.dart';
 import 'package:msdl/constants/size_config.dart';
 import 'package:msdl/constants/sizes.dart';
-import 'package:msdl/features/screens/authentication/viewModel/viewModel.dart';
+import 'package:msdl/features/authentication/viewModel/viewModel.dart';
 import 'package:provider/provider.dart';
 
 class SignupScreen extends StatefulWidget {
@@ -204,7 +204,6 @@ class _SignupScreenState extends State<SignupScreen>
                         ),
                       ),
                     );
-                    
                   },
                 ),
                 Gaps.v64,

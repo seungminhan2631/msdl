@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:msdl/constants/sizes.dart';
-import 'package:msdl/features/screens/Home/viewModel/weekly_viewModel.dart';
-import 'package:msdl/features/screens/authentication/viewModel/viewModel.dart';
+import 'package:msdl/features/Home/viewModel/weekly_viewModel.dart';
+import 'package:msdl/features/authentication/viewModel/viewModel.dart';
 import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
 

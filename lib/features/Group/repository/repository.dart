@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:msdl/features/screens/Group/model/model.dart';
+import 'package:msdl/features/Group/model/model.dart';
 
 class GroupRepository {
   static const String baseUrl = "http://220.69.203.99:5000";

@@ -1,4 +1,4 @@
-import 'package:msdl/features/screens/Home/model/WeeklyAttendance%20_mdel.dart';
+import 'package:msdl/features/Home/model/WeeklyAttendance%20_mdel.dart';
 
 class HomeModel {
   final int id;

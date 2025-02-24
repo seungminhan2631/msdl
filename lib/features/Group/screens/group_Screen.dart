@@ -4,10 +4,10 @@ import 'package:msdl/commons/widgets/buttons/customBottomNavigationbar.dart';
 import 'package:msdl/constants/gaps.dart';
 import 'package:msdl/constants/size_config.dart';
 import 'package:msdl/constants/sizes.dart';
-import 'package:msdl/features/screens/Group/viewModel/viewModel.dart';
-import 'package:msdl/features/screens/Group/model/model.dart';
-import 'package:msdl/features/screens/Home/widget/common/customContainer.dart';
-import 'package:msdl/features/screens/Home/widget/common/sectionTitle.dart';
+import 'package:msdl/features/Group/viewModel/viewModel.dart';
+import 'package:msdl/features/Group/model/model.dart';
+import 'package:msdl/features/Home/widget/common/customContainer.dart';
+import 'package:msdl/features/Home/widget/common/sectionTitle.dart';
 import 'package:provider/provider.dart';
 
 class GroupScreen extends StatefulWidget {

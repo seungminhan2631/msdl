@@ -7,7 +7,7 @@ import 'package:msdl/commons/widgets/topTitle.dart';
 import 'package:msdl/constants/gaps.dart';
 import 'package:msdl/constants/size_config.dart';
 import 'package:msdl/constants/sizes.dart';
-import 'package:msdl/features/screens/authentication/viewModel/viewModel.dart'; // ✅ ViewModel import
+import 'package:msdl/features/authentication/viewModel/viewModel.dart'; // ✅ ViewModel import
 
 class NameScreen extends StatefulWidget {
   const NameScreen({super.key});

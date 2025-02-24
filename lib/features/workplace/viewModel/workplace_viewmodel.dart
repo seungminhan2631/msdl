@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:msdl/features/screens/authentication/viewModel/viewModel.dart';
+import 'package:msdl/features/authentication/viewModel/viewModel.dart';
 import 'package:provider/provider.dart';
 import '../model/workplace_model.dart';
 import '../repository/workplace_repository.dart';

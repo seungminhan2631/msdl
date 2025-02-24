@@ -3,12 +3,14 @@ class UserModel {
   final String email;
   final String role;
   final String name;
+  final String password;
 
   UserModel({
     required this.id,
     required this.email,
     required this.role,
     required this.name,
+    required this.password,
   });
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
@@ -17,6 +19,7 @@ class UserModel {
       email: json['email'],
       role: json['role'],
       name: json['name'],
+      password: json['password'],
     );
   }
 
@@ -26,6 +29,7 @@ class UserModel {
       'email': email,
       'role': role,
       'name': name,
+      'password': password,
     };
   }
 }
