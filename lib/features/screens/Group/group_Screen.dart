@@ -4,9 +4,7 @@ import 'package:msdl/commons/widgets/buttons/customBottomNavigationbar.dart';
 import 'package:msdl/constants/gaps.dart';
 import 'package:msdl/constants/size_config.dart';
 import 'package:msdl/constants/sizes.dart';
-import 'package:msdl/features/screens/Group/repository/repository.dart';
 import 'package:msdl/features/screens/Group/viewModel/viewModel.dart';
-import 'package:msdl/features/screens/Home/viewModel/home_viewModel.dart';
 import 'package:msdl/features/screens/Group/model/model.dart';
 import 'package:msdl/features/screens/Home/widget/common/customContainer.dart';
 import 'package:msdl/features/screens/Home/widget/common/sectionTitle.dart';
@@ -22,6 +20,18 @@ class GroupScreen extends StatefulWidget {
 class _GroupScreenState extends State<GroupScreen> {
   int _selectedIndex = 0;
   final ScrollController _scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+
+    // ✅ 초기 데이터 불러오기 (users/all)
+    Future.delayed(Duration.zero, () {
+      final groupViewModel =
+          Provider.of<GroupViewModel>(context, listen: false);
+      groupViewModel.fetchGroupViewModel();
+    });
+  }
 
   void _onItemTapped(int index) {
     if (index != _selectedIndex) {
@@ -41,6 +51,8 @@ class _GroupScreenState extends State<GroupScreen> {
     return Consumer<GroupViewModel>(
       builder: (context, groupViewModel, child) {
         final groupData = groupViewModel.getGroupedUsers();
+
+        print("📡 GroupScreen: groupData 로드됨 → $groupData");
 
         return Scaffold(
           appBar: AppBar(
@@ -78,8 +90,8 @@ class _GroupScreenState extends State<GroupScreen> {
               ),
             ),
           ),
-          body: groupData.isEmpty
-              ? Center(child: CircularProgressIndicator())
+          body: groupViewModel.groupUsers.isEmpty
+              ? Center(child: CircularProgressIndicator()) // ✅ 데이터 로딩 중
               : Scrollbar(
                   controller: _scrollController,
                   thumbVisibility: false,

@@ -61,10 +61,9 @@ class MsdlApp extends StatelessWidget {
           onGenerateRoute: (settings) {
             WidgetBuilder builder;
             bool applySlideAnimation = false; // 🔥 기본적으로 슬라이드 애니메이션 적용 안 함
-
             switch (settings.name) {
               case "/":
-                builder = (context) => Homescreen();
+                builder = (context) => LoginScreen();
                 applySlideAnimation = true; // 🔥 슬라이드 애니메이션 적용
                 break;
               case "/chooseRole_Screen":
