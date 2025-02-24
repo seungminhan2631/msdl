@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:msdl/features/screens/authentication/model/user_model.dart';
+import 'package:msdl/features/authentication/model/user_model.dart';
 
 class AuthRepository {
   String baseUrl = "http://220.69.203.99:5000";
