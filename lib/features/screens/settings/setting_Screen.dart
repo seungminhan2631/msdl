@@ -173,11 +173,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       SettingsProfileText(
-                        text: homeData?.role ?? "카와이",
+                        text: homeData?.role ?? "Role",
                       ),
                       SizedBox(height: 20.h),
                       SettingsProfileText(
-                        text: homeData?.name ?? "세동쨩",
+                        text: homeData?.name ?? "Name",
                       ),
                     ],
                   ),
@@ -359,7 +359,8 @@ class SettingsProfileText extends StatelessWidget {
       text,
       style: TextStyle(
         fontSize: Sizes.size24,
-        fontWeight: FontWeight.w400,
+        fontFamily: "Andika",
+        fontWeight: FontWeight.w700,
         color: Color(0xFFF1F1F1),
       ),
     );

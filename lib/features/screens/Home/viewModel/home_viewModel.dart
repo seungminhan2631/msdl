@@ -1,5 +1,9 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
+import 'package:msdl/features/screens/Home/model/WeeklyAttendance%20_mdel.dart';
 import 'package:msdl/features/screens/Home/model/home_model.dart';
 import 'package:msdl/features/screens/Home/repository/home_repository.dart';
 import 'package:msdl/features/screens/authentication/viewModel/viewModel.dart';
@@ -11,20 +15,12 @@ class HomeViewModel extends ChangeNotifier {
   bool _isButtonDisabled = false; // ✅ 버튼 활성/비활성 상태 추가
   HomeModel? get homeData => _homeData;
   bool get isButtonDisabled => _isButtonDisabled;
-
-  List<DateTime> get attendanceDays => _attendanceDays; // 출근 기록
-  List<DateTime> _attendanceDays = [];
-
-  List<DateTime> get checkoutDays => _checkoutDays; // 퇴근 기록
-  List<DateTime> _checkoutDays = [];
-
-  List<DateTime> get absentDays => _absentDays; // 결석 기록
-  List<DateTime> _absentDays = [];
+  final String _baseUrl = "http://220.69.203.99:5000/"; // ✅ Flask 서버 URL
 
   // ✅ 현재 출퇴근 상태에 따라 텍스트 반환
   String getWorkStatusText() {
     if (_homeData?.isCheckedIn == false && _homeData?.checkInTime == "--:--") {
-      return "오늘 하루도 힘내세요!";
+      return "출근 전";
     } else if (_homeData?.isCheckedIn == true &&
         _homeData?.checkOutTime == "--:--") {
       return "근무 중";
@@ -46,21 +42,17 @@ class HomeViewModel extends ChangeNotifier {
     try {
       bool isCurrentlyCheckedIn = _homeData?.isCheckedIn ?? false;
       String currentTime = DateFormat('HH:mm:ss').format(DateTime.now());
-      DateTime today = DateTime.now();
+      String action = isCurrentlyCheckedIn ? "check_out" : "check_in";
 
-      // ✅ 서버에 출퇴근 요청 보내기
-      await _repository.updateAttendance(
-          userId, isCurrentlyCheckedIn ? "check_out" : "check_in");
-
-      if (!isCurrentlyCheckedIn) {
-        // 출근 처리
-        _attendanceDays.add(today);
-      } else {
-        // 퇴근 처리
-        _checkoutDays.add(today);
-      }
-
-      _updateAbsentDays();
+      // ✅ Flask 서버에 출퇴근 요청 보내기
+      final response = await http.post(
+        Uri.parse("$_baseUrl/attendance/update"),
+        headers: {"Content-Type": "application/json"},
+        body: json.encode({
+          "user_id": userId,
+          "action": action,
+        }),
+      );
 
       // ✅ 로컬 데이터 업데이트
       _homeData = _homeData!.copyWith(
@@ -73,8 +65,6 @@ class HomeViewModel extends ChangeNotifier {
 
       print(isCurrentlyCheckedIn ? "✅ 퇴근 성공!" : "✅ 출근 성공!");
 
-      _updateAbsentDays();
-
       // ✅ UI 갱신
       notifyListeners();
 
@@ -82,6 +72,8 @@ class HomeViewModel extends ChangeNotifier {
       if (isCurrentlyCheckedIn) {
         _showGoodJobDialog(context); // 퇴근 처리 다이얼로그 띄우기
         _isButtonDisabled = true; // 🔥 버튼 비활성화
+      } else {
+        print("❌ 출퇴근 업데이트 실패: ${response.statusCode}");
       }
     } catch (e) {
       print("⚠️ 출퇴근 업데이트 실패: $e");
@@ -99,23 +91,6 @@ class HomeViewModel extends ChangeNotifier {
       _isButtonDisabled = false; // ✅ 버튼 다시 활성화
       notifyListeners();
     }
-  }
-
-  // ✅ 결석석 날짜 찾기
-  void _updateAbsentDays() {
-    DateTime startDate = DateTime(2025, 1, 1);
-    DateTime endDate = DateTime(2025, 12, 31);
-    _absentDays.clear();
-
-    for (DateTime day = startDate;
-        day.isBefore(endDate.add(Duration(days: 1)));
-        day = day.add(Duration(days: 1))) {
-      if (!_attendanceDays.contains(day) && !_checkoutDays.contains(day)) {
-        _absentDays.add(day);
-      }
-    }
-
-    notifyListeners();
   }
 
   // ✅ "오늘 하루도 수고하셨습니다!" 메시지 띄우기
@@ -137,6 +112,7 @@ class HomeViewModel extends ChangeNotifier {
     );
   }
 
+  // ✅ Flask 서버에서 출퇴근 상태 불러오기
   Future<void> fetchHomeData(BuildContext context) async {
     final authViewModel = Provider.of<AuthViewModel>(context, listen: false);
     int? userId = authViewModel.userId;
@@ -148,12 +124,27 @@ class HomeViewModel extends ChangeNotifier {
 
     try {
       print("📡 Home 데이터 요청: userId=$userId");
-      _homeData = await _repository.fetchHomeData(userId);
+      final response = await http.get(Uri.parse("$_baseUrl/home/$userId"));
 
-      if (_homeData == null) {
-        print("⚠️ 서버에서 받은 Home 데이터가 null입니다.");
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        _homeData = HomeModel(
+          id: data['id'] ?? 0, // ✅ user_id 추가
+          name: data['name'] ?? 'Unknown', // ✅ name 추가
+          role: data['role'] ?? 'Unknown', // ✅ role 추가
+          isCheckedIn: data['is_checked_in'] ?? false,
+          checkInTime: data['check_in_time'] ?? "--:--",
+          checkOutTime: data['check_out_time'] ?? "--:--",
+          weeklyTimeline: (data.containsKey('weeklyTimeline') &&
+                  data['weeklyTimeline'] != null)
+              ? (data['weeklyTimeline'] as List<dynamic>)
+                  .map((e) => WeeklyAttendance.fromJson(e))
+                  .toList()
+              : [], // ✅ weeklyTimeline이 없으면 빈 리스트로 설정
+        );
+        print("✅ Home 데이터 불러오기 성공: ${data['name']}");
       } else {
-        print("✅ Home 데이터 불러오기 성공: ${_homeData!.name}");
+        print("❌ 서버 응답 오류: ${response.statusCode}");
       }
 
       notifyListeners();
