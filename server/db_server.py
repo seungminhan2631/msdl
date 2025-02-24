@@ -43,6 +43,52 @@ class Location(db.Model):
     category = db.Column(db.String, nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)  # 🔥 위치 추가 시간 저장
 
+    # ✅ 출퇴근 상태 변경 (`POST`)
+@app.route('/attendance/update', methods=['POST'])
+def update_attendance():
+    data = request.json
+    user_id = data['user_id']
+    action = data['action']
+    current_time = datetime.now().strftime("%H:%M")
+    today_date = datetime.now().strftime("%Y-%m-%d")
+    
+    attendance = Attendance.query.filter_by(user_id=user_id, date=today_date).first()
+    
+    if action == "check_in":
+        if not attendance:
+            new_attendance = Attendance(
+                user_id=user_id,
+                date=today_date,
+                check_in_time=current_time
+            )
+            db.session.add(new_attendance)
+        else:
+            attendance.check_in_time = current_time
+    elif action == "check_out" and attendance:
+        attendance.check_out_time = current_time
+    
+    db.session.commit()
+    return jsonify({"message": "Attendance updated", "time": current_time}), 200
+
+# ✅ 출퇴근 상태 조회 (`GET`)
+@app.route('/home/<int:user_id>', methods=['GET'])
+def get_home_user(user_id):
+    user = User.query.get(user_id)
+    if not user:
+        return jsonify({"error": "User not found"}), 404
+
+    today_date = datetime.now().strftime("%Y-%m-%d")
+    attendance = Attendance.query.filter_by(user_id=user.id, date=today_date).first()
+
+    return jsonify({
+        "id": user.id,
+        "name": user.name,
+        "role": user.role,
+        "is_checked_in": bool(attendance and attendance.check_in_time != "--:--"),
+        "check_in_time": attendance.check_in_time if attendance else "--:--",
+        "check_out_time": attendance.check_out_time if attendance else "--:--",
+    }), 200
+
 
 #회원가입 요청하는 쿼리
 @app.route('/auth/register', methods=['POST'])
@@ -187,7 +233,7 @@ def get_location_category(user_id):
         # ✅ 기본 카테고리 제공 (데이터가 없을 경우)
         return jsonify({"category": "Unknown"}), 200
 
-#승민아 여기야 섹스
+
 @app.route('/attendance/weekly/<int:user_id>', methods=['GET'])
 def get_weekly_attendance(user_id):
     weekly_attendance_records = Attendance.query.filter_by(user_id=user_id).all()
