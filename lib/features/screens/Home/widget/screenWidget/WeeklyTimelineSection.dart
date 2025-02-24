@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:msdl/features/screens/Home/viewModel/home_viewModel.dart';
+import 'package:msdl/constants/sizes.dart';
+import 'package:msdl/features/screens/Home/viewModel/weekly_viewModel.dart';
+import 'package:msdl/features/screens/authentication/viewModel/viewModel.dart';
 import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
 
@@ -16,27 +18,24 @@ class _WeeklytimelinesectionState extends State<Weeklytimelinesection> {
   DateTime _selectedDay = DateTime.now(); // ✅ 선택된 날짜
 
   @override
-  Widget build(BuildContext context) {
-    final homeViewModel = Provider.of<HomeViewModel>(context);
-    final weeklyTimeline = homeViewModel.homeData?.weeklyTimeline ?? [];
+  void initState() {
+    super.initState();
+    // ✅ 로그인한 사용자의 ID를 받아 ViewModel에 데이터 요청
+    Future.delayed(Duration.zero, () {
+      final authViewModel = Provider.of<AuthViewModel>(context, listen: false);
+      final attendanceViewModel =
+          Provider.of<WeeklyAttendanceViewModel>(context, listen: false);
+      int? userId = authViewModel.userId;
 
-    // 🗓️ 출근, 퇴근, 결석 날짜를 저장할 Map
-    Map<DateTime, String> markedDates = {};
-
-    // 📌 주간 출퇴근 데이터를 가져와 날짜별 상태를 저장
-    for (var record in weeklyTimeline) {
-      DateTime date = DateTime.parse(record.date);
-
-      if (record.weeklyAttendance) {
-        if (record.checkOutTime != "--:--") {
-          markedDates[date] = "checkOut"; // 🏠 퇴근 (파란색)
-        } else {
-          markedDates[date] = "checkIn"; // ✅ 출근 (초록색)
-        }
-      } else {
-        markedDates[date] = "absent"; // ❌ 결석 (빨간색)
+      if (userId != null) {
+        attendanceViewModel.fetchWeeklyAttendance(userId);
       }
-    }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final attendanceViewModel = Provider.of<WeeklyAttendanceViewModel>(context);
 
     return TableCalendar(
       calendarFormat: _calendarFormat, // 📅 주 단위로 설정
@@ -44,7 +43,7 @@ class _WeeklytimelinesectionState extends State<Weeklytimelinesection> {
       firstDay: DateTime(2025, 1, 1), // 📆 시작 날짜
       lastDay: DateTime(2025, 12, 31), // 📆 종료 날짜
       locale: 'en_US', // 🌍 언어 설정 (영어)
-      daysOfWeekHeight: 25, // 📏 요일 높이 설정
+      daysOfWeekHeight: Sizes.size18, // 📏 요일 높이 설정
       selectedDayPredicate: (day) =>
           isSameDay(_selectedDay, day), // 📌 선택된 날짜 스타일 적용
       onDaySelected: (selectedDay, focusedDay) {
@@ -66,8 +65,7 @@ class _WeeklytimelinesectionState extends State<Weeklytimelinesection> {
         todayDecoration: BoxDecoration(
           color: Colors.transparent,
           shape: BoxShape.circle,
-          border:
-              Border.all(color: Colors.green, width: 1.5), // 🟢 오늘 날짜 테두리 강조
+          border: Border.all(color: Colors.green, width: 2), // 🟢 오늘 날짜 테두리 강조
         ),
         todayTextStyle: const TextStyle(
           fontWeight: FontWeight.bold,
@@ -82,18 +80,15 @@ class _WeeklytimelinesectionState extends State<Weeklytimelinesection> {
       ),
       calendarBuilders: CalendarBuilders(
         defaultBuilder: (context, date, _) {
-          final normalizedDate = DateTime(date.year, date.month, date.day);
+          final status = attendanceViewModel.getAttendanceStatus(date);
 
           // 📌 출근 / 퇴근 / 결석 상태에 따라 마커 표시
-          if (markedDates.containsKey(normalizedDate)) {
-            switch (markedDates[normalizedDate]) {
-              case "checkIn":
-                return _buildMarker(date, Colors.green, "출근"); // ✅ 초록색 (출근)
-              case "checkOut":
-                return _buildMarker(date, Colors.blue, "퇴근"); // 🏠 파란색 (퇴근)
-              case "absent":
-                return _buildMarker(date, Colors.red, "X"); // ❌ 빨간색 (결석)
-            }
+          if (status == "checkIn") {
+            return _buildMarker(date, Colors.green, "출근"); // ✅ 초록색 (출근)
+          } else if (status == "checkOut") {
+            return _buildMarker(date, Colors.blue, "퇴근"); // 🏠 파란색 (퇴근)
+          } else if (status == "absent") {
+            return _buildMarker(date, Colors.red, "X"); // ❌ 빨간색 (결석)
           }
 
           return null; // ❌ 마커가 없는 경우 기본 스타일 유지
@@ -106,8 +101,8 @@ class _WeeklytimelinesectionState extends State<Weeklytimelinesection> {
   Widget _buildMarker(DateTime date, Color color, String text) {
     return Center(
       child: Container(
-        width: 30,
-        height: 30,
+        width: Sizes.size32,
+        height: Sizes.size32,
         decoration: BoxDecoration(
           color: color, // 🎨 배경 색상
           shape: BoxShape.circle, // 🔵 원형 마커

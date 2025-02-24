@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_file.dart' hide initializeDateFormatting;
 import 'package:intl/intl.dart';
 import 'package:msdl/features/screens/Home/home_Screen.dart';
+import 'package:msdl/features/screens/Home/viewModel/weekly_viewModel.dart';
 import 'package:msdl/features/screens/Home/viewModel/workplace_viewModel.dart';
 import 'package:msdl/features/screens/authentication/choose_role_Screen.dart';
 import 'package:msdl/features/screens/Group/group_Screen.dart';
@@ -35,6 +36,8 @@ void main() async {
         ChangeNotifierProvider(create: (_) => HomeWorkplaceViewModel()),
         ChangeNotifierProvider(
             create: (_) => WorkplaceViewModel(WorkplaceRepository())),
+        ChangeNotifierProvider(
+            create: (context) => WeeklyAttendanceViewModel()),
       ],
       child: const MsdlApp(),
     ),

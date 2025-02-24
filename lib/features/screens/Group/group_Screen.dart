@@ -46,7 +46,7 @@ class _GroupScreenState extends State<GroupScreen> {
 
   @override
   Widget build(BuildContext context) {
-    String todayDate = DateFormat('yyyy.MM').format(DateTime.now());
+    String todayDate = DateFormat('yyyy.MM.dd').format(DateTime.now());
 
     return Consumer<GroupViewModel>(
       builder: (context, groupViewModel, child) {
