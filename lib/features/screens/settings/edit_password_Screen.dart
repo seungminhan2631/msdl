@@ -3,6 +3,7 @@ import 'package:msdl/commons/widgets/buttons/CustomButton.dart';
 import 'package:msdl/commons/widgets/buttons/CustomTextField.dart';
 import 'package:msdl/commons/widgets/topTitle.dart';
 import 'package:msdl/constants/gaps.dart';
+import 'package:msdl/constants/size_config.dart';
 import 'package:msdl/constants/sizes.dart';
 
 class EditPasswordScreen extends StatefulWidget {
@@ -81,18 +82,10 @@ class _EditPasswordScreenState extends State<EditPasswordScreen> {
                     Spacer(),
                   ],
                 ),
-                SizedBox(height: 32),
+                SizedBox(height: 32.h),
                 Expanded(
                   child: Column(
                     children: [
-                      CustomTextField(
-                        hintText: "Current Password",
-                        firstIcon: Icons.vpn_key_outlined,
-                        lastIcon: Icons.visibility,
-                        helperText: "Please enter your current password",
-                        isValid: true,
-                        controller: currentPasswordController,
-                      ),
                       Gaps.v32,
                       CustomTextField(
                         hintText: "New Password",
