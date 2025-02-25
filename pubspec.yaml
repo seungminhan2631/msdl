@@ -52,6 +52,8 @@ dependencies:
   firebase_crashlytics: ^4.3.3
   http: ^1.3.0
   table_calendar: ^3.2.0
+  image_picker: ^1.1.2
+  shared_preferences: ^2.5.2
 
 dev_dependencies:
   flutter_test:
@@ -81,6 +83,7 @@ flutter:
     - assets/font/
     - assets/images/박보영.jpg
     - assets/images/한승민.png
+    - assets/images/민교수님.png
     - assets/map_style.json
 
   # To add assets to your application, add an assets section, like this:
