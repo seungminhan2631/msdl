@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:msdl/features/screens/Home/model/home_model.dart';
 import 'package:msdl/features/screens/Home/repository/home_repository.dart';
+import 'package:msdl/features/screens/Home/viewModel/workplace_viewModel.dart';
 import 'package:msdl/features/screens/authentication/viewModel/viewModel.dart';
 import 'package:provider/provider.dart';
 
@@ -36,6 +37,8 @@ class HomeViewModel extends ChangeNotifier {
   // ✅ 출퇴근 상태 토글
   Future<void> toggleAttendance(BuildContext context) async {
     final authViewModel = Provider.of<AuthViewModel>(context, listen: false);
+    final workplaceViewModel = Provider.of<HomeWorkplaceViewModel>(context,
+        listen: false); // ✅ 근무지 정보 가져오기
     int? userId = authViewModel.userId;
 
     if (userId == null) {
@@ -48,23 +51,28 @@ class HomeViewModel extends ChangeNotifier {
       String currentTime = DateFormat('HH:mm:ss').format(DateTime.now());
       DateTime today = DateTime.now();
 
+      // ✅ 현재 선택된 category 가져오기
+      String selectedCategory = workplaceViewModel.selectedCategory;
+
+      if (selectedCategory.isEmpty) {
+        print("⚠️ 선택된 근무지가 없음. 기본값 사용.");
+        selectedCategory = "Unknown"; // 기본값 설정 가능
+      }
+
       // ✅ 서버에 출퇴근 요청 보내기
-      await _repository.updateAttendance(
-          userId, isCurrentlyCheckedIn ? "check_out" : "check_in");
+      await _repository.updateAttendance(userId,
+          isCurrentlyCheckedIn ? "check_out" : "check_in", selectedCategory);
 
       if (!isCurrentlyCheckedIn) {
-        // 출근 처리
         _attendanceDays.add(today);
       } else {
-        // 퇴근 처리
         _checkoutDays.add(today);
       }
 
       _updateAbsentDays();
 
-      // ✅ 로컬 데이터 업데이트
       _homeData = _homeData!.copyWith(
-        isCheckedIn: !isCurrentlyCheckedIn, // 토글 (출근 ↔ 퇴근)
+        isCheckedIn: !isCurrentlyCheckedIn,
         checkInTime:
             isCurrentlyCheckedIn ? _homeData!.checkInTime : currentTime,
         checkOutTime:
@@ -73,15 +81,11 @@ class HomeViewModel extends ChangeNotifier {
 
       print(isCurrentlyCheckedIn ? "✅ 퇴근 성공!" : "✅ 출근 성공!");
 
-      _updateAbsentDays();
-
-      // ✅ UI 갱신
       notifyListeners();
 
-      // ✅ 퇴근한 경우, 다이얼로그 띄우기
       if (isCurrentlyCheckedIn) {
-        _showGoodJobDialog(context); // 퇴근 처리 다이얼로그 띄우기
-        _isButtonDisabled = true; // 🔥 버튼 비활성화
+        _showGoodJobDialog(context);
+        _isButtonDisabled = true;
       }
     } catch (e) {
       print("⚠️ 출퇴근 업데이트 실패: $e");

@@ -40,13 +40,15 @@ class HomeRepository {
     }
   }
 
-  Future<void> updateAttendance(int userId, String action) async {
+  Future<void> updateAttendance(
+      int userId, String action, String locationCategory) async {
     final response = await http.post(
       Uri.parse('$baseUrl/attendance/update'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({
         'user_id': userId,
         'action': action,
+        'location_category': locationCategory, // ✅ 선택한 근무지 추가
       }),
     );
 
