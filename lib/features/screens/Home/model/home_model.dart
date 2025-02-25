@@ -27,9 +27,12 @@ class HomeModel {
       isCheckedIn: (map['is_checked_in'] ?? 0) == 1,
       checkInTime: map['check_in_time'] ?? '--:--',
       checkOutTime: map['check_out_time'] ?? '--:--',
-      weeklyTimeline: (map['weeklyTimeline'] as List<dynamic>)
-          .map((e) => WeeklyAttendance.fromJson(e))
-          .toList(),
+      weeklyTimeline:
+          (map.containsKey('weeklyTimeline') && map['weeklyTimeline'] != null)
+              ? (map['weeklyTimeline'] as List<dynamic>)
+                  .map((e) => WeeklyAttendance.fromJson(e))
+                  .toList()
+              : [], // ✅ weeklyTimeline이 없으면 빈 리스트로 설정
     );
   }
 

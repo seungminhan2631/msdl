@@ -148,7 +148,9 @@ class _HomescreenState extends State<Homescreen> {
             ),
             Gaps.v8,
             CustomContainer(
-              child: Column(),
+              child: Column(
+                children: [],
+              ),
             ),
           ],
         ),

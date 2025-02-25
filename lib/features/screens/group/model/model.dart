@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:msdl/data/database_helper.dart';
-import 'package:msdl/features/screens/group/model/model.dart';
-import 'package:msdl/features/screens/group/repository/repository.dart';
+import 'package:msdl/features/screens/Group/model/model.dart';
+import 'package:msdl/features/screens/Group/repository/repository.dart';
 
 // Role Enum
 enum Role { professor, phd, ms, bs }
@@ -71,32 +71,49 @@ extension RoleExtension on Role {
   }
 }
 
-class GroupModel {
-  final String id;
+class GroupUser {
+  final int id;
   final String name;
-  final Role role;
+  final Role role; // ✅ `String` → `Role` 변경
+  final String category;
   final String checkInTime;
   final String checkOutTime;
-  final String category;
 
-  GroupModel({
+  GroupUser({
     required this.id,
     required this.name,
     required this.role,
+    required this.category,
     required this.checkInTime,
     required this.checkOutTime,
-    required this.category,
   });
 
-  // ✅ fromJson 추가
-  factory GroupModel.fromJson(Map<String, dynamic> json) {
-    return GroupModel(
-      id: json['id'].toString(),
-      name: json['name'] ?? 'Unknown',
-      role: RoleExtension.fromString(json['role'] ?? 'Unknown'),
-      checkInTime: json['check_in_time'] ?? '--:--',
-      checkOutTime: json['check_out_time'] ?? '--:--',
-      category: json['category'] ?? "My WorkPlace",
+  factory GroupUser.fromJson(Map<String, dynamic> json) {
+    return GroupUser(
+      id: json['id'] ?? 0,
+      name: json['name'] ?? "Unknown",
+      role: RoleExtension.fromString(json['role'] ?? "Unknown"), // ✅ Role 변환
+      category: json['category'] ?? "Unknown",
+      checkInTime: json['check_in_time'] ?? "--:--",
+      checkOutTime: json['check_out_time'] ?? "--:--",
+    );
+  }
+  GroupUser copyWith({
+    int? id,
+    String? name,
+    Role? role,
+    String? category,
+    String? checkInTime,
+    String? checkOutTime,
+    bool? isCheckedIn,
+  }) {
+    return GroupUser(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      role: role ?? this.role,
+      category: category ?? this.category,
+      checkInTime: checkInTime ?? this.checkInTime,
+      checkOutTime: checkOutTime ?? this.checkOutTime,
     );
   }
 }

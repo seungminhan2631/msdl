@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 from datetime import datetime
+import os
 
 app = Flask(__name__)
 CORS(app)
@@ -32,6 +33,7 @@ class Location(db.Model):
     longitude = db.Column(db.Float, nullable=False)
     category = db.Column(db.String, nullable=False)
 
+#회원가입 요청하는 쿼리
 @app.route('/auth/register', methods=['POST'])
 def register():
     data = request.json
@@ -45,6 +47,7 @@ def register():
     db.session.commit()
     return jsonify({"message": "User registered successfully!"}), 201
 
+#로그인 요청하는 쿼리
 @app.route('/auth/login', methods=['POST'])
 def login():
     data = request.json
@@ -53,6 +56,7 @@ def login():
         return jsonify({"user_id": user.id})
     return jsonify({"error": "Invalid credentials"}), 401
 
+#HomeScreen의 출퇴근 버튼 동작시 데이터 저장하는 쿼리
 @app.route('/attendance/update', methods=['POST'])
 def update_attendance():
     data = request.json
@@ -84,13 +88,42 @@ def update_attendance():
 def get_home_user(user_id):
     user = User.query.get(user_id)
     if not user:
-        return jsonify({"error": "User not found"}), 404
-    
+        return jsonify({"error": "User not found"}), 404  # ❌ 유저가 없을 경우
+
+    today_date = datetime.now().strftime("%Y-%m-%d")
+    attendance = Attendance.query.filter_by(user_id=user.id, date=today_date).first()
+
     return jsonify({
         "id": user.id,
         "name": user.name,
         "role": user.role,
+        "is_checked_in": bool(attendance and attendance.check_in_time != "--:--"),
+        "check_in_time": attendance.check_in_time if attendance else "--:--",
+        "check_out_time": attendance.check_out_time if attendance else "--:--",
     }), 200
+
+
+
+@app.route('/group/users', methods=['GET'])
+def get_group_users():
+    users = User.query.all()  # 모든 사용자 정보 가져오기
+    result = []
+
+    for user in users:
+        attendance = Attendance.query.filter_by(user_id=user.id).order_by(Attendance.date.desc()).first()
+        location = Location.query.filter_by(user_id=user.id).first()
+        
+        result.append({
+            "id": user.id,
+            "name": user.name,
+            "role": user.role,
+            "category": location.category if location else "Unknown",
+            "check_in_time": attendance.check_in_time if attendance else "--:--",
+            "check_out_time": attendance.check_out_time if attendance else "--:--",
+        })
+
+    return jsonify(result), 200
+
 
 @app.route('/location/update', methods=['POST'])
 def update_location():
@@ -132,6 +165,32 @@ def get_weekly_attendance(user_id):
     ]
     return jsonify(weekly_timeline), 200
 
+@app.route('/users', methods=['GET'])
+def get_all_users():
+    users = User.query.all()
+    result = []
+
+    for user in users:
+        result.append({
+            "id": user.id,
+            "name": user.name,
+            "email": user.email,
+            "role": user.role
+        })
+
+    return jsonify(result), 200
+
+
+# 🔥 기존 데이터베이스 파일 삭제 후 다시 생성
+db_path = "server_database.db"
+if os.path.exists(db_path):
+    os.remove(db_path)
+    print("🔥 기존 데이터베이스 삭제 완료!")
+
+with app.app_context():
+    db.create_all()  # 새 데이터베이스 생성
+    print("✅ 새 데이터베이스 생성 완료!")
+    
 if __name__ == "__main__":
     with app.app_context():
         db.create_all()
