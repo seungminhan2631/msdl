@@ -199,7 +199,7 @@ class _WorkplaceScreenState extends State<WorkplaceScreen> {
       ),
 
       // 하단 현재 위치 정보 패널
-      draglesheet(
+      DraggleSheet(
         sheetController: _sheetController,
         currentAddress: _currentAddress,
       ),
