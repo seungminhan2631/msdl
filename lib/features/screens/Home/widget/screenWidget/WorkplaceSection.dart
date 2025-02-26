@@ -14,8 +14,8 @@ class Workplacesection extends StatefulWidget {
 }
 
 class _WorkplacesectionState extends State<Workplacesection> {
-  bool isMSDLChecked = false;
-  bool isHomeChecked = false;
+  // 선택된 작업장을 저장하는 변수 (중복 선택 방지)
+  String? selectedWorkplace;
 
   @override
   Widget build(BuildContext context) {
@@ -55,19 +55,19 @@ class _WorkplacesectionState extends State<Workplacesection> {
                 children: [
                   _buildWorkplaceCheckbox(
                     title: "MSDL",
-                    value: isMSDLChecked,
+                    value: selectedWorkplace == "MSDL",
                     onChanged: (value) {
                       setState(() {
-                        isMSDLChecked = value!;
+                        selectedWorkplace = value! ? "MSDL" : null;
                       });
                     },
                   ),
                   _buildWorkplaceCheckbox(
                     title: "Home",
-                    value: isHomeChecked,
+                    value: selectedWorkplace == "Home",
                     onChanged: (value) {
                       setState(() {
-                        isHomeChecked = value!;
+                        selectedWorkplace = value! ? "Home" : null;
                       });
                     },
                   ),
@@ -115,7 +115,11 @@ class _WorkplacesectionState extends State<Workplacesection> {
           value: value,
           activeColor: const Color(0xff3F51B5),
           checkColor: const Color(0xff2C2C2C),
-          onChanged: onChanged,
+          onChanged: (bool? newValue) {
+            if (newValue == true) {
+              onChanged(true);
+            }
+          },
           side: const BorderSide(
             color: Color(0xff3F51B5),
             width: 2,
@@ -131,6 +135,6 @@ class _WorkplacesectionState extends State<Workplacesection> {
           ),
         ),
       ],
-    ); //ㅁㄴㅇㅁㄴㅇㅁㄴㅇㅁㅇ
+    );
   }
 }

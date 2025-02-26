@@ -60,6 +60,33 @@ class _SettingsScreenState extends State<SettingsScreen> {
     Navigator.pushNamedAndRemoveUntil(context, "/", (route) => false);
   }
 
+  void _confirmSignOut(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Are you sure you want to log out?"),
+          content: Text("Are you sure you want to log out?"),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text("Cancel"),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                _signOut(context);
+              },
+              child: Text("Sign out"),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final homeData = Provider.of<HomeViewModel>(context).homeData;
@@ -110,7 +137,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               SettingsBodyText(
                 text: "Sign Out",
                 textColor: Color(0xffCF3B28),
-                onTap: () => _signOut(context),
+                onTap: () => _confirmSignOut(context),
               ),
             ],
           ),
