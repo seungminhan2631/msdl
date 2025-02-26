@@ -97,9 +97,12 @@ class draglesheet extends StatelessWidget {
                   ],
                 ),
                 Gaps.v32,
-                CustomButton(
-                  text: "Add New Workplace",
-                  routeName: "/homeScreen",
+                GestureDetector(
+                  onTap: _addWorkPlace(),
+                  child: CustomButton(
+                    text: "Add New Workplace",
+                    routeName: "/homeScreen",
+                  ),
                 ),
               ],
             ),

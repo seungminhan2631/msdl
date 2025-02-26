@@ -42,7 +42,7 @@ class _HomescreenState extends State<Homescreen> {
     _midnightTimer?.cancel();
     _midnightTimer = Timer(timeUntilMidnight, () {
       final homeViewModel = Provider.of<HomeViewModel>(context, listen: false);
-      homeViewModel.resetAttendance(); // ✅ 자정에 버튼 다시 활성화
+      homeViewModel.resetAttendance();
       _scheduleMidnightReset(); // 🔥 다음날 00:00을 다시 예약
     });
   }

@@ -8,7 +8,7 @@ class GroupRepository {
   Future<List<GroupUser>> fetchGroupUsers() async {
     try {
       final response = await http.get(
-        Uri.parse("$baseUrl/group/users"),
+        Uri.parse("$baseUrl/group/attendance"),
         headers: {"Content-Type": "application/json"},
       );
 

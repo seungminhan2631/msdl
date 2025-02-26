@@ -29,8 +29,7 @@ class Attendance(db.Model):
 class Location(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id', ondelete="CASCADE"), nullable=False)
-    latitude = db.Column(db.Float, nullable=False)
-    longitude = db.Column(db.Float, nullable=False)
+    currentLocation = db.Column(db.String, nullable=False)
     category = db.Column(db.String, nullable=False)
 
 #회원가입 요청하는 쿼리
@@ -129,17 +128,15 @@ def get_group_users():
 def update_location():
     data = request.json
     user_id = data['user_id']
-    latitude = data['latitude']
-    longitude = data['longitude']
+    currentLocation = data['currentLocation']
     category = data['category']
     
     location = Location.query.filter_by(user_id=user_id).first()
     if location:
-        location.latitude = latitude
-        location.longitude = longitude
+        location.currentLocation = currentLocation
         location.category = category
     else:
-        new_location = Location(user_id=user_id, latitude=latitude, longitude=longitude, category=category)
+        new_location = Location(user_id=user_id, currentLocation=currentLocation,category=category)
         db.session.add(new_location)
     
     db.session.commit()
@@ -179,7 +176,25 @@ def get_all_users():
         })
 
     return jsonify(result), 200
+# 📌 그룹 스크린: 모든 유저의 출석 정보를 가져옴
+@app.route('/group/attendance', methods=['GET'])
+def get_group_attendance():
+    """모든 유저의 출석 정보를 가져오는 API"""
+    users = User.query.all()
+    today_date = datetime.now().strftime("%Y-%m-%d")
+    result = []
 
+    for user in users:
+        attendance = Attendance.query.filter_by(user_id=user.id, date=today_date).first()
+        result.append({
+            "id": user.id,
+            "name": user.name,
+            "role": user.role,
+            "check_in_time": attendance.check_in_time if attendance else "--:--",
+            "check_out_time": attendance.check_out_time if attendance else "--:--"
+        })
+
+    return jsonify(result), 200
 
 # 🔥 기존 데이터베이스 파일 삭제 후 다시 생성
 db_path = "server_database.db"
