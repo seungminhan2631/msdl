@@ -41,7 +41,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
     _loadProfileImage();
   }
 
-//로그인한 userId를
   void _loadUserData() {
     final userId = Provider.of<AuthViewModel>(context, listen: false).userId;
     if (userId != null) {

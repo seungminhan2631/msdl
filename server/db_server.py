@@ -37,58 +37,55 @@ class User(db.Model):
 class Attendance(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id', ondelete="CASCADE"), nullable=False)
-    location_id = db.Column(db.Integer, db.ForeignKey('location.id', ondelete="SET NULL"), nullable=True)  # ✅ 근무지 추가
+    location_id = db.Column(db.Integer, db.ForeignKey('location.id', ondelete="SET NULL"), nullable=True) 
     date = db.Column(db.String, nullable=False)
     check_in_time = db.Column(db.String, default="--:--")
     check_out_time = db.Column(db.String, default="--:--")
     weekly_attendance = db.Column(db.Boolean, default=False)
     workplace_category = db.Column(db.String, nullable=True)
 
-
-
 class Location(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id', ondelete="CASCADE"), nullable=False)
     current_location = db.Column(db.String, nullable=False)
     category = db.Column(db.String, nullable=False)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)  # 🔥 위치 추가 시간 저장
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)  
 
-# ✅ 회원가입 (비밀번호 해싱)
 @app.route('/auth/register', methods=['POST'])
 def register():
     data = request.json
     existing_user = User.query.filter_by(email=data['email']).first()
     
     if existing_user:
-        return jsonify({"error": "Email already registered"}), 400  # 🔥 중복 이메일 방지
+        return jsonify({"error": "Email already registered"}), 400  
 
-    hashed_password = generate_password_hash(data['password'])  # 🔹 비밀번호 해싱
+# 비밀번호 해싱( 보안 )
+    hashed_password = generate_password_hash(data['password'])  
 
     new_user = User(
         email=data['email'],
-        password=hashed_password,  # ✅ 해싱된 비밀번호 저장
+        password=hashed_password, 
         role=data['role'],
         name=data['name']
     )
-
     db.session.add(new_user)
     db.session.commit()
     return jsonify({"message": "User registered successfully!"}), 201
 
-# ✅ 로그인 (비밀번호 검증)
 @app.route('/auth/login', methods=['POST'])
 def login():
     data = request.json
     user = User.query.filter_by(email=data['email']).first()
-
-    if user and check_password_hash(user.password, data['password']):  # 🔹 비밀번호 검증
+     # 해싱 비밀번호 검증
+    if user and check_password_hash(user.password, data['password']):  
         return jsonify({
             "user_id": user.id,
-            "role": user.role if user.role else "Unknown",  # 🔹 role이 None이면 기본값 설정
+            "role": user.role if user.role else "Unknown", 
             "name": user.name if user.name else "Unknown"
         }), 200
 
-    return jsonify({"error": "Invalid email or password"}), 401  # 🔥 잘못된 로그인 정보
+    return jsonify({"error": "Invalid email or password"}), 401  
+
 # ✅ 비밀번호 변경 API
 @app.route('/auth/update_password', methods=['POST'])
 def update_password():
@@ -112,22 +109,20 @@ def update_password():
     db.session.commit()
 
     return jsonify({"message": "Password updated successfully"}), 200
+
 #HomeScreen의 출퇴근 버튼 동작시 데이터 저장하는 쿼리
 @app.route('/attendance/update', methods=['POST'])
 def update_attendance():
     data = request.json
     user_id = data.get('user_id')
     action = data.get('action')
-    workplace = data.get('workplace')  # ✅ Flutter에서 받은 workplace 값
-
+    workplace = data.get('workplace') 
     if not user_id or not action:
         return jsonify({"error": "Missing required fields"}), 400
 
     current_time = datetime.now().strftime("%H:%M")
     today_date = datetime.now().strftime("%Y-%m-%d")
-
     attendance = Attendance.query.filter_by(user_id=user_id, date=today_date).first()
-
     try:
         if action == "check_in":
             if not attendance:
@@ -136,34 +131,30 @@ def update_attendance():
                     date=today_date,
                     check_in_time=current_time,
                     weekly_attendance=True,
-                    workplace_category=workplace  # ✅ 저장할 때 workplace 사용
+                    workplace_category=workplace  
                 )
                 db.session.add(new_attendance)
             else:
                 attendance.check_in_time = current_time
                 attendance.weekly_attendance = True
-                attendance.workplace_category = workplace  # ✅ 기존 데이터 업데이트
+                attendance.workplace_category = workplace
 
         elif action == "check_out" and attendance:
             attendance.check_out_time = current_time
-
         db.session.commit()
         return jsonify({"message": "Attendance updated", "time": current_time, "workplace": workplace}), 200
-
     except Exception as e:
         db.session.rollback()
-        print(f"⚠️ 출퇴근 업데이트 오류: {e}")  # 🔥 디버깅용 로그
         return jsonify({"error": "Internal Server Error", "details": str(e)}), 500
 
 
 
-
+#is_checked_in의 true / false로  출퇴근을 관리
 @app.route('/home/<int:user_id>', methods=['GET'])
 def get_home_user(user_id):
     user = User.query.get(user_id)
     if not user:
-        return jsonify({"error": "User not found"}), 404  # ❌ 유저가 없을 경우
-
+        return jsonify({"error": "User not found"}), 404  
     today_date = datetime.now().strftime("%Y-%m-%d")
     attendance = Attendance.query.filter_by(user_id=user.id, date=today_date).first()
 
@@ -200,8 +191,6 @@ def get_group_users():
 @app.route('/location/update', methods=['POST'])
 def update_location():
     data = request.json
-    print(f"📡 서버에서 받은 데이터: {data}")  # 🔥 디버깅용 출력
-
     user_id = data.get('user_id')
     current_location = data.get('current_location')
     category = data.get('category')
@@ -209,23 +198,21 @@ def update_location():
     if not user_id or not current_location or not category:
         return jsonify({"error": "Missing data"}), 400
 
-    # ✅ 같은 user_id + 같은 category의 데이터가 있는지 확인
+    # user_id에 같은 카테고리가 있는지 체크
     existing_location = Location.query.filter_by(user_id=user_id, category=category).first()
 
     if existing_location:
-        # ✅ 같은 카테고리가 있으면 기존 데이터를 덮어쓰기
+        # 같은 카테고리가 있으면 덮어쓰기
         existing_location.current_location = current_location
         existing_location.created_at = datetime.utcnow()
-        print(f"🔄 기존 위치 덮어쓰기 완료: user_id={user_id}, category={category}, location={current_location}")
     else:
-        # ✅ 같은 카테고리가 없으면 새로 추가
+        # 같은 카테고리가 없으면 새로 추가
         new_location = Location(
             user_id=user_id,
             current_location=current_location,
             category=category
         )
         db.session.add(new_location)
-        print(f"✅ 새로운 위치 추가: user_id={user_id}, category={category}, location={current_location}")
 
     db.session.commit()
     return jsonify({"message": "Location updated successfully!"}), 200
@@ -238,14 +225,13 @@ def get_location_category(user_id):
     if location:
         return jsonify({"category": location.category}), 200
     else:
-        # ✅ 기본 카테고리 제공 (데이터가 없을 경우)
         return jsonify({"category": "Unknown"}), 200
     
 
 @app.route('/attendance/weekly/<int:user_id>', methods=['GET'])
 def get_weekly_attendance(user_id):
     weekly_attendance_records = Attendance.query.filter_by(user_id=user_id).all()
-    
+
     weekly_timeline = [
         {
             "id":user_id,
@@ -254,6 +240,7 @@ def get_weekly_attendance(user_id):
         } for record in weekly_attendance_records
     ]
     return jsonify(weekly_timeline), 200
+
 
 @app.route('/users', methods=['GET'])
 def get_all_users():
@@ -310,86 +297,82 @@ def get_location(user_id):
 
 
 
-# ✅ 특정 위치 삭제 API 추가
-@app.route('/location/delete', methods=['POST'])
-def delete_location():
-    data = request.json
-    user_id = data.get('user_id')
-    location_id = data.get('location_id')
+# # ✅ 특정 위치 삭제 API 추가
+# @app.route('/location/delete', methods=['POST'])
+# def delete_location():
+#     data = request.json
+#     user_id = data.get('user_id')
+#     location_id = data.get('location_id')
 
-    if not user_id or not location_id:
-        return jsonify({"error": "Missing data"}), 400
+#     if not user_id or not location_id:
+#         return jsonify({"error": "Missing data"}), 400
 
-    location = Location.query.filter_by(id=location_id, user_id=user_id).first()
-    if not location:
-        return jsonify({"error": "Location not found"}), 404
+#     location = Location.query.filter_by(id=location_id, user_id=user_id).first()
+#     if not location:
+#         return jsonify({"error": "Location not found"}), 404
 
-    db.session.delete(location)
-    db.session.commit()
+#     db.session.delete(location)
+#     db.session.commit()
     
-    return jsonify({"message": "Location deleted"}), 200
+#     return jsonify({"message": "Location deleted"}), 200
 
-import requests
+# import requests
 
-@app.route('/group/attendance', methods=['GET'])
-def get_group_attendance():
-    """모든 유저의 출석 정보를 가져오는 API (users/all 기반)"""
-    users_all_url = "http://220.69.203.99:5000/users/all"  # ✅ users/all 가져오기
-    response = requests.get(users_all_url)
+# @app.route('/group/attendance', methods=['GET'])
+# def get_group_attendance():
+#     """모든 유저의 출석 정보를 가져오는 API (users/all 기반)"""
+#     users_all_url = "http://220.69.203.99:5000/users/all"  # ✅ users/all 가져오기
+#     response = requests.get(users_all_url)
 
-    if response.status_code == 200:
-        users_data = response.json()
+#     if response.status_code == 200:
+#         users_data = response.json()
         
-        # 🔥 디버깅: users/all 데이터 확인
-        print("🔥 users/all 데이터:", users_data)
+#         # 🔥 디버깅: users/all 데이터 확인
+#         print("🔥 users/all 데이터:", users_data)
 
-        result = [
-            {
-                "id": user["user_id"],
-                "name": user["name"],
-                "role": user["role"],
-                "category": user["attendance"].get("workplace", "Unknown"),  # ✅ users/all에서 가져옴
-                "check_in_time": user["attendance"].get("check_in_time", "--:--"),
-                "check_out_time": user["attendance"].get("check_out_time", "--:--")
-            }
-            for user in users_data
-        ]
+#         result = [
+#             {
+#                 "id": user["user_id"],
+#                 "name": user["name"],
+#                 "role": user["role"],
+#                 "category": user["attendance"].get("workplace", "Unknown"),  # ✅ users/all에서 가져옴
+#                 "check_in_time": user["attendance"].get("check_in_time", "--:--"),
+#                 "check_out_time": user["attendance"].get("check_out_time", "--:--")
+#             }
+#             for user in users_data
+#         ]
 
-        return jsonify(result), 200
-    else:
-        return jsonify({"error": "Failed to fetch users/all"}), 500
+#         return jsonify(result), 200
+#     else:
+#         return jsonify({"error": "Failed to fetch users/all"}), 500
     
-    #프로필 이미지 업로드 API
+
 @app.route('/upload_profile_image', methods=['POST'])
 def upload_profile_image():
     data = request.json
     user_id = data.get("user_id")
-    image_data = data.get("image")  # Base64 인코딩된 이미지 데이터
+    image_data = data.get("image")
 
     if not user_id or not image_data:
         return jsonify({"error": "Missing user_id or image"}), 400
 
     try:
-        # 사용자별 폴더 생성 (ex: static/profile_images/1/)
+        # 사용자별 폴더 생성
         user_folder = f"{UPLOAD_FOLDER}/{user_id}"
         os.makedirs(user_folder, exist_ok=True)
 
-        # 이미지 파일 확장자 자동 감지
-        image_format = image_data.split(";")[0].split("/")[1]  # 예: "data:image/png;base64,xxx"
+        # 이미지 파일 확장자 감지
+        image_format = image_data.split(";")[0].split("/")[1]  
         if image_format not in ["jpeg", "png", "jpg"]:
             return jsonify({"error": "Unsupported image format"}), 400
-
-        # Base64 디코딩 후 저장 (폴더 내부에 profile.jpg 또는 profile.png 저장)
+        # 유저id별로 folder에 이미지 저장
         image_path = f"{user_folder}/profile.{image_format}"
         with open(image_path, "wb") as f:
             f.write(base64.b64decode(image_data.split(",")[1]))
-
-        # DB에 저장된 이미지 URL 업데이트
         user = User.query.get(user_id)
         if user:
-            user.profile_image = f"/{image_path}"  # 저장된 이미지 URL
+            user.profile_image = f"/{image_path}"  
             db.session.commit()
-
         return jsonify({"message": "Image uploaded successfully", "image_url": user.profile_image}), 200
 
     except Exception as e:
@@ -399,12 +382,10 @@ def upload_profile_image():
 def get_profile_image(user_id):
     user_folder = f"{UPLOAD_FOLDER}/{user_id}"
     
-    # 지원하는 확장자 확인 (jpg, png, jpeg)
     for ext in ["jpg", "png", "jpeg"]:
         image_path = f"{user_folder}/profile.{ext}"
         if os.path.exists(image_path):
             return jsonify({"image_url": f"/{image_path}"}), 200
-
     return jsonify({"error": "No image found"}), 404
 
 @app.route('/static/profile_images/<filename>')
@@ -415,15 +396,14 @@ def serve_profile_image(filename):
 
 @app.route('/users/all', methods=['GET'])
 def get_all_users_info():
-    """모든 유저의 상세 정보를 가져오는 API"""
+    #모든 유저 정보
     users = User.query.all()
     result = []
-
     for user in users:
         # 유저 출석 정보 가져오기 (가장 최근 출석 데이터)
         attendance = Attendance.query.filter_by(user_id=user.id).order_by(Attendance.date.desc()).first()
         
-        # ✅ `Attendance` 테이블에서 workplace 가져오기
+        # 출석 테이블의 workplace 가져오기
         workplace_name = attendance.workplace_category if attendance and attendance.workplace_category else "Unknown"
 
         # 유저의 모든 Workplace 가져오기
@@ -443,18 +423,15 @@ def get_all_users_info():
             "name": user.name,
             "email": user.email,
             "role": user.role,
-            "password_hash": user.password,  # 🔹 비밀번호 추가
+            "password_hash": user.password, #해싱된 비밀번호 체크
             "attendance": {
                 "date": attendance.date if attendance else "N/A",
                 "check_in_time": attendance.check_in_time if attendance else "--:--",
                 "check_out_time": attendance.check_out_time if attendance else "--:--",
-                "workplace": workplace_name  # ✅ 최신 workplace 반영
+                "workplace": workplace_name  
             },
             "workplaces": workplace_list
         })
-
-        
-
     return jsonify(result), 200
 
 

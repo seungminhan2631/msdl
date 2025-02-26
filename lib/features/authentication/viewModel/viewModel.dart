@@ -69,6 +69,6 @@ class AuthViewModel extends ChangeNotifier {
   void logout() {
     _currentUser = null; // ✅ 로그아웃 처리
     notifyListeners();
-    print("🚪 로그아웃 완료");
+    print("🚪 로그아웃 노무현");
   }
 }
