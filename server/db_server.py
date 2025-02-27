@@ -3,6 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 from datetime import datetime
 import os
+import base64
 
 # ✅ SQLAlchemy 인스턴스 생성 (앱 미등록 상태)
 db = SQLAlchemy()
@@ -19,12 +20,17 @@ app.config['JSON_AS_ASCII'] = False
 # ✅ 앱과 SQLAlchemy 연결
 db.init_app(app)
 
+# ✅ 이미지 저장 폴더 설정
+UPLOAD_FOLDER = "uploads"
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     email = db.Column(db.String, unique=True, nullable=False)
     password = db.Column(db.String, nullable=False)
     role = db.Column(db.String, nullable=False)
     name = db.Column(db.String, nullable=False)
+    profile_image = db.Column(db.String, nullable=True)
 
 class Attendance(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -34,7 +40,7 @@ class Attendance(db.Model):
     check_in_time = db.Column(db.String, default="--:--")
     check_out_time = db.Column(db.String, default="--:--")
     weekly_attendance = db.Column(db.Boolean, default=False)
-    workplace_category = db.Column(db.String, nullable=True)  # ✅ 이 부분 추가!
+    workplace_category = db.Column(db.String, nullable=True)
 
 
 
@@ -225,8 +231,8 @@ def get_location_category(user_id):
     else:
         # ✅ 기본 카테고리 제공 (데이터가 없을 경우)
         return jsonify({"category": "Unknown"}), 200
+    
 
-#승민아 여기야 섹스
 @app.route('/attendance/weekly/<int:user_id>', methods=['GET'])
 def get_weekly_attendance(user_id):
     weekly_attendance_records = Attendance.query.filter_by(user_id=user_id).all()
@@ -343,11 +349,39 @@ def get_group_attendance():
         return jsonify(result), 200
     else:
         return jsonify({"error": "Failed to fetch users/all"}), 500
+    
+    #프로필 이미지 업로드 API
+@app.route('/upload_profile_image', methods=['POST'])
+def upload_profile_image():
+    data = request.json
+    user_id = data.get("userId")
+    image_data = data.get("image")
+
+    if not user_id or not image_data:
+        return jsonify({"error": "Missing userId or image"}), 400
+
+    image_path = f"{UPLOAD_FOLDER}/{user_id}.jpg"
+
+    with open(image_path, "wb") as f:
+        f.write(base64.b64decode(image_data))  # Base64 디코딩 후 저장
+
+    #DB에 저장된 이미지 URL 업데이트
+    user = User.query.get(user_id)
+    if user:
+        user.profile_image = f"/static/{user_id}.jpg"
+        db.session.commit()
+
+    return jsonify({"message": "Image uploaded successfully", "image_url": user.profile_image}), 200
+
+#프로필 이미지 GET API
+@app.route('/get_profile_image/<int:user_id>', methods=['GET'])
+def get_profile_image(user_id):
+    user = User.query.get(user_id)
+    if user and user.profile_image:
+        return jsonify({"image_url": user.profile_image}), 200
+    return jsonify({"error": "No image found"}), 404
 
 
-
-
-#진작 이거로 할걸 ㅋㅋ
 @app.route('/users/all', methods=['GET'])
 def get_all_users_info():
     """모든 유저의 상세 정보를 가져오는 API"""
@@ -387,6 +421,8 @@ def get_all_users_info():
             },
             "workplaces": workplace_list
         })
+
+        
 
     return jsonify(result), 200
 
