@@ -30,8 +30,7 @@ class AuthRepository {
     }
   }
 
-  // ✅ 로그인 (예외 처리 추가)
-  Future<int?> loginUser(String email, String password) async {
+  Future<Map<String, dynamic>?> loginUser(String email, String password) async {
     try {
       final response = await http.post(
         Uri.parse("$baseUrl/auth/login"),
@@ -43,9 +42,9 @@ class AuthRepository {
       );
 
       if (response.statusCode == 200) {
-        final Map<String, dynamic> data = jsonDecode(response.body);
-        return data['user_id']; // 로그인 성공 시 사용자 ID 반환
+        return jsonDecode(response.body); // ✅ 로그인 성공 시 유저 데이터 반환
       } else {
+        print("❌ 로그인 실패: ${response.body}");
         return null;
       }
     } catch (e) {

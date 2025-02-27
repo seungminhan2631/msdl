@@ -1,6 +1,8 @@
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
+from werkzeug.security import generate_password_hash, check_password_hash
+
 from datetime import datetime
 import os
 import base64
@@ -51,20 +53,20 @@ class Location(db.Model):
     category = db.Column(db.String, nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)  # 🔥 위치 추가 시간 저장
 
-
-#회원가입 요청하는 쿼리
+# ✅ 회원가입 (비밀번호 해싱)
 @app.route('/auth/register', methods=['POST'])
 def register():
     data = request.json
     existing_user = User.query.filter_by(email=data['email']).first()
-
+    
     if existing_user:
         return jsonify({"error": "Email already registered"}), 400  # 🔥 중복 이메일 방지
 
+    hashed_password = generate_password_hash(data['password'])  # 🔹 비밀번호 해싱
 
     new_user = User(
         email=data['email'],
-        password=data['password'],
+        password=hashed_password,  # ✅ 해싱된 비밀번호 저장
         role=data['role'],
         name=data['name']
     )
@@ -73,36 +75,44 @@ def register():
     db.session.commit()
     return jsonify({"message": "User registered successfully!"}), 201
 
-
-#로그인 요청하는 쿼리
+# ✅ 로그인 (비밀번호 검증)
 @app.route('/auth/login', methods=['POST'])
 def login():
     data = request.json
     user = User.query.filter_by(email=data['email']).first()
 
-    if user and check_password_hash(user.password, data['password']):  # 🔹 비밀번호 비교
-        return jsonify({"user_id": user.id})
-    return jsonify({"error": "Invalid credentials"}), 401
+    if user and check_password_hash(user.password, data['password']):  # 🔹 비밀번호 검증
+        return jsonify({
+            "user_id": user.id,
+            "role": user.role if user.role else "Unknown",  # 🔹 role이 None이면 기본값 설정
+            "name": user.name if user.name else "Unknown"
+        }), 200
 
+    return jsonify({"error": "Invalid email or password"}), 401  # 🔥 잘못된 로그인 정보
+# ✅ 비밀번호 변경 API
 @app.route('/auth/update_password', methods=['POST'])
 def update_password():
     data = request.json
     user_id = data.get('user_id')
+    old_password = data.get('old_password')
     new_password = data.get('new_password')
 
-    if not user_id or not new_password:
-        return jsonify({"error": "Missing user_id or new_password"}), 400
+    if not user_id or not old_password or not new_password:
+        return jsonify({"error": "Missing required fields"}), 400
 
     user = User.query.get(user_id)
 
     if not user:
         return jsonify({"error": "User not found"}), 404
 
-    user.password = generate_password_hash(new_password)  # 🔹 비밀번호 암호화 저장
+    # 🔹 기존 비밀번호 확인 후 변경
+    if not check_password_hash(user.password_hash, old_password):
+        return jsonify({"error": "Incorrect old password"}), 401
+
+    user.password_hash = generate_password_hash(new_password)  # 새 비밀번호 암호화 후 저장
     db.session.commit()
 
     return jsonify({"message": "Password updated successfully"}), 200
-
 #HomeScreen의 출퇴근 버튼 동작시 데이터 저장하는 쿼리
 @app.route('/attendance/update', methods=['POST'])
 def update_attendance():

@@ -30,22 +30,20 @@ class AuthViewModel extends ChangeNotifier {
   }
 
   Future<bool> login(String email, String password) async {
-    int? userId = await _repository.loginUser(email, password);
+    Map<String, dynamic>? userData =
+        await _repository.loginUser(email, password);
 
-    if (userId != null) {
-      List<UserModel> users = await _repository.getUsers();
-      _currentUser = users.firstWhere(
-        (user) => user.id == userId,
-        orElse: () => UserModel(
-            id: -1, email: '', role: '', name: '', password: password),
+    if (userData != null && userData.containsKey('user_id')) {
+      _currentUser = UserModel(
+        id: userData['user_id'],
+        email: email,
+        role: userData['role'] ?? "Unknown", // 🔹 Null 방지 (기본값: "Unknown")
+        name: userData['name'] ?? "Unknown", // 🔹 Null 방지 (기본값: "Unknown")
+        password: '', // ❌ 비밀번호 저장 X
       );
 
-      if (_currentUser!.id == -1) {
-        print("❌ 로그인 실패: 서버에서 사용자 정보를 찾을 수 없음");
-        return false;
-      }
-
-      print("✅ 로그인 성공! ID: ${_currentUser?.id}, Name: ${_currentUser?.name}");
+      print(
+          "✅ 로그인 성공! ID: ${_currentUser?.id}, Name: ${_currentUser?.name}, Role: ${_currentUser?.role}");
       notifyListeners(); // ✅ UI 업데이트
       return true;
     } else {
