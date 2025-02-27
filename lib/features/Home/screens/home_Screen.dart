@@ -4,17 +4,17 @@ import 'package:intl/intl.dart';
 import 'package:msdl/constants/gaps.dart';
 import 'package:msdl/constants/size_config.dart';
 import 'package:msdl/constants/sizes.dart';
-import 'package:msdl/features/screens/Home/model/home_model.dart';
-import 'package:msdl/features/screens/Home/viewModel/home_viewModel.dart';
-import 'package:msdl/features/screens/Home/viewModel/workplace_viewModel.dart';
-import 'package:msdl/features/screens/Home/widget/common/customContainer.dart';
-import 'package:msdl/features/screens/Home/widget/common/sectionTitle.dart';
-import 'package:msdl/features/screens/Home/widget/screenWidget/ProfileSection.dart';
+import 'package:msdl/features/Home/model/home_model.dart';
+import 'package:msdl/features/Home/viewModel/home_viewModel.dart';
+import 'package:msdl/features/Home/viewModel/workplace_viewModel.dart';
+import 'package:msdl/features/Home/widget/common/customContainer.dart';
+import 'package:msdl/features/Home/widget/common/sectionTitle.dart';
+import 'package:msdl/features/Home/widget/screenWidget/ProfileSection.dart';
 import 'package:msdl/commons/widgets/buttons/customBottomNavigationbar.dart';
-import 'package:msdl/features/screens/Home/widget/screenWidget/WeeklyTimelineSection.dart';
-import 'package:msdl/features/screens/Home/widget/screenWidget/WorkplaceSection.dart';
-import 'package:msdl/features/screens/authentication/viewModel/viewModel.dart';
-import 'package:msdl/features/screens/workplace/workplace_Screen.dart';
+import 'package:msdl/features/Home/widget/screenWidget/WeeklyTimelineSection.dart';
+import 'package:msdl/features/Home/widget/screenWidget/WorkplaceSection.dart';
+import 'package:msdl/features/authentication/viewModel/viewModel.dart';
+import 'package:msdl/features/workplace/screens/workplace_Screen.dart';
 import 'package:provider/provider.dart';
 
 class Homescreen extends StatefulWidget {
