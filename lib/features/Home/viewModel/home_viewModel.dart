@@ -3,11 +3,11 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
-import 'package:msdl/features/screens/Home/model/WeeklyAttendance%20_mdel.dart';
-import 'package:msdl/features/screens/Home/model/home_model.dart';
-import 'package:msdl/features/screens/Home/repository/home_repository.dart';
-import 'package:msdl/features/screens/Home/viewModel/workplace_viewModel.dart';
-import 'package:msdl/features/screens/authentication/viewModel/viewModel.dart';
+import 'package:msdl/features/Home/model/WeeklyAttendance%20_mdel.dart';
+import 'package:msdl/features/Home/model/home_model.dart';
+import 'package:msdl/features/Home/repository/home_repository.dart';
+import 'package:msdl/features/Home/viewModel/workplace_viewModel.dart';
+import 'package:msdl/features/authentication/viewModel/viewModel.dart';
 import 'package:provider/provider.dart';
 
 class HomeViewModel extends ChangeNotifier {

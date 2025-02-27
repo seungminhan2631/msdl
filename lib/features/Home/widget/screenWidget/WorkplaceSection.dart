@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:msdl/constants/gaps.dart';
 import 'package:msdl/constants/size_config.dart';
 import 'package:msdl/constants/sizes.dart';
-import 'package:msdl/features/screens/Home/viewModel/workplace_viewModel.dart';
-import 'package:msdl/features/screens/Home/widget/common/checkWorkplaceBox.dart';
-import 'package:msdl/features/screens/Home/widget/common/customContainer.dart';
-import 'package:msdl/features/screens/Home/widget/common/sectionTitle.dart';
+import 'package:msdl/features/Home/viewModel/workplace_viewModel.dart';
+import 'package:msdl/features/Home/widget/common/checkWorkplaceBox.dart';
+import 'package:msdl/features/Home/widget/common/customContainer.dart';
+import 'package:msdl/features/Home/widget/common/sectionTitle.dart';
 import 'package:provider/provider.dart';
 
 class WorkplaceSection extends StatefulWidget {

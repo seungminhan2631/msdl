@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:msdl/features/screens/Home/model/WeeklyAttendance%20_mdel.dart';
-import 'package:msdl/features/screens/Home/repository/WeeklyAttendanceRepository.dart';
+import 'package:msdl/features/Home/model/WeeklyAttendance%20_mdel.dart';
+import 'package:msdl/features/Home/repository/WeeklyAttendanceRepository.dart';
 
 class WeeklyAttendanceViewModel extends ChangeNotifier {
   final WeeklyAttendanceRepository _repository = WeeklyAttendanceRepository();

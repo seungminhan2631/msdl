@@ -9,7 +9,7 @@ import 'package:msdl/commons/widgets/buttons/customButton.dart';
 import 'package:msdl/constants/gaps.dart';
 import 'package:msdl/constants/size_config.dart';
 import 'package:msdl/constants/sizes.dart';
-import 'package:msdl/features/screens/workplace/widget/DraggableBottomSheet.dart';
+import 'package:msdl/features/workplace/widget/DraggableBottomSheet.dart';
 
 class WorkplaceScreen extends StatefulWidget {
   @override

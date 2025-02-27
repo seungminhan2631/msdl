@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:msdl/features/screens/Group/model/model.dart';
+import 'package:msdl/features/Group/model/model.dart';
 import '../repository/repository.dart';
 
 class GroupViewModel extends ChangeNotifier {

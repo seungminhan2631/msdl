@@ -6,8 +6,8 @@ import 'package:msdl/commons/widgets/topTitle.dart';
 import 'package:msdl/constants/gaps.dart';
 import 'package:msdl/constants/size_config.dart';
 import 'package:msdl/constants/sizes.dart';
-import 'package:msdl/features/screens/Home/viewModel/home_viewModel.dart';
-import 'package:msdl/features/screens/authentication/viewModel/viewModel.dart';
+import 'package:msdl/features/Home/viewModel/home_viewModel.dart';
+import 'package:msdl/features/authentication/viewModel/viewModel.dart';
 import 'package:msdl/msdl_theme.dart';
 import 'package:provider/provider.dart';
 

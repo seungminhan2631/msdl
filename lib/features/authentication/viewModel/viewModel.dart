@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:msdl/features/screens/authentication/model/user_model.dart';
+import 'package:msdl/features/authentication/model/user_model.dart';
 import '../repository/auth_repository.dart';
 
 class AuthViewModel extends ChangeNotifier {
@@ -36,7 +36,8 @@ class AuthViewModel extends ChangeNotifier {
       List<UserModel> users = await _repository.getUsers();
       _currentUser = users.firstWhere(
         (user) => user.id == userId,
-        orElse: () => UserModel(id: -1, email: '', role: '', name: ''),
+        orElse: () => UserModel(
+            id: -1, email: '', role: '', name: '', password: password),
       );
 
       if (_currentUser!.id == -1) {

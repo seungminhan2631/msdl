@@ -5,8 +5,8 @@ import 'package:msdl/commons/widgets/buttons/customButton.dart';
 import 'package:msdl/constants/gaps.dart';
 import 'package:msdl/constants/size_config.dart';
 import 'package:msdl/constants/sizes.dart';
-import 'package:msdl/features/screens/workplace/viewModel/workplace_viewmodel.dart';
-import 'package:msdl/features/screens/workplace/widget/boxInBottomBar.dart';
+import 'package:msdl/features/workplace/viewModel/workplace_viewmodel.dart';
+import 'package:msdl/features/workplace/widget/boxInBottomBar.dart';
 import 'package:provider/provider.dart';
 
 class DraggleSheet extends StatefulWidget {

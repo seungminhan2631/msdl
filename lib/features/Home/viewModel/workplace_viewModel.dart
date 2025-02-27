@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:msdl/features/screens/Home/model/workplace_model.dart';
-import 'package:msdl/features/screens/Home/repository/WorkplaceRepository.dart';
-import 'package:msdl/features/screens/authentication/viewModel/viewModel.dart';
+import 'package:msdl/features/Home/model/workplace_model.dart';
+import 'package:msdl/features/Home/repository/WorkplaceRepository.dart';
+import 'package:msdl/features/authentication/viewModel/viewModel.dart';
 import 'package:provider/provider.dart';
 
 class HomeWorkplaceViewModel extends ChangeNotifier {

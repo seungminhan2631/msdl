@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:msdl/constants/gaps.dart';
 import 'package:msdl/constants/sizes.dart';
-import 'package:msdl/features/screens/Home/model/home_model.dart';
-import 'package:msdl/features/screens/Home/viewModel/home_viewModel.dart';
-import 'package:msdl/features/screens/Home/widget/common/customContainer.dart';
-import 'package:msdl/features/screens/Home/widget/common/profileAvatar.dart';
-import 'package:msdl/features/screens/Home/widget/screenWidget/ClockInOutButton.dart';
+import 'package:msdl/features/Home/model/home_model.dart';
+import 'package:msdl/features/Home/viewModel/home_viewModel.dart';
+import 'package:msdl/features/Home/widget/common/customContainer.dart';
+import 'package:msdl/features/Home/widget/common/profileAvatar.dart';
+import 'package:msdl/features/Home/widget/screenWidget/ClockInOutButton.dart';
 import 'package:provider/provider.dart';
 
 class ProfileSection extends StatelessWidget {

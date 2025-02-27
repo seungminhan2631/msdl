@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:msdl/features/screens/Home/model/WeeklyAttendance%20_mdel.dart';
-import 'package:msdl/features/screens/Home/model/workplace_model.dart';
+import 'package:msdl/features/Home/model/WeeklyAttendance%20_mdel.dart';
+import 'package:msdl/features/Home/model/workplace_model.dart';
 
 class WeeklyAttendanceRepository {
   static String baseUrl = "http://220.69.203.99:5000";

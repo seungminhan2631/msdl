@@ -4,7 +4,7 @@ import 'package:msdl/commons/widgets/buttons/customButton.dart';
 import 'package:msdl/commons/widgets/topTitle.dart';
 import 'package:msdl/constants/gaps.dart';
 import 'package:msdl/constants/sizes.dart';
-import 'package:msdl/features/screens/authentication/viewModel/viewModel.dart';
+import 'package:msdl/features/authentication/viewModel/viewModel.dart';
 import 'package:msdl/msdl_theme.dart';
 import 'package:provider/provider.dart';
 

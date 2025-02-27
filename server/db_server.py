@@ -50,24 +50,52 @@ class Location(db.Model):
 @app.route('/auth/register', methods=['POST'])
 def register():
     data = request.json
+    existing_user = User.query.filter_by(email=data['email']).first()
+
+    if existing_user:
+        return jsonify({"error": "Email already registered"}), 400  # 🔥 중복 이메일 방지
+
+
     new_user = User(
         email=data['email'],
         password=data['password'],
         role=data['role'],
         name=data['name']
     )
+
     db.session.add(new_user)
     db.session.commit()
     return jsonify({"message": "User registered successfully!"}), 201
+
 
 #로그인 요청하는 쿼리
 @app.route('/auth/login', methods=['POST'])
 def login():
     data = request.json
     user = User.query.filter_by(email=data['email']).first()
-    if user:
+
+    if user and check_password_hash(user.password, data['password']):  # 🔹 비밀번호 비교
         return jsonify({"user_id": user.id})
     return jsonify({"error": "Invalid credentials"}), 401
+
+@app.route('/auth/update_password', methods=['POST'])
+def update_password():
+    data = request.json
+    user_id = data.get('user_id')
+    new_password = data.get('new_password')
+
+    if not user_id or not new_password:
+        return jsonify({"error": "Missing user_id or new_password"}), 400
+
+    user = User.query.get(user_id)
+
+    if not user:
+        return jsonify({"error": "User not found"}), 404
+
+    user.password = generate_password_hash(new_password)  # 🔹 비밀번호 암호화 저장
+    db.session.commit()
+
+    return jsonify({"message": "Password updated successfully"}), 200
 
 #HomeScreen의 출퇴근 버튼 동작시 데이터 저장하는 쿼리
 @app.route('/attendance/update', methods=['POST'])
@@ -350,6 +378,7 @@ def get_all_users_info():
             "name": user.name,
             "email": user.email,
             "role": user.role,
+            "password": user.password,  # 🔹 비밀번호 추가
             "attendance": {
                 "date": attendance.date if attendance else "N/A",
                 "check_in_time": attendance.check_in_time if attendance else "--:--",
