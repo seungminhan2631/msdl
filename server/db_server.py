@@ -422,7 +422,7 @@ def get_all_users_info():
             "name": user.name,
             "email": user.email,
             "role": user.role,
-            "password": user.password,  # 🔹 비밀번호 추가
+            "password_hash": user.password,  # 🔹 비밀번호 추가
             "attendance": {
                 "date": attendance.date if attendance else "N/A",
                 "check_in_time": attendance.check_in_time if attendance else "--:--",
