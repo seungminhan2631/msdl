@@ -23,7 +23,7 @@ app.config['JSON_AS_ASCII'] = False
 db.init_app(app)
 
 # ✅ 이미지 저장 폴더 설정
-UPLOAD_FOLDER = "uploads"
+UPLOAD_FOLDER = "static/profile_image"
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 class User(db.Model):
@@ -94,10 +94,9 @@ def login():
 def update_password():
     data = request.json
     user_id = data.get('user_id')
-    old_password = data.get('old_password')
     new_password = data.get('new_password')
 
-    if not user_id or not old_password or not new_password:
+    if not user_id or not new_password:
         return jsonify({"error": "Missing required fields"}), 400
 
     user = User.query.get(user_id)
@@ -106,7 +105,7 @@ def update_password():
         return jsonify({"error": "User not found"}), 404
 
     # 🔹 기존 비밀번호 확인 후 변경
-    if not check_password_hash(user.password_hash, old_password):
+    if not check_password_hash(user.password_hash):
         return jsonify({"error": "Incorrect old password"}), 401
 
     user.password_hash = generate_password_hash(new_password)  # 새 비밀번호 암호화 후 저장
@@ -364,32 +363,54 @@ def get_group_attendance():
 @app.route('/upload_profile_image', methods=['POST'])
 def upload_profile_image():
     data = request.json
-    user_id = data.get("userId")
-    image_data = data.get("image")
+    user_id = data.get("user_id")
+    image_data = data.get("image")  # Base64 인코딩된 이미지 데이터
 
     if not user_id or not image_data:
-        return jsonify({"error": "Missing userId or image"}), 400
+        return jsonify({"error": "Missing user_id or image"}), 400
 
-    image_path = f"{UPLOAD_FOLDER}/{user_id}.jpg"
+    try:
+        # 사용자별 폴더 생성 (ex: static/profile_images/1/)
+        user_folder = f"{UPLOAD_FOLDER}/{user_id}"
+        os.makedirs(user_folder, exist_ok=True)
 
-    with open(image_path, "wb") as f:
-        f.write(base64.b64decode(image_data))  # Base64 디코딩 후 저장
+        # 이미지 파일 확장자 자동 감지
+        image_format = image_data.split(";")[0].split("/")[1]  # 예: "data:image/png;base64,xxx"
+        if image_format not in ["jpeg", "png", "jpg"]:
+            return jsonify({"error": "Unsupported image format"}), 400
 
-    #DB에 저장된 이미지 URL 업데이트
-    user = User.query.get(user_id)
-    if user:
-        user.profile_image = f"/static/{user_id}.jpg"
-        db.session.commit()
+        # Base64 디코딩 후 저장 (폴더 내부에 profile.jpg 또는 profile.png 저장)
+        image_path = f"{user_folder}/profile.{image_format}"
+        with open(image_path, "wb") as f:
+            f.write(base64.b64decode(image_data.split(",")[1]))
 
-    return jsonify({"message": "Image uploaded successfully", "image_url": user.profile_image}), 200
+        # DB에 저장된 이미지 URL 업데이트
+        user = User.query.get(user_id)
+        if user:
+            user.profile_image = f"/{image_path}"  # 저장된 이미지 URL
+            db.session.commit()
 
-#프로필 이미지 GET API
+        return jsonify({"message": "Image uploaded successfully", "image_url": user.profile_image}), 200
+
+    except Exception as e:
+        return jsonify({"error": f"Failed to upload image: {str(e)}"}), 500
+
 @app.route('/get_profile_image/<int:user_id>', methods=['GET'])
 def get_profile_image(user_id):
-    user = User.query.get(user_id)
-    if user and user.profile_image:
-        return jsonify({"image_url": user.profile_image}), 200
+    user_folder = f"{UPLOAD_FOLDER}/{user_id}"
+    
+    # 지원하는 확장자 확인 (jpg, png, jpeg)
+    for ext in ["jpg", "png", "jpeg"]:
+        image_path = f"{user_folder}/profile.{ext}"
+        if os.path.exists(image_path):
+            return jsonify({"image_url": f"/{image_path}"}), 200
+
     return jsonify({"error": "No image found"}), 404
+
+@app.route('/static/profile_images/<filename>')
+def serve_profile_image(filename):
+    return send_from_directory(UPLOAD_FOLDER, filename)
+
 
 
 @app.route('/users/all', methods=['GET'])

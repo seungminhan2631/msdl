@@ -74,27 +74,39 @@ class _SettingsScreenState extends State<SettingsScreen> {
     if (pickedFile != null) {
       final File imageFile = File(pickedFile.path);
       final bytes = await imageFile.readAsBytes();
-      String base64Image = base64Encode(bytes); // ✅ Base64 변환
+
+      // ✅ Base64 변환 시 MIME 타입 포함 (확장자 자동 감지)
+      String mimeType = pickedFile.mimeType ?? "image/png"; // 기본값: PNG
+      String base64Image = "data:$mimeType;base64," + base64Encode(bytes);
 
       final userId = Provider.of<AuthViewModel>(context, listen: false).userId;
       if (userId == null) return;
 
-      final response = await http.post(
-        Uri.parse("$_serverUrl/upload_profile_image"),
-        headers: {"Content-Type": "application/json"},
-        body: jsonEncode({"userId": userId, "image": base64Image}),
-      );
+      try {
+        final response = await http.post(
+          Uri.parse("$_serverUrl/upload_profile_image"),
+          headers: {"Content-Type": "application/json"},
+          body: jsonEncode(
+              {"user_id": userId, "image": base64Image}), // ✅ user_id 수정
+        );
 
-      if (response.statusCode == 200) {
-        final imageUrl = jsonDecode(response.body)['image_url'];
+        if (response.statusCode == 200) {
+          final imageUrl = jsonDecode(response.body)['image_url'];
 
-        //UI 업데이트 및 로컬 저장
-        setState(() {
-          _profileImagePath = "$_serverUrl$imageUrl";
-        });
+          // ✅ UI 업데이트 및 로컬 저장
+          setState(() {
+            _profileImagePath = "$_serverUrl$imageUrl";
+          });
 
-        final prefs = await SharedPreferences.getInstance();
-        await prefs.setString('profile_image', _profileImagePath!);
+          final prefs = await SharedPreferences.getInstance();
+          await prefs.setString('profile_image', _profileImagePath!);
+
+          print("✅ 프로필 이미지 업로드 성공! URL: $_profileImagePath");
+        } else {
+          print("❌ 이미지 업로드 실패: ${response.body}");
+        }
+      } catch (e) {
+        print("⚠️ 서버 요청 실패: $e");
       }
     }
   }
