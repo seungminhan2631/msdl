@@ -85,7 +85,7 @@ class _WeeklytimelinesectionState extends State<Weeklytimelinesection> {
 
           // ✅ 현재 날짜 이전이고 기록이 없는 경우 결석 처리
           if (date.isBefore(today)) {
-            return _buildMarker(date, Colors.red, "X"); // ❌ 빨간색 (결석)
+            return _buildMarker(date, Color(0xFFB1384E), "X"); // ❌ 빨간색 (결석)
           }
 
           // 📌 출근 / 퇴근 / 결석 상태에 따라 마커 표시
@@ -94,7 +94,7 @@ class _WeeklytimelinesectionState extends State<Weeklytimelinesection> {
           } else if (status == "checkOut") {
             return _buildMarker(date, Colors.blue, "퇴근"); // 🏠 파란색 (퇴근)
           } else if (status == "absent") {
-            return _buildMarker(date, Colors.red, "X"); // ❌ 빨간색 (결석)
+            return _buildMarker(date, Color(0xFFB1384E), "X"); // ❌ 빨간색 (결석)
           }
 
           return null; // ❌ 마커가 없는 경우 기본 스타일 유지
