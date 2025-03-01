@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import '../model/home_model.dart';
 
 class HomeRepository {
-  static const String baseUrl = "http://220.69.203.99:5000";
+  static String baseUrl = "http://220.69.203.99:5000";
 
   Future<HomeModel?> fetchHomeData(int userId) async {
     try {
@@ -41,19 +41,28 @@ class HomeRepository {
   }
 
   Future<void> updateAttendance(
-      int userId, String action, String locationCategory) async {
-    final response = await http.post(
-      Uri.parse('$baseUrl/attendance/update'),
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode({
-        'user_id': userId,
-        'action': action,
-        'location_category': locationCategory, // ✅ 선택한 근무지 추가
-      }),
-    );
+      int userId, String action, String category) async {
+    try {
+      final response = await http.post(
+        Uri.parse('$baseUrl/attendance/update'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          'user_id': userId,
+          'action': action,
+          'category': category, // ✅ 선택한 근무지 추가 (변경됨)
+        }),
+      );
 
-    if (response.statusCode != 200) {
-      throw Exception('Failed to update attendance');
+      print(
+          "📡 출퇴근 업데이트 요청: userId=$userId, action=$action, category=$category");
+      print("📡 서버 응답 코드: ${response.statusCode}");
+      print("📡 서버 응답 내용: ${response.body}");
+
+      if (response.statusCode != 200) {
+        throw Exception('Failed to update attendance');
+      }
+    } catch (e) {
+      print("❌ updateAttendance 실패: $e");
     }
   }
 }
