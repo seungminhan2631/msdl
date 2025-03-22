@@ -48,18 +48,16 @@ class HomeViewModel extends ChangeNotifier {
       bool isCurrentlyCheckedIn = _homeData?.isCheckedIn ?? false;
       String currentTime = DateFormat('HH:mm:ss').format(DateTime.now());
       String action = isCurrentlyCheckedIn ? "check_out" : "check_in";
-      String selectedWorkplace =
-          workplaceViewModel.currentCategory; // 선택한 근무지 가져오기
 
-      // ✅ 서버에 출퇴근 요청 시 선택한 근무지 정보 포함
       final response = await http.post(
         Uri.parse("$_baseUrl/attendance/update"),
         headers: {"Content-Type": "application/json"},
         body: json.encode({
           "user_id": userId,
           "action": action,
-          "category":
-              isCurrentlyCheckedIn ? null : selectedCategory, // ✅ 출근 시 근무지 저장
+          "workplace": isCurrentlyCheckedIn
+              ? null
+              : selectedCategory, // ✅ category → workplace 변경
         }),
       );
 
